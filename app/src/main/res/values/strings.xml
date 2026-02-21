@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">GoalReflect</string>
+    <string name="app_tagline">Your journey to growth</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Login</string>
+    <string name="lbl_forgot_password">Forgot password?</string>
+    <string name="lbl_no_account">Don\'t have an account?</string>
+    <string name="lbl_register">Register</string>
+    <string name="content_desc_logo">GoalReflect Logo</string>
+    <string name="content_desc_email_icon">Email icon</string>
+    <string name="content_desc_password_icon">Password icon</string>
+</resources>

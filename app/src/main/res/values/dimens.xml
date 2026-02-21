@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Minimum height to ensure content is centered on tall screens -->
+    <dimen name="screen_min_height">700dp</dimen>
+</resources>
+

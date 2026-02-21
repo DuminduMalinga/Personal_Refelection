@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/screen_min_height"
+        android:paddingBottom="40dp">
+
+        <!-- ══════════════════════════════════════════ -->
+        <!--              TOP SECTION                   -->
+        <!-- ══════════════════════════════════════════ -->
+
+        <!-- Logo Container (rounded square, green) -->
+        <FrameLayout
+            android:id="@+id/logoContainer"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:background="@drawable/bg_logo_container"
+            android:elevation="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="72dp">
+
+            <!-- Journal / Book Icon -->
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_logo_journal"
+                android:contentDescription="@string/content_desc_logo"
+                android:scaleType="fitCenter" />
+        </FrameLayout>
+
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/tvAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="30sp"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logoContainer" />
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/tvTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_tagline"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:letterSpacing="0.01"
+            android:fontFamily="sans-serif"
+            android:layout_marginTop="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAppName" />
+
+        <!-- ══════════════════════════════════════════ -->
+        <!--           LOGIN CARD SECTION               -->
+        <!-- ══════════════════════════════════════════ -->
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/loginCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="40dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="12dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTagline">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp">
+
+                <!-- ── Email Input Row ── -->
+                <LinearLayout
+                    android:id="@+id/inputEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/selector_input_field"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:focusable="false"
+                    android:clickable="false">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_email"
+                        android:contentDescription="@string/content_desc_email_icon"
+                        android:scaleType="fitCenter" />
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="match_parent" />
+
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/hint_email"
+                        android:textColorHint="@color/text_hint"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
+                        android:singleLine="true"
+                        android:fontFamily="sans-serif" />
+                </LinearLayout>
+
+                <Space android:layout_width="match_parent" android:layout_height="14dp" />
+
+                <!-- ── Password Input Row ── -->
+                <LinearLayout
+                    android:id="@+id/inputPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/selector_input_field"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:focusable="false"
+                    android:clickable="false">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_lock"
+                        android:contentDescription="@string/content_desc_password_icon"
+                        android:scaleType="fitCenter" />
+
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="match_parent" />
+
+                    <EditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="@string/hint_password"
+                        android:textColorHint="@color/text_hint"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:fontFamily="sans-serif" />
+                </LinearLayout>
+
+                <Space android:layout_width="match_parent" android:layout_height="24dp" />
+
+                <!-- ── Login Button ── -->
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:text="@string/btn_login"
+                    android:background="@drawable/selector_login_button"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.04"
+                    android:fontFamily="sans-serif-medium"
+                    android:elevation="4dp"
+                    android:stateListAnimator="@null"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp" />
+
+                <Space android:layout_width="match_parent" android:layout_height="16dp" />
+
+                <!-- ── Forgot Password ── -->
+                <TextView
+                    android:id="@+id/tvForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/lbl_forgot_password"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="6dp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!--           BOTTOM REGISTER SECTION          -->
+        <!-- ══════════════════════════════════════════ -->
+
+        <LinearLayout
+            android:id="@+id/registerRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loginCard">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_no_account"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif" />
+
+            <Space android:layout_width="4dp" android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tvRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lbl_register"
+                android:textColor="@color/text_link"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                android:padding="4dp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

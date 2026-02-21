@@ -16,7 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private LinearLayout inputEmail, inputPassword;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.login_activity);
 
         // Handle system bar insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -42,13 +42,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        etEmail         = findViewById(R.id.etEmail);
-        etPassword      = findViewById(R.id.etPassword);
-        inputEmail      = findViewById(R.id.inputEmail);
-        inputPassword   = findViewById(R.id.inputPassword);
-        btnLogin        = findViewById(R.id.btnLogin);
+        etEmail          = findViewById(R.id.etEmail);
+        etPassword       = findViewById(R.id.etPassword);
+        inputEmail       = findViewById(R.id.inputEmail);
+        inputPassword    = findViewById(R.id.inputPassword);
+        btnLogin         = findViewById(R.id.btnLogin);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
-        tvRegister      = findViewById(R.id.tvRegister);
+        tvRegister       = findViewById(R.id.tvRegister);
     }
 
     /**
@@ -111,3 +111,4 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Welcome back! 🌿", Toast.LENGTH_SHORT).show();
     }
 }
+

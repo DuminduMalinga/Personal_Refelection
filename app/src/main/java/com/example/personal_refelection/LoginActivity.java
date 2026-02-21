@@ -1,5 +1,6 @@
 package com.example.personal_refelection;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -72,8 +73,10 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword.setOnClickListener(v ->
                 Toast.makeText(this, "Password reset coming soon!", Toast.LENGTH_SHORT).show());
 
-        tvRegister.setOnClickListener(v ->
-                Toast.makeText(this, "Registration coming soon!", Toast.LENGTH_SHORT).show());
+        tvRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void handleLogin() {

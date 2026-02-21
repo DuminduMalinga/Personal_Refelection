@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shield check icon — used as confirmation illustration after email is sent -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Shield body -->
+    <path
+        android:pathData="M12,2 L4,5.5 L4,11.5 C4,16.025 7.4,20.22 12,21.5 C16.6,20.22 20,16.025 20,11.5 L20,5.5 Z"
+        android:strokeColor="#2DC08E"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#E8F8F3" />
+
+    <!-- Check mark inside shield -->
+    <path
+        android:pathData="M8.5,12 L11,14.5 L15.5,9.5"
+        android:strokeColor="#2DC08E"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>
+

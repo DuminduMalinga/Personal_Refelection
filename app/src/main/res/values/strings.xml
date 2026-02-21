@@ -19,6 +19,20 @@
     <string name="lbl_already_account">Already have an account?</string>
     <string name="lbl_login">Login</string>
 
+    <!-- Forgot Password -->
+    <string name="app_tagline_forgot">Recover your account</string>
+    <string name="lbl_forgot_instruction">Enter your registered username and email address to verify your identity.</string>
+    <string name="hint_username_verify">Username</string>
+    <string name="btn_verify_identity">Verify Identity</string>
+    <string name="lbl_verified_instruction">Identity verified! Enter your new password below.</string>
+    <string name="hint_new_password">New Password</string>
+    <string name="hint_confirm_new_password">Confirm New Password</string>
+    <string name="btn_change_password">Change Password</string>
+    <string name="lbl_password_changed">Password changed successfully! 🎉</string>
+    <string name="lbl_back_to_login">Back to Login</string>
+    <string name="lbl_arrow_left">←</string>
+    <string name="content_desc_step_indicator">Step indicator</string>
+
     <!-- Content Descriptions -->
     <string name="content_desc_logo">GoalReflect Logo</string>
     <string name="content_desc_email_icon">Email icon</string>

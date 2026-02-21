@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Person / user icon for Full Name and Username fields -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Head circle -->
+    <path
+        android:pathData="M12,4 C9.791,4 8,5.791 8,8 C8,10.209 9.791,12 12,12 C14.209,12 16,10.209 16,8 C16,5.791 14.209,4 12,4 Z"
+        android:strokeColor="#AABAC8"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+
+    <!-- Shoulders / body arc -->
+    <path
+        android:pathData="M4,20 C4,16.686 7.582,14 12,14 C16.418,14 20,16.686 20,20"
+        android:strokeColor="#AABAC8"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000" />
+</vector>
+

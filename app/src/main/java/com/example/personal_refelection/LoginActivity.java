@@ -70,8 +70,10 @@ public class LoginActivity extends AppCompatActivity {
     private void setupClickListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
 
-        tvForgotPassword.setOnClickListener(v ->
-                Toast.makeText(this, "Password reset coming soon!", Toast.LENGTH_SHORT).show());
+        tvForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
         tvRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);

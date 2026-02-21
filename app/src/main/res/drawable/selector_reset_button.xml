@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Send Reset Link button state selector — same brand green as login/register -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#22A07A"
+                android:endColor="#1D8E6C"
+                android:angle="135"
+                android:type="linear" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#2DC08E"
+                android:endColor="#27AE7E"
+                android:angle="135"
+                android:type="linear" />
+            <corners android:radius="16dp" />
+            <stroke android:width="2dp" android:color="#1A8C6A" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#2DC08E"
+                android:endColor="#27AE7E"
+                android:angle="135"
+                android:type="linear" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+</selector>
+

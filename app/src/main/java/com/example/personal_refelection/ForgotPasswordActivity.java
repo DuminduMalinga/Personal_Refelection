@@ -21,6 +21,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.personal_refelection.database.UserRepository;
+
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     // ── Step 1 views ──────────────────────────────────
@@ -42,12 +44,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     // ── Common ────────────────────────────────────────
     private TextView tvBackToLogin;
 
-    /**
-     * Hardcoded demo credentials — replace with real DB/auth lookup.
-     * Username and email must both match to grant access.
-     */
-    private static final String VALID_USERNAME = "john_doe";
-    private static final String VALID_EMAIL    = "john@example.com";
+    // ── Room DB ───────────────────────────────────────
+    private UserRepository userRepository;
+    /** Holds the verified email so Step 2 knows which record to update. */
+    private String verifiedEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        userRepository = new UserRepository(this);
 
         bindViews();
         setupFocusListeners();
@@ -144,18 +146,22 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         dismissKeyboard();
+        btnVerify.setEnabled(false);
 
-        // Check credentials — replace this block with real auth logic
-        if (username.equalsIgnoreCase(VALID_USERNAME) && email.equalsIgnoreCase(VALID_EMAIL)) {
-            transitionToStep2();
-        } else {
-            // Shake both fields to signal mismatch
-            shakeView(inputUsername);
-            shakeView(inputEmail);
-            Toast.makeText(this,
-                    "No account found with that username and email.",
-                    Toast.LENGTH_SHORT).show();
-        }
+        // ── Room DB identity check ────────────────────
+        userRepository.findByUsernameAndEmail(username, email, user -> {
+            btnVerify.setEnabled(true);
+            if (user != null) {
+                verifiedEmail = user.email; // store for Step 2 update
+                transitionToStep2();
+            } else {
+                shakeView(inputUsername);
+                shakeView(inputEmail);
+                Toast.makeText(this,
+                        "No account found with that username and email.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ──────────────────────────────────────────────────────────────
@@ -188,22 +194,29 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         dismissKeyboard();
-
-        // Password changed successfully — disable inputs, navigate to login
         btnChangePassword.setEnabled(false);
         btnChangePassword.setAlpha(0.6f);
-        etNewPassword.setEnabled(false);
-        etConfirmNewPassword.setEnabled(false);
 
-        Toast.makeText(this, getString(R.string.lbl_password_changed), Toast.LENGTH_LONG).show();
+        // ── Room DB password update ───────────────────
+        userRepository.updatePassword(verifiedEmail, newPassword, success -> {
+            if (success) {
+                etNewPassword.setEnabled(false);
+                etConfirmNewPassword.setEnabled(false);
+                Toast.makeText(this, getString(R.string.lbl_password_changed), Toast.LENGTH_LONG).show();
 
-        // Auto-navigate to LoginActivity after brief delay
-        cardStep2.postDelayed(() -> {
-            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
-        }, 1800);
+                // Auto-navigate to LoginActivity after brief delay
+                cardStep2.postDelayed(() -> {
+                    Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    finish();
+                }, 1800);
+            } else {
+                btnChangePassword.setEnabled(true);
+                btnChangePassword.setAlpha(1f);
+                Toast.makeText(this, "Failed to update password. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ──────────────────────────────────────────────────────────────

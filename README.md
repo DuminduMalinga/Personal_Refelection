@@ -2,7 +2,7 @@
 
 > **Module:** ICT3214 — Mobile Application Development
 > **Project Idea #8:** Personal Goal Reflection App
-> **Submission Deadline:** 6th March 2026
+
 
 ---
 

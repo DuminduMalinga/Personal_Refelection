@@ -17,12 +17,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.personal_refelection.database.User;
+import com.example.personal_refelection.database.UserRepository;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etFullName, etEmail, etUsername, etPassword, etConfirmPassword;
     private LinearLayout inputFullName, inputEmail, inputUsername, inputPassword, inputConfirmPassword;
     private Button btnRegister;
     private TextView tvLogin;
+
+    private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        userRepository = new UserRepository(this);
 
         bindViews();
         setupFocusListeners();
@@ -56,9 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
         tvLogin              = findViewById(R.id.tvLogin);
     }
 
-    /**
-     * Highlight the input container border when its EditText gains focus.
-     */
     private void setupFocusListeners() {
         setInputFocus(etFullName, inputFullName);
         setInputFocus(etEmail, inputEmail);
@@ -78,7 +82,6 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> handleRegister());
 
         tvLogin.setOnClickListener(v -> {
-            // Navigate back to Login screen
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -87,13 +90,13 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void handleRegister() {
-        String fullName       = etFullName.getText().toString().trim();
-        String email          = etEmail.getText().toString().trim();
-        String username       = etUsername.getText().toString().trim();
-        String password       = etPassword.getText().toString().trim();
+        String fullName        = etFullName.getText().toString().trim();
+        String email           = etEmail.getText().toString().trim();
+        String username        = etUsername.getText().toString().trim();
+        String password        = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Full Name validation
+        // ── Client-side validation ────────────────────
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Please enter your full name");
             etFullName.requestFocus();
@@ -104,8 +107,6 @@ public class RegisterActivity extends AppCompatActivity {
             etFullName.requestFocus();
             return;
         }
-
-        // Email validation
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Please enter your email");
             etEmail.requestFocus();
@@ -116,8 +117,6 @@ public class RegisterActivity extends AppCompatActivity {
             etEmail.requestFocus();
             return;
         }
-
-        // Username validation
         if (TextUtils.isEmpty(username)) {
             etUsername.setError("Please enter a username");
             etUsername.requestFocus();
@@ -128,8 +127,6 @@ public class RegisterActivity extends AppCompatActivity {
             etUsername.requestFocus();
             return;
         }
-
-        // Password validation
         if (TextUtils.isEmpty(password)) {
             etPassword.setError("Please enter a password");
             etPassword.requestFocus();
@@ -140,8 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
             etPassword.requestFocus();
             return;
         }
-
-        // Confirm Password validation
         if (TextUtils.isEmpty(confirmPassword)) {
             etConfirmPassword.setError("Please confirm your password");
             etConfirmPassword.requestFocus();
@@ -153,14 +148,42 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Dismiss keyboard
-        View currentFocus = getCurrentFocus();
-        if (currentFocus != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
-        }
+        dismissKeyboard();
+        btnRegister.setEnabled(false);
 
-        Toast.makeText(this, "Welcome to GoalReflect, " + fullName + "! 🌱", Toast.LENGTH_SHORT).show();
+        // ── Room DB insert ────────────────────────────
+        User newUser = new User(fullName, email, username, password);
+
+        userRepository.register(newUser, result -> {
+            btnRegister.setEnabled(true);
+            if (result > 0) {
+                // Success
+                Toast.makeText(this,
+                        "Welcome to GoalReflect, " + fullName + "! 🌱",
+                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            } else if (result == -2) {
+                etEmail.setError("This email is already registered");
+                inputEmail.setBackgroundResource(R.drawable.bg_input_field_focused);
+                etEmail.requestFocus();
+            } else if (result == -3) {
+                etUsername.setError("This username is already taken");
+                inputUsername.setBackgroundResource(R.drawable.bg_input_field_focused);
+                etUsername.requestFocus();
+            } else {
+                Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void dismissKeyboard() {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(focus.getWindowToken(), 0);
+        }
     }
 }
-

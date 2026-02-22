@@ -17,6 +17,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.personal_refelection.database.UserRepository;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
@@ -24,18 +26,21 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tvForgotPassword, tvRegister;
 
+    private UserRepository userRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.login_activity);
 
-        // Handle system bar insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        userRepository = new UserRepository(this);
 
         bindViews();
         setupFocusListeners();
@@ -70,21 +75,18 @@ public class LoginActivity extends AppCompatActivity {
     private void setupClickListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
 
-        tvForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-        });
+        tvForgotPassword.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class)));
 
-        tvRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
+        tvRegister.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
     private void handleLogin() {
         String email    = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
+        // ── Client-side validation ────────────────────
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Please enter your email");
             etEmail.requestFocus();
@@ -106,14 +108,29 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Dismiss keyboard
-        View currentFocus = getCurrentFocus();
-        if (currentFocus != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
-        }
+        dismissKeyboard();
+        btnLogin.setEnabled(false);
 
-        Toast.makeText(this, "Welcome back! 🌿", Toast.LENGTH_SHORT).show();
+        // ── Room DB login query ───────────────────────
+        userRepository.login(email, password, user -> {
+            btnLogin.setEnabled(true);
+            if (user != null) {
+                Toast.makeText(this, "Welcome back, " + user.fullName + "! 🌿", Toast.LENGTH_SHORT).show();
+                // TODO: Navigate to Home/Dashboard screen
+            } else {
+                etPassword.setError("Incorrect email or password");
+                inputEmail.setBackgroundResource(R.drawable.bg_input_field_focused);
+                inputPassword.setBackgroundResource(R.drawable.bg_input_field_focused);
+                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void dismissKeyboard() {
+        View focus = getCurrentFocus();
+        if (focus != null) {
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(focus.getWindowToken(), 0);
+        }
     }
 }
-

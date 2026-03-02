@@ -44,5 +44,10 @@ public interface UserDao {
 
     @Query("SELECT COUNT(*) FROM users WHERE username = :username")
     int countByUsername(String username);
+
+    // ── Get User ──────────────────────────────────────────────────
+
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    User getUserByEmail(String email);
 }
 

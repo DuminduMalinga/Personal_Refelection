@@ -66,14 +66,25 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 
 ## 📱 Screens & UI
 
-| Screen | Description |
-|--------|-------------|
-| **Login** | Email + Password login with "Forgot password?" and "Register" links |
-| **Register** | Full Name, Email, Username, Password, Confirm Password with duplicate detection |
-| **Forgot Password** | Step 1: Verify Username + Email → Step 2: Set new password |
-| **Home / Dashboard** | *(Coming Soon)* Personal goal overview |
-| **Goals** | *(Coming Soon)* CRUD for personal goals |
-| **Reflection Journal** | *(Coming Soon)* Per-goal daily reflections |
+| Screen | Description | Status |
+|--------|-------------|--------|
+| **Login** | Email + Password login with "Forgot password?" and "Register" links | ✅ Complete |
+| **Register** | Full Name, Email, Username, Password, Confirm Password with duplicate detection | ✅ Complete |
+| **Forgot Password** | Step 1: Verify Username + Email → Step 2: Set new password | ✅ Complete |
+| **Dashboard** | Personal goal overview with stats, recent reflections, and quick actions | ✅ **NEW** |
+| **Goals** | CRUD for personal goals | 🚧 Coming Soon |
+| **Achieved** | View completed goals | 🚧 Coming Soon |
+| **Profile** | User settings and information | 🚧 Coming Soon |
+
+### Dashboard Features (NEW! 🎉)
+- **Dynamic Greeting**: Time-based greeting (Morning/Afternoon/Evening) with user's name
+- **Overview Cards**: Three minimal stat cards showing Active Goals, Achieved Goals, and Total Reflections
+- **Recent Activity**: Display of 3 most recent reflections with timestamps
+- **Quick Actions**: Buttons to navigate to Goals and Achieved screens
+- **Floating Action Button**: Quick access to add new goals
+- **Bottom Navigation**: Easy navigation between Dashboard, Goals, Achieved, and Profile
+- **Session Management**: Auto-login on app restart, logout functionality
+- **Smooth Animations**: Staggered card entrance animations
 
 ### Design Style
 - **Background:** Soft neutral `#F2F4F7`
@@ -103,7 +114,7 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 
 ## 🗄️ Database Design
 
-### Room Database: `goalreflect_db`
+### Room Database: `goalreflect_db` (Version 2)
 
 #### Table 1: `users`
 
@@ -115,44 +126,54 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | `username` | TEXT | **UNIQUE**, Not Null |
 | `password` | TEXT | Not Null |
 
-#### Table 2: `goals` *(Feature-Specific)*
+#### Table 2: `goals` ✅ **NEW**
 
 | Column | Type | Constraint |
 |--------|------|------------|
 | `id` | INTEGER | Primary Key, Auto-increment |
-| `user_id` | INTEGER | **Foreign Key** → `users.id` |
+| `user_id` | INTEGER | **Foreign Key** → `users.id`, CASCADE |
 | `title` | TEXT | Not Null |
 | `description` | TEXT | — |
 | `target_date` | TEXT | — |
-| `status` | TEXT | `IN_PROGRESS` / `COMPLETED` |
-| `created_at` | TEXT | Not Null |
+| `is_completed` | BOOLEAN | Default: 0 (false) |
+| `created_at` | INTEGER | Timestamp |
 
-#### Table 3: `reflections` *(Feature-Specific)*
+#### Table 3: `reflections` ✅ **NEW**
 
 | Column | Type | Constraint |
 |--------|------|------------|
 | `id` | INTEGER | Primary Key, Auto-increment |
-| `goal_id` | INTEGER | **Foreign Key** → `goals.id` |
-| `user_id` | INTEGER | **Foreign Key** → `users.id` |
+| `goal_id` | INTEGER | **Foreign Key** → `goals.id`, CASCADE |
 | `content` | TEXT | Not Null |
-| `reflection_date` | TEXT | Not Null |
+| `created_at` | INTEGER | Timestamp |
 
 ### DAO Operations
 
-| DAO Method | Purpose |
-|------------|---------|
-| `insertUser(user)` | Register new user |
-| `loginWithEmail(email, password)` | Authenticate login |
-| `findByUsernameAndEmail(username, email)` | Forgot password step 1 |
-| `updatePassword(email, newPassword)` | Forgot password step 2 |
-| `countByEmail(email)` | Duplicate email check |
-| `countByUsername(username)` | Duplicate username check |
+| DAO Method | Purpose | Status |
+|------------|---------|--------|
+| **UserDao** | | |
+| `insertUser(user)` | Register new user | ✅ |
+| `loginWithEmail(email, password)` | Authenticate login | ✅ |
+| `findByUsernameAndEmail(username, email)` | Forgot password step 1 | ✅ |
+| `updatePassword(email, newPassword)` | Forgot password step 2 | ✅ |
+| `countByEmail(email)` | Duplicate email check | ✅ |
+| `countByUsername(username)` | Duplicate username check | ✅ |
+| `getUserByEmail(email)` | Fetch user after registration | ✅ **NEW** |
+| **GoalDao** | | |
+| `countActiveGoals(userId)` | Count in-progress goals | ✅ **NEW** |
+| `countAchievedGoals(userId)` | Count completed goals | ✅ **NEW** |
+| `getActiveGoals(userId)` | Fetch active goals list | ✅ **NEW** |
+| `getAchievedGoals(userId)` | Fetch achieved goals list | ✅ **NEW** |
+| **ReflectionDao** | | |
+| `countTotalReflections(userId)` | Count all user reflections | ✅ **NEW** |
+| `getRecentReflections(userId)` | Fetch 3 most recent | ✅ **NEW** |
 
 ### Architecture
 
 ```
 Activities
-    └── UserRepository          ← Single source of truth
+    ├── UserRepository          ← Single source of truth (Auth)
+    └── DashboardRepository     ← Dashboard data operations
             └── UserDao         ← @Dao interface (SQL queries)
                     └── AppDatabase  ← @Database singleton
                             └── Room (SQLite)
@@ -169,32 +190,64 @@ app/src/main/
 ├── java/com/example/personal_refelection/
 │   ├── database/
 │   │   ├── User.java                  ← @Entity — users table
-│   │   ├── UserDao.java               ← @Dao — SQL queries
-│   │   ├── AppDatabase.java           ← @Database — singleton Room DB
-│   │   └── UserRepository.java        ← Repository — background thread ops
-│   ├── LoginActivity.java             ← Login screen
-│   ├── RegisterActivity.java          ← Registration screen
-│   └── ForgotPasswordActivity.java    ← Two-step password recovery
+│   │   ├── Goal.java                  ← @Entity — goals table ✅ NEW
+│   │   ├── Reflection.java            ← @Entity — reflections table ✅ NEW
+│   │   ├── UserDao.java               ← @Dao — User SQL queries
+│   │   ├── GoalDao.java               ← @Dao — Goal SQL queries ✅ NEW
+│   │   ├── ReflectionDao.java         ← @Dao — Reflection SQL queries ✅ NEW
+│   │   ├── AppDatabase.java           ← @Database — singleton Room DB (v2) ✅ UPDATED
+│   │   ├── UserRepository.java        ← Repository — auth operations
+│   │   └── DashboardRepository.java   ← Repository — dashboard data ✅ NEW
+│   ├── models/
+│   │   └── DashboardStats.java        ← Data model for stats ✅ NEW
+│   ├── LoginActivity.java             ← Login screen + session ✅ UPDATED
+│   ├── RegisterActivity.java          ← Registration + auto-login ✅ UPDATED
+│   ├── ForgotPasswordActivity.java    ← Two-step password recovery
+│   ├── DashboardActivity.java         ← Main dashboard screen ✅ NEW
+│   ├── GoalsActivity.java             ← Goals screen (placeholder) ✅ NEW
+│   ├── AchievedActivity.java          ← Achieved screen (placeholder) ✅ NEW
+│   └── ProfileActivity.java           ← Profile screen (placeholder) ✅ NEW
 │
 ├── res/
 │   ├── layout/
 │   │   ├── login_activity.xml         ← Login UI
 │   │   ├── register_activity.xml      ← Register UI
-│   │   └── forgot_password_activity.xml ← Forgot password UI
+│   │   ├── forgot_password_activity.xml ← Forgot password UI
+│   │   ├── dashboard_activity.xml     ← Dashboard UI ✅ NEW
+│   │   └── item_reflection.xml        ← Reflection list item ✅ NEW
+│   ├── menu/
+│   │   ├── bottom_nav_menu.xml        ← Bottom navigation ✅ NEW
+│   │   └── dashboard_menu.xml         ← Overflow menu ✅ NEW
+│   ├── anim/
+│   │   ├── fade_in.xml                ← Fade animation ✅ NEW
+│   │   └── scale_up.xml               ← Scale animation ✅ NEW
 │   ├── drawable/
 │   │   ├── ic_logo_journal.xml        ← App logo (open journal)
 │   │   ├── ic_email.xml               ← Email field icon
 │   │   ├── ic_lock.xml                ← Password field icon
 │   │   ├── ic_person.xml              ← Name/username field icon
 │   │   ├── ic_shield_check.xml        ← Identity verified icon
+│   │   ├── ic_target.xml              ← Goal/target icon ✅ NEW
+│   │   ├── ic_check_circle.xml        ← Achievement icon ✅ NEW
+│   │   ├── ic_reflection.xml          ← Reflection/clipboard icon ✅ NEW
+│   │   ├── ic_add.xml                 ← Add/plus icon ✅ NEW
+│   │   ├── ic_profile.xml             ← Profile/user icon ✅ NEW
+│   │   ├── ic_dashboard.xml           ← Dashboard icon ✅ NEW
+│   │   ├── ic_goals.xml               ← Goals icon ✅ NEW
 │   │   ├── bg_logo_container.xml      ← Green rounded logo background
 │   │   ├── bg_card.xml                ← White card background
+│   │   ├── bg_dashboard_card.xml      ← Dashboard card background ✅ NEW
+│   │   ├── bg_stat_card_green.xml     ← Green pastel card ✅ NEW
+│   │   ├── bg_stat_card_blue.xml      ← Blue pastel card ✅ NEW
+│   │   ├── bg_stat_card_orange.xml    ← Orange pastel card ✅ NEW
+│   │   ├── bg_reflection_item.xml     ← Reflection item bg ✅ NEW
 │   │   ├── bg_input_field.xml         ← Normal input background
 │   │   ├── bg_input_field_focused.xml ← Focused input (green border)
 │   │   ├── selector_input_field.xml   ← Input focus state selector
 │   │   ├── selector_login_button.xml  ← Login button state selector
 │   │   ├── selector_register_button.xml ← Register button state selector
 │   │   ├── selector_reset_button.xml  ← Reset button state selector
+│   │   ├── selector_dashboard_button.xml ← Dashboard button selector ✅ NEW
 │   │   ├── bg_step_dot_active.xml     ← Active step indicator dot
 │   │   └── bg_step_dot_inactive.xml   ← Inactive step indicator dot
 │   └── values/

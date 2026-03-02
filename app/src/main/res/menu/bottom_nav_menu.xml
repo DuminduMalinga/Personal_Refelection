@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@drawable/ic_logo_journal"
+        android:title="@string/nav_dashboard" />
+
+    <item
+        android:id="@+id/nav_goals"
+        android:icon="@drawable/ic_target"
+        android:title="@string/nav_goals" />
+
+    <item
+        android:id="@+id/nav_achieved"
+        android:icon="@drawable/ic_check_circle"
+        android:title="@string/nav_achieved" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/nav_profile" />
+</menu>
+

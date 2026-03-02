@@ -8,7 +8,6 @@
     android:background="@color/background">
 
     <ScrollView
-        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -17,17 +16,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
 
-            <!-- ══════════════════════════════════════════════ -->
             <!-- HEADER SECTION -->
-            <!-- ══════════════════════════════════════════════ -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -35,21 +32,35 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvGreeting"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/greeting_afternoon"
-                        android:textColor="@color/text_primary"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tvGreeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/greeting_afternoon"
+                            android:textColor="@color/text_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_wave"
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@string/wave_emoji" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvTagline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="6dp"
                         android:text="@string/dashboard_tagline"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
@@ -59,47 +70,31 @@
                     android:id="@+id/ivProfileIcon"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/bg_logo_container"
+                    android:background="@drawable/bg_profile_circle"
                     android:contentDescription="@string/content_desc_profile_icon"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_profile" />
+                    android:padding="10dp"
+                    android:src="@drawable/ic_profile"
+                    android:tint="@color/primary_green" />
             </LinearLayout>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!-- OVERVIEW SECTION (Summary Cards) -->
-            <!-- ══════════════════════════════════════════════ -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/lbl_overview"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <!-- Grid of 3 stat cards -->
+            <!-- STAT CARDS GRID (3 COLUMNS) -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
+                android:layout_height="244dp"
+                android:layout_marginBottom="32dp"
                 android:gravity="center"
-                android:weightSum="3"
-                android:layout_marginBottom="16dp">
+                android:orientation="horizontal"
+                android:weightSum="3">
 
                 <!-- Active Goals Card -->
-
-                <!-- Achieved Goals Card -->
                 <LinearLayout
                     android:id="@+id/cardActiveGoals"
                     android:layout_width="0dp"
-                    android:layout_height="160dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_height="200dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_stat_card_green"
-                    android:elevation="4dp"
+                    android:background="@color/card_background"
+                    android:elevation="2dp"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="16dp">
@@ -107,127 +102,118 @@
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="10dp"
                         android:contentDescription="@string/content_desc_target_icon"
                         android:src="@drawable/ic_target"
-                        android:tint="@color/stat_green" />
+                        android:tint="@color/stat_blue" />
 
                     <TextView
                         android:id="@+id/tvActiveGoalsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:gravity="center"
-                        android:text="@string/count_zero"
-                        android:textColor="@color/stat_green"
-                        android:textSize="36sp"
+                        android:text="0"
+                        android:textColor="@color/text_primary"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
+                        android:layout_marginTop="6dp"
                         android:gravity="center"
-                        android:maxLines="2"
                         android:text="@string/lbl_active_goals"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
+                <!-- Achieved Goals Card -->
                 <LinearLayout
                     android:id="@+id/cardAchievedGoals"
                     android:layout_width="0dp"
-                    android:layout_height="160dp"
+                    android:layout_height="201dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="0dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_stat_card_blue"
-                    android:padding="16dp"
+                    android:background="@color/card_background"
+                    android:elevation="2dp"
                     android:gravity="center"
-                    android:elevation="4dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@drawable/ic_check_circle"
-                        android:tint="@color/stat_blue"
+                        android:layout_marginBottom="10dp"
                         android:contentDescription="@string/content_desc_check_icon"
-                        android:layout_marginBottom="12dp" />
+                        android:src="@drawable/ic_check_circle"
+                        android:tint="@color/stat_green" />
 
                     <TextView
                         android:id="@+id/tvAchievedGoalsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/count_zero"
-                        android:textColor="@color/stat_blue"
-                        android:textSize="36sp"
-                        android:textStyle="bold"
                         android:gravity="center"
-                        android:layout_marginBottom="10dp" />
+                        android:text="0"
+                        android:textColor="@color/text_primary"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center"
                         android:text="@string/lbl_achieved_goals"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:maxLines="2"
-                        android:ellipsize="end" />
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <!-- Total Reflections Card -->
                 <LinearLayout
                     android:id="@+id/cardTotalReflections"
                     android:layout_width="0dp"
-                    android:layout_height="160dp"
+                    android:layout_height="201dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="0dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_stat_card_orange"
-                    android:padding="16dp"
+                    android:background="@color/card_background"
+                    android:elevation="2dp"
                     android:gravity="center"
-                    android:elevation="4dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@drawable/ic_reflection"
-                        android:tint="@color/stat_orange"
+                        android:layout_marginBottom="10dp"
                         android:contentDescription="@string/content_desc_reflection_icon"
-                        android:layout_marginBottom="12dp" />
+                        android:src="@drawable/ic_reflection"
+                        android:tint="@color/stat_purple" />
 
                     <TextView
                         android:id="@+id/tvTotalReflectionsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/count_zero"
-                        android:textColor="@color/stat_orange"
-                        android:textSize="36sp"
-                        android:textStyle="bold"
                         android:gravity="center"
-                        android:layout_marginBottom="10dp" />
+                        android:text="0"
+                        android:textColor="@color/text_primary"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center"
                         android:text="@string/lbl_total_reflections"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:maxLines="2"
-                        android:ellipsize="end" />
+                        android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!-- RECENT ACTIVITY SECTION -->
-            <!-- ══════════════════════════════════════════════ -->
+            <!-- RECENT REFLECTIONS SECTION -->
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_width="174dp"
+                android:layout_height="36dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/lbl_recent_reflections"
@@ -235,104 +221,84 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- Recent Reflections Container -->
             <LinearLayout
                 android:id="@+id/recentReflectionsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
 
-                <!-- Empty State Message -->
+                <!-- Empty State -->
                 <TextView
                     android:id="@+id/tvNoReflections"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="32dp"
                     android:text="@string/lbl_no_reflections"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp"
-                    android:visibility="visible" />
+                    android:gravity="center"
+                    android:padding="32dp"
+                    android:visibility="gone" />
             </LinearLayout>
 
-            <!-- ══════════════════════════════════════════════ -->
-            <!-- QUICK ACTIONS SECTION -->
-            <!-- ══════════════════════════════════════════════ -->
+            <!-- QUICK ACTIONS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_marginBottom="80dp">
 
                 <Button
                     android:id="@+id/btnViewGoals"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_green"
+                    android:elevation="2dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:stateListAnimator="@null"
                     android:text="@string/btn_view_goals"
                     android:textColor="@color/text_light"
                     android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:background="@drawable/bg_button_green"
-                    android:elevation="3dp"
-                    android:stateListAnimator="@null" />
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btnViewAchieved"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
+                    android:layout_height="59dp"
                     android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_green"
+                    android:elevation="2dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:stateListAnimator="@null"
                     android:text="@string/btn_view_achieved"
                     android:textColor="@color/text_light"
                     android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:background="@drawable/bg_button_green"
-                    android:elevation="3dp"
-                    android:stateListAnimator="@null" />
+                    android:textStyle="bold" />
             </LinearLayout>
-
-            <!-- Spacer for bottom navigation -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
         </LinearLayout>
     </ScrollView>
 
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- FLOATING ACTION BUTTON -->
-    <!-- ══════════════════════════════════════════════ -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddGoal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:src="@drawable/ic_add"
-        android:contentDescription="@string/content_desc_add_goal"
-        app:tint="@color/white"
-        app:backgroundTint="@color/primary_green"
-        app:elevation="6dp"
-        app:borderWidth="0dp" />
-
-    <!-- ══════════════════════════════════════════════ -->
     <!-- BOTTOM NAVIGATION -->
-    <!-- ══════════════════════════════════════════════ -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/card_background"
-        android:elevation="8dp"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/primary_green"
-        app:itemTextColor="@color/primary_green"
-        app:labelVisibilityMode="labeled" />
+        android:orientation="vertical">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_background"
+            android:elevation="8dp"
+            app:itemIconTint="@color/primary_green"
+            app:itemTextColor="@color/primary_green"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_nav_menu" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

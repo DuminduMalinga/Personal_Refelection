@@ -11,6 +11,11 @@
         android:title="@string/nav_goals" />
 
     <item
+        android:id="@+id/nav_add"
+        android:icon="@drawable/ic_add"
+        android:title="@string/nav_add" />
+
+    <item
         android:id="@+id/nav_achieved"
         android:icon="@drawable/ic_check_circle"
         android:title="@string/nav_achieved" />

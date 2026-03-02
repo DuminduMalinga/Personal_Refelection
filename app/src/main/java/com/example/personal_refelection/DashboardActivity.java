@@ -39,7 +39,6 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvGreeting, tvActiveGoalsCount, tvAchievedGoalsCount, tvTotalReflectionsCount;
     private TextView tvNoReflections;
     private LinearLayout recentReflectionsContainer;
-    private FloatingActionButton fabAddGoal;
     private BottomNavigationView bottomNavigation;
 
     private DashboardRepository dashboardRepository;
@@ -87,7 +86,6 @@ public class DashboardActivity extends AppCompatActivity {
         tvTotalReflectionsCount = findViewById(R.id.tvTotalReflectionsCount);
         tvNoReflections = findViewById(R.id.tvNoReflections);
         recentReflectionsContainer = findViewById(R.id.recentReflectionsContainer);
-        fabAddGoal = findViewById(R.id.fabAddGoal);
         bottomNavigation = findViewById(R.id.bottomNavigation);
     }
 
@@ -130,10 +128,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        fabAddGoal.setOnClickListener(v -> {
-            // TODO: Navigate to Add Goal screen
-            Toast.makeText(this, "Add Goal feature coming soon! 🎯", Toast.LENGTH_SHORT).show();
-        });
 
         findViewById(R.id.btnViewGoals).setOnClickListener(v -> {
             // TODO: Navigate to Goals screen
@@ -154,6 +148,9 @@ public class DashboardActivity extends AppCompatActivity {
                 return true; // Already on dashboard
             } else if (itemId == R.id.nav_goals) {
                 Toast.makeText(this, "Goals screen coming soon! 📋", Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (itemId == R.id.nav_add) {
+                Toast.makeText(this, "Add Goal feature coming soon! 🎯", Toast.LENGTH_SHORT).show();
                 return false;
             } else if (itemId == R.id.nav_achieved) {
                 Toast.makeText(this, "Achieved screen coming soon! 🏆", Toast.LENGTH_SHORT).show();

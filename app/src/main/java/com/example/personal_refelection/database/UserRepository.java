@@ -91,5 +91,17 @@ public class UserRepository {
             mainThread.post(() -> callback.onResult(true));
         });
     }
+
+    // ── Get User ──────────────────────────────────────────────────
+
+    /**
+     * Get user by email address. Callback receives the matched User or null.
+     */
+    public void getUserByEmail(String email, Callback<User> callback) {
+        executor.execute(() -> {
+            User user = userDao.getUserByEmail(email);
+            mainThread.post(() -> callback.onResult(user));
+        });
+    }
 }
 

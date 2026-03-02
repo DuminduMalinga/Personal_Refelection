@@ -1,6 +1,7 @@
 package com.example.personal_refelection;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -28,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView tvLogin;
 
     private UserRepository userRepository;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         userRepository = new UserRepository(this);
+        sharedPreferences = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
 
         bindViews();
         setupFocusListeners();
@@ -157,14 +160,28 @@ public class RegisterActivity extends AppCompatActivity {
         userRepository.register(newUser, result -> {
             btnRegister.setEnabled(true);
             if (result > 0) {
-                // Success
+                // Success - Auto-login and navigate to dashboard
                 Toast.makeText(this,
                         "Welcome to GoalReflect, " + fullName + "! 🌱",
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
+
+                // Fetch the newly created user to get the ID
+                userRepository.getUserByEmail(email, user -> {
+                    if (user != null) {
+                        // Save user session
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("user_id", user.id);
+                        editor.putString("user_name", user.fullName);
+                        editor.putString("user_email", user.email);
+                        editor.apply();
+
+                        // Navigate to dashboard
+                        Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
             } else if (result == -2) {
                 etEmail.setError("This email is already registered");
                 inputEmail.setBackgroundResource(R.drawable.bg_input_field_focused);

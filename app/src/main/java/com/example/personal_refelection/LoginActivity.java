@@ -1,6 +1,7 @@
 package com.example.personal_refelection;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvForgotPassword, tvRegister;
 
     private UserRepository userRepository;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         userRepository = new UserRepository(this);
+        sharedPreferences = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
+
 
         bindViews();
         setupFocusListeners();
@@ -115,8 +119,15 @@ public class LoginActivity extends AppCompatActivity {
         userRepository.login(email, password, user -> {
             btnLogin.setEnabled(true);
             if (user != null) {
+                // Save user session
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("user_id", user.id);
+                editor.putString("user_name", user.fullName);
+                editor.putString("user_email", user.email);
+                editor.apply();
+
                 Toast.makeText(this, "Welcome back, " + user.fullName + "! 🌿", Toast.LENGTH_SHORT).show();
-                // TODO: Navigate to Home/Dashboard screen
+                navigateToDashboard();
             } else {
                 etPassword.setError("Incorrect email or password");
                 inputEmail.setBackgroundResource(R.drawable.bg_input_field_focused);
@@ -124,6 +135,13 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void navigateToDashboard() {
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void dismissKeyboard() {

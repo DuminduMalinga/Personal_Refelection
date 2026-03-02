@@ -26,6 +26,22 @@
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GoalsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AchievedActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

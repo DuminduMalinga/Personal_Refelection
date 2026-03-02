@@ -33,9 +33,34 @@
     <string name="lbl_arrow_left">←</string>
     <string name="content_desc_step_indicator">Step indicator</string>
 
+    <!-- Dashboard -->
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="dashboard_tagline">Reflect. Improve. Achieve.</string>
+    <string name="lbl_overview">Overview</string>
+    <string name="count_zero">0</string>
+    <string name="lbl_active_goals">Active Goals</string>
+    <string name="lbl_achieved_goals">Achieved Goals</string>
+    <string name="lbl_total_reflections">Total Reflections</string>
+    <string name="lbl_recent_reflections">Recent Reflections</string>
+    <string name="lbl_no_reflections">No reflections yet. Start your journey today! 🌱</string>
+    <string name="btn_view_goals">View My Goals</string>
+    <string name="btn_view_achieved">View Achieved</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_goals">Goals</string>
+    <string name="nav_achieved">Achieved</string>
+    <string name="nav_profile">Profile</string>
+    <string name="action_logout">Logout</string>
+
     <!-- Content Descriptions -->
     <string name="content_desc_logo">GoalReflect Logo</string>
     <string name="content_desc_email_icon">Email icon</string>
     <string name="content_desc_password_icon">Password icon</string>
     <string name="content_desc_person_icon">Person icon</string>
+    <string name="content_desc_profile_icon">Profile icon</string>
+    <string name="content_desc_add_goal">Add new goal</string>
+    <string name="content_desc_target_icon">Target icon</string>
+    <string name="content_desc_check_icon">Check icon</string>
+    <string name="content_desc_reflection_icon">Reflection icon</string>
 </resources>

@@ -10,13 +10,15 @@ import androidx.room.RoomDatabase;
  * Singleton Room Database.
  * Increment version number whenever the schema changes.
  */
-@Database(entities = {User.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Goal.class, Reflection.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
     private static final String DB_NAME = "goalreflect_db";
 
     public abstract UserDao userDao();
+    public abstract GoalDao goalDao();
+    public abstract ReflectionDao reflectionDao();
 
     /** Thread-safe singleton accessor. */
     public static AppDatabase getInstance(Context context) {

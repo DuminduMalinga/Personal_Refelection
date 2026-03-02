@@ -17,6 +17,7 @@
     <color name="text_secondary">#6B7A99</color>
     <color name="text_hint">#AABAC8</color>
     <color name="text_link">#2DC08E</color>
+    <color name="text_light">#FFFFFF</color>
 
     <!-- Input Fields -->
     <color name="input_background">#F5F7FA</color>
@@ -26,4 +27,15 @@
 
     <!-- Divider -->
     <color name="divider">#EEF1F6</color>
+
+    <!-- Dashboard Cards -->
+    <color name="card_green_light">#E8F8F3</color>
+    <color name="card_blue_light">#E3F2FD</color>
+    <color name="card_orange_light">#FFF3E0</color>
+    <color name="card_purple_light">#F3E5F5</color>
+
+    <!-- Dashboard Stats -->
+    <color name="stat_green">#2DC08E</color>
+    <color name="stat_blue">#42A5F5</color>
+    <color name="stat_orange">#FFA726</color>
 </resources>

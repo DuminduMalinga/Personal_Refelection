@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:hint="Goal Title"
         android:background="@android:drawable/edit_text"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:minHeight="48dp"/>
 
     <EditText
         android:id="@+id/etGoalDescription"
@@ -20,6 +21,20 @@
         android:layout_height="wrap_content"
         android:hint="Goal Description"
         android:layout_marginTop="12dp"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:minHeight="48dp"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:lines="4"/>
+
+    <Button
+        android:id="@+id/btnSaveGoal"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:text="Save Goal"
+        android:textAllCaps="false"
+        android:backgroundTint="#2DC08E"
+        android:textColor="@android:color/white"/>
 
 </LinearLayout>

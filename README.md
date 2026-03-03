@@ -2,7 +2,10 @@
 
 > **Module:** ICT3214 — Mobile Application Development
 > **Project Idea #8:** Personal Goal Reflection App
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 ---
 
@@ -66,6 +69,7 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 
 ## 📱 Screens & UI
 
+<<<<<<< Updated upstream
 | Screen | Description |
 |--------|-------------|
 | **Login** | Email + Password login with "Forgot password?" and "Register" links |
@@ -74,6 +78,27 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | **Home / Dashboard** | *(Coming Soon)* Personal goal overview |
 | **Goals** | *(Coming Soon)* CRUD for personal goals |
 | **Reflection Journal** | *(Coming Soon)* Per-goal daily reflections |
+=======
+| Screen | Description | Status         |
+|--------|-------------|----------------|
+| **Login** | Email + Password login with "Forgot password?" and "Register" links | ✅ Complete     |
+| **Register** | Full Name, Email, Username, Password, Confirm Password with duplicate detection | ✅ Complete     |
+| **Forgot Password** | Step 1: Verify Username + Email → Step 2: Set new password | ✅ Complete     |
+| **Dashboard** | Personal goal overview with stats, recent reflections, and quick actions | ✅ **Complete** |
+| **Goals** | CRUD for personal goals | 🚧 Coming Soon |
+| **Achieved** | View completed goals | 🚧 Coming Soon |
+| **Profile** | User settings and information | 🚧 Coming Soon |
+
+### Dashboard Features (NEW! 🎉)
+- **Dynamic Greeting**: Time-based greeting (Morning/Afternoon/Evening) with user's name
+- **Overview Cards**: Three minimal stat cards showing Active Goals, Achieved Goals, and Total Reflections
+- **Recent Activity**: Display of 3 most recent reflections with timestamps
+- **Quick Actions**: Buttons to navigate to Goals and Achieved screens
+- **Floating Action Button**: Quick access to add new goals
+- **Bottom Navigation**: Easy navigation between Dashboard, Goals, Achieved, and Profile
+- **Session Management**: Auto-login on app restart, logout functionality
+- **Smooth Animations**: Staggered card entrance animations
+>>>>>>> Stashed changes
 
 ### Design Style
 - **Background:** Soft neutral `#F2F4F7`

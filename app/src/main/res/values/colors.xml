@@ -40,4 +40,17 @@
     <color name="stat_orange">#FFA940</color>
     <color name="stat_purple">#A78BFA</color>
 
+    <!-- Profile Screen -->
+    <color name="profile_background">#F5F7FA</color>
+    <color name="profile_accent_blue">#4A90E2</color>
+    <color name="profile_accent_blue_light">#E8F1FB</color>
+    <color name="profile_accent_green">#4CAF50</color>
+    <color name="profile_accent_green_light">#E8F5E9</color>
+    <color name="profile_accent_orange_light">#FFF3E0</color>
+    <color name="profile_logout_red">#E57373</color>
+    <color name="profile_logout_red_light">#FFEBEE</color>
+    <color name="profile_avatar_bg">#E8F1FB</color>
+    <color name="profile_row_icon_bg">#F0F4F8</color>
+    <color name="profile_arrow_color">#BDC8D4</color>
+
 </resources>

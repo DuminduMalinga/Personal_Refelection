@@ -130,13 +130,13 @@ public class DashboardActivity extends AppCompatActivity {
     private void setupClickListeners() {
 
         findViewById(R.id.btnViewGoals).setOnClickListener(v -> {
-            // TODO: Navigate to Goals screen
-            Toast.makeText(this, "Goals screen coming soon! 📋", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, GoalsActivity.class));
+            overridePendingTransition(0, 0);
         });
 
         findViewById(R.id.btnViewAchieved).setOnClickListener(v -> {
-            // TODO: Navigate to Achieved screen
-            Toast.makeText(this, "Achieved screen coming soon! 🏆", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, AchievedActivity.class));
+            overridePendingTransition(0, 0);
         });
 
         // Bottom Navigation
@@ -147,24 +147,28 @@ public class DashboardActivity extends AppCompatActivity {
             if (itemId == R.id.nav_dashboard) {
                 return true; // Already on dashboard
             } else if (itemId == R.id.nav_goals) {
-                Toast.makeText(this, "Goals screen coming soon! 📋", Toast.LENGTH_SHORT).show();
-                return false;
+                startActivity(new Intent(this, GoalsActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
             } else if (itemId == R.id.nav_add) {
                 Toast.makeText(this, "Add Goal feature coming soon! 🎯", Toast.LENGTH_SHORT).show();
                 return false;
             } else if (itemId == R.id.nav_achieved) {
-                Toast.makeText(this, "Achieved screen coming soon! 🏆", Toast.LENGTH_SHORT).show();
-                return false;
+                startActivity(new Intent(this, AchievedActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
             } else if (itemId == R.id.nav_profile) {
-                Toast.makeText(this, "Profile screen coming soon! 👤", Toast.LENGTH_SHORT).show();
-                return false;
+                startActivity(new Intent(this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
             }
             return false;
         });
 
         // Profile icon click
         findViewById(R.id.ivProfileIcon).setOnClickListener(v -> {
-            Toast.makeText(this, "Profile screen coming soon! 👤", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, ProfileActivity.class));
+            overridePendingTransition(0, 0);
         });
     }
 

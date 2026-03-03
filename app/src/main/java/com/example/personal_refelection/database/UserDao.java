@@ -4,7 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 /**
  * Data Access Object for User table.
@@ -49,5 +48,15 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     User getUserByEmail(String email);
+
+    // ── Update Full Name ──────────────────────────────────────────
+
+    @Query("UPDATE users SET full_name = :fullName WHERE email = :email")
+    void updateFullName(String email, String fullName);
+
+    // ── Update Username ───────────────────────────────────────────
+
+    @Query("UPDATE users SET username = :username WHERE email = :email")
+    void updateUsername(String email, String username);
 }
 

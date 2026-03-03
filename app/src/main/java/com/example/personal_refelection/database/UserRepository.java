@@ -103,5 +103,29 @@ public class UserRepository {
             mainThread.post(() -> callback.onResult(user));
         });
     }
+
+    // ── Update Full Name ──────────────────────────────────────────
+
+    /**
+     * Update the full name for the user with the given email.
+     */
+    public void updateFullName(String email, String fullName, Callback<Boolean> callback) {
+        executor.execute(() -> {
+            userDao.updateFullName(email, fullName);
+            mainThread.post(() -> callback.onResult(true));
+        });
+    }
+
+    // ── Update Username ───────────────────────────────────────────
+
+    /**
+     * Update the username for the user with the given email.
+     */
+    public void updateUsername(String email, String username, Callback<Boolean> callback) {
+        executor.execute(() -> {
+            userDao.updateUsername(email, username);
+            mainThread.post(() -> callback.onResult(true));
+        });
+    }
 }
 

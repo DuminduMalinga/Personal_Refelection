@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/etGoalTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Goal Title"
+        android:background="@android:drawable/edit_text"
+        android:padding="12dp"/>
+
+    <EditText
+        android:id="@+id/etGoalDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Goal Description"
+        android:layout_marginTop="12dp"
+        android:padding="12dp"/>
+
+</LinearLayout>

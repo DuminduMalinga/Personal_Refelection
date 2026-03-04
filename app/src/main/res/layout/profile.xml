@@ -28,13 +28,33 @@
                 android:orientation="vertical"
                 android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/ivProfileImage"
+                <!-- Editable Profile Image -->
+                <FrameLayout
                     android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:src="@android:drawable/sym_def_app_icon"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Profile Image"/>
+                    android:layout_height="110dp">
+
+                    <ImageView
+                        android:id="@+id/ivProfileImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_profile"
+                        android:contentDescription="Profile Image"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@android:color/white"
+                        android:padding="4dp" />
+
+                    <!-- Edit Icon -->
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="6dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        android:background="@android:color/white"
+                        android:padding="4dp"/>
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/tvUsername"

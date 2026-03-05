@@ -2,7 +2,6 @@
 
 > **Module:** ICT3214 — Mobile Application Development
 > **Project Idea #8:** Personal Goal Reflection App
-> **Submission Deadline:** 6th March 2026
 
 ---
 
@@ -50,6 +49,15 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 - View reflection history per goal
 - Edit and delete reflections
 
+### 👤 Profile & Account Settings
+- **View Profile** — Display full name, email, username, and live journey stats (active goals, achieved goals, total reflections)
+- **Edit Profile** — Update full name, username, email, and password with validation
+- **Profile Picture** — Camera capture or gallery selection with runtime permission handling; image stored in app-private storage and persisted across sessions
+- **Notification Settings** — Toggle goal reminders, reflection prompts, achievement alerts, and weekly summary; preferences persisted in SharedPreferences
+- **Privacy Policy** — Static informational screen
+- **About App** — App mission, feature overview, and tech stack info
+- **Logout** — Confirmation dialog; clears session and redirects to Login
+
 ### 🎨 UI & Animations
 - Smooth screen transitions and card animations
 - Two-step forgot password flow with slide-up card transition
@@ -57,12 +65,15 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 - Focus-highlight effect on all input fields (green border on focus)
 - Step indicator with animated dot progression
 - Edge-to-edge display with proper system window inset handling
-- Pinned action buttons above bottom navigation bar
+- Pinned action buttons above bottom navigation bar on Dashboard
+- Bottom navigation bar pinned flush to screen bottom edge on all screens
 
 ### 🛡️ Security
 - Passwords are **never stored in plain text**
 - Input validation on all forms (client-side)
 - Unique constraints enforced at database level (email, username)
+- Runtime permission handling for camera and media access (Android 7–16 compatible)
+- FileProvider used for secure camera URI sharing
 
 ---
 
@@ -74,9 +85,13 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | **Register** | Full Name, Email, Username, Password, Confirm Password with duplicate detection | ✅ Complete |
 | **Forgot Password** | Step 1: Verify Username + Email → Step 2: Set new password | ✅ Complete |
 | **Dashboard** | Personal overview with stats, recent reflections, pinned quick actions & bottom nav | ✅ Complete |
+| **Profile** | User info, journey stats, settings rows, logout with confirmation dialog | ✅ Complete |
+| **Edit Profile** | Update name, username, email, password; camera/gallery avatar picker | ✅ Complete |
+| **Notification Settings** | Toggle notifications; persisted via SharedPreferences | ✅ Complete |
+| **Privacy Policy** | Static informational screen | ✅ Complete |
+| **About App** | App info, mission, features, and tech stack | ✅ Complete |
 | **Goals** | CRUD for personal goals | 🚧 Coming Soon |
 | **Achieved** | View completed goals | 🚧 Coming Soon |
-| **Profile** | User settings and information | 🚧 Coming Soon |
 
 ### Dashboard Features ✅
 - **Dynamic Greeting** — Time-based greeting (Morning / Afternoon / Evening) with user's name
@@ -87,6 +102,23 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 - **Edge-to-Edge Layout** — Full-bleed display; system window insets applied correctly so no gap appears below the navigation bar
 - **Session Management** — Auto-redirects to login if no session; logout via overflow menu
 - **Data Refresh** — Stats and reflections reload automatically on every `onResume()`
+
+### Profile Features ✅
+- **Hero Header** — Circular avatar (camera/gallery/remove), full name, email, and `@username`
+- **Journey Stats** — Live stat cards for Active Goals, Achieved Goals, and Total Reflections
+- **Settings Rows** — Edit Profile, Notification Settings, Privacy Policy, About App, Logout
+- **Logout Dialog** — Confirmation dialog; clears all SharedPreferences and resets dark-mode preference
+- **Avatar Persistence** — Saved avatar restored from app-private storage on every `onResume()`
+- **Bottom Navigation** — Active "Profile" tab highlighted; seamless navigation to other screens
+- **Edge-to-Edge Layout** — CoordinatorLayout with ScrollView; `paddingBottom` ensures content clears the bottom nav bar
+
+### Edit Profile Features ✅
+- **Editable Fields** — Full Name, Username, Email, New Password, Confirm Password
+- **Optional Password Change** — Leave password fields blank to keep existing password
+- **Avatar Picker Bottom Sheet** — Choose Camera, Gallery, or Remove photo
+- **Camera Support** — Runtime permission request; FileProvider-backed temp URI; stores JPEG in `files/avatars/`
+- **Gallery Support** — Handles `READ_MEDIA_IMAGES` / `READ_MEDIA_VISUAL_USER_SELECTED` / `READ_EXTERNAL_STORAGE` across Android 7–16
+- **Image Scaling** — Resizes selected image to 256×256 before saving to minimise storage
 
 ### Design Style
 - **Background:** Soft neutral `#F8FAFB`
@@ -106,9 +138,11 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | **Min SDK** | API 24 (Android 7.0) | Minimum supported device |
 | **Room Database** | 2.6.1 | Local SQLite ORM (Entity, DAO, Database) |
 | **AndroidX AppCompat** | 1.7.1 | Backwards-compatible Activity support |
-| **Material Components** | 1.13.0 | Material Design UI widgets (BottomNavigationView, etc.) |
+| **Material Components** | 1.13.0 | Material Design UI widgets (BottomNavigationView, BottomSheetDialog, SwitchMaterial, etc.) |
 | **ConstraintLayout** | 2.2.1 | Flexible, flat UI layouts |
-| **AndroidX Activity** | 1.12.4 | Edge-to-edge window support (`EdgeToEdge.enable()`) |
+| **AndroidX Activity** | 1.12.4 | Edge-to-edge window support (`EdgeToEdge.enable()`); `ActivityResultLauncher` for camera/gallery |
+| **FileProvider** | — | Secure camera URI sharing (AndroidX Core) |
+| **SharedPreferences** | — | Session management; notification toggles; avatar path persistence |
 | **Gradle** | 9.0.1 | Build system |
 | **Android Gradle Plugin** | 9.0.1 | Android build toolchain |
 
@@ -157,10 +191,12 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | `insertUser(user)` | Register new user |
 | `loginWithEmail(email, password)` | Authenticate login |
 | `findByUsernameAndEmail(username, email)` | Forgot password step 1 |
-| `updatePassword(email, newPassword)` | Forgot password step 2 |
+| `updatePassword(email, newPassword)` | Forgot password step 2 / Edit Profile |
 | `countByEmail(email)` | Duplicate email check |
 | `countByUsername(username)` | Duplicate username check |
-| `getUserByEmail(email)` | Fetch user after registration |
+| `getUserByEmail(email)` | Fetch user after registration / profile load |
+| `updateFullName(email, fullName)` | Edit Profile — name update |
+| `updateUsername(email, username)` | Edit Profile — username update |
 | **GoalDao** | |
 | `countActiveGoals(userId)` | Count in-progress goals |
 | `countAchievedGoals(userId)` | Count completed goals |
@@ -174,8 +210,8 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 
 ```
 Activities
-    ├── UserRepository          ← Single source of truth (Auth)
-    └── DashboardRepository     ← Dashboard data operations
+    ├── UserRepository          ← Single source of truth (Auth + Profile updates)
+    └── DashboardRepository     ← Dashboard & Profile stats
             └── UserDao / GoalDao / ReflectionDao  ← @Dao interfaces
                     └── AppDatabase  ← @Database singleton
                             └── Room (SQLite)
@@ -194,29 +230,39 @@ app/src/main/
 │   │   ├── User.java                  ← @Entity — users table
 │   │   ├── Goal.java                  ← @Entity — goals table
 │   │   ├── Reflection.java            ← @Entity — reflections table
-│   │   ├── UserDao.java               ← @Dao — User SQL queries
+│   │   ├── UserDao.java               ← @Dao — User SQL queries (incl. profile updates)
 │   │   ├── GoalDao.java               ← @Dao — Goal SQL queries
 │   │   ├── ReflectionDao.java         ← @Dao — Reflection SQL queries
 │   │   ├── AppDatabase.java           ← @Database — singleton Room DB (v2)
-│   │   ├── UserRepository.java        ← Repository — auth operations
-│   │   └── DashboardRepository.java   ← Repository — dashboard data
+│   │   ├── UserRepository.java        ← Repository — auth + profile operations
+│   │   └── DashboardRepository.java   ← Repository — dashboard & profile stats
 │   ├── models/
 │   │   └── DashboardStats.java        ← Data model for dashboard stats
 │   ├── LoginActivity.java             ← Login screen + session handling
 │   ├── RegisterActivity.java          ← Registration + auto-login
 │   ├── ForgotPasswordActivity.java    ← Two-step password recovery
 │   ├── DashboardActivity.java         ← Main dashboard (EdgeToEdge, pinned nav)
+│   ├── ProfileActivity.java           ← Profile screen (stats, settings, logout)
+│   ├── EditProfileActivity.java       ← Edit name/username/email/password + avatar
+│   ├── NotificationSettingsActivity.java ← Notification toggles UI
+│   ├── PrivacyPolicyActivity.java     ← Static privacy policy screen
+│   ├── AboutAppActivity.java          ← About app — info, mission, tech stack
 │   ├── GoalsActivity.java             ← Goals screen (placeholder)
-│   ├── AchievedActivity.java          ← Achieved screen (placeholder)
-│   └── ProfileActivity.java           ← Profile screen (placeholder)
+│   └── AchievedActivity.java          ← Achieved screen (placeholder)
 │
 ├── res/
 │   ├── layout/
-│   │   ├── login_activity.xml         ← Login UI
-│   │   ├── register_activity.xml      ← Register UI
-│   │   ├── forgot_password_activity.xml ← Forgot password UI
-│   │   ├── dashboard_activity.xml     ← Dashboard UI (CoordinatorLayout + pinned panel)
-│   │   └── item_reflection.xml        ← Recent reflection list item
+│   │   ├── login_activity.xml                  ← Login UI
+│   │   ├── register_activity.xml               ← Register UI
+│   │   ├── forgot_password_activity.xml        ← Forgot password UI
+│   │   ├── dashboard_activity.xml              ← Dashboard UI (CoordinatorLayout + pinned panel)
+│   │   ├── profile.xml                         ← Profile UI (hero header, stats, settings rows)
+│   │   ├── activity_edit_profile.xml           ← Edit Profile UI (fields + avatar picker)
+│   │   ├── activity_notification_settings.xml  ← Notification toggles UI
+│   │   ├── activity_privacy_policy.xml         ← Privacy Policy static UI
+│   │   ├── activity_about_app.xml              ← About App static UI
+│   │   ├── bottom_sheet_photo_picker.xml       ← Camera / Gallery / Remove bottom sheet
+│   │   └── item_reflection.xml                 ← Recent reflection list item
 │   ├── menu/
 │   │   ├── bottom_nav_menu.xml        ← 5-item bottom navigation menu
 │   │   └── dashboard_menu.xml         ← Overflow menu (Logout)
@@ -237,6 +283,16 @@ app/src/main/
 │   │   ├── ic_profile.xml             ← Profile icon
 │   │   ├── ic_dashboard.xml           ← Dashboard nav icon
 │   │   ├── ic_goals.xml               ← Goals nav icon
+│   │   ├── ic_edit.xml                ← Edit (pencil) icon
+│   │   ├── ic_edit_blue.xml           ← Blue edit icon variant
+│   │   ├── ic_bell.xml                ← Notification bell icon
+│   │   ├── ic_camera.xml              ← Camera icon (photo picker)
+│   │   ├── ic_gallery.xml             ← Gallery icon (photo picker)
+│   │   ├── ic_arrow_right.xml         ← Settings row chevron icon
+│   │   ├── ic_info.xml                ← Info icon (About App row)
+│   │   ├── ic_file_text.xml           ← Document icon (Privacy Policy row)
+│   │   ├── ic_logout.xml              ← Logout icon
+│   │   ├── bg_avatar_circle.xml       ← Circular avatar background (photo set)
 │   │   ├── bg_button_green.xml        ← Green rounded button background
 │   │   ├── bg_logo_container.xml      ← Green rounded logo background
 │   │   ├── bg_card.xml                ← White card background
@@ -245,7 +301,12 @@ app/src/main/
 │   │   ├── bg_stat_card_blue.xml      ← Blue pastel stat card
 │   │   ├── bg_stat_card_orange.xml    ← Orange pastel stat card
 │   │   ├── bg_reflection_item.xml     ← Reflection list item background
-│   │   ├── bg_profile_circle.xml      ← Circular profile avatar background
+│   │   ├── bg_profile_avatar.xml      ← Default profile avatar background
+│   │   ├── bg_profile_circle.xml      ← Circular profile background
+│   │   ├── bg_edit_badge.xml          ← Edit avatar badge background
+│   │   ├── bg_settings_icon.xml       ← Settings row icon background
+│   │   ├── bg_logout_button.xml       ← Logout button background
+│   │   ├── bg_logout_icon.xml         ← Logout icon background
 │   │   ├── bg_input_field.xml         ← Normal input background
 │   │   ├── bg_input_field_focused.xml ← Focused input (green border)
 │   │   ├── bg_login_button.xml        ← Login button background
@@ -327,6 +388,10 @@ Add shake animation for forgot password mismatch
 Fix duplicate email detection in UserRepository
 Fix dashboard bottom navigation bar edge-to-edge alignment
 Pin quick action buttons above bottom navigation bar
+Implement Profile screen with stats, settings rows, and logout dialog
+Add Edit Profile screen with camera/gallery avatar picker
+Add Notification Settings screen with SharedPreferences persistence
+Add Privacy Policy and About App static screens
 ```
 
 ### ❌ Avoid
@@ -356,6 +421,6 @@ This project is developed for academic purposes as part of the **ICT3214 — Mob
 
 **GoalReflect** — *Your journey to growth* 🌿
 
-Made with ❤️ by **Dumindu Malinga**, **Ishini Awanka** & **Theekshana Bandara**
+Made By **Dumindu Malinga**, **Ishini Awanka** & **Theekshana Bandara**
 
 </div>

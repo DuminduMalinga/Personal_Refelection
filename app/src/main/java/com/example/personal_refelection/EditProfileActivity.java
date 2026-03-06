@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -164,6 +166,16 @@ public class EditProfileActivity extends AppCompatActivity {
         findViewById(R.id.btnSaveProfile).setOnClickListener(v -> handleSave());
         // Both the avatar image and its container open the photo picker
         findViewById(R.id.avatarContainer).setOnClickListener(v -> showPhotoPicker());
+
+        // Live-update the header name as the user types
+        etFullName.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String typed = s.toString().trim();
+                tvEditDisplayName.setText(typed.isEmpty() ? getString(R.string.hint_full_name) : typed);
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
     }
 
     // ── Photo Picker Bottom Sheet ─────────────────────────────────

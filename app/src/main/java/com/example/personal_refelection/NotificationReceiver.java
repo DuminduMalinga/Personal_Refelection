@@ -1,0 +1,53 @@
+package com.example.personal_refelection;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+
+public class NotificationReceiver extends BroadcastReceiver {
+
+    private static final String PREF_GOAL_REMINDERS     = "notif_goal_reminders";
+    private static final String PREF_REFLECTION_PROMPTS = "notif_reflection_prompts";
+    private static final String PREF_ACHIEVEMENTS       = "notif_achievements";
+    private static final String PREF_WEEKLY_SUMMARY     = "notif_weekly_summary";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent == null || intent.getAction() == null) return;
+
+        SharedPreferences prefs =
+                context.getSharedPreferences("GoalReflectPrefs", Context.MODE_PRIVATE);
+        String userName = prefs.getString("userName", "there");
+
+        switch (intent.getAction()) {
+            case NotificationHelper.ACTION_GOAL_REMINDER:
+                if (prefs.getBoolean(PREF_GOAL_REMINDERS, true))
+                    NotificationHelper.postGoalReminder(context, userName);
+                break;
+
+            case NotificationHelper.ACTION_REFLECTION_PROMPT:
+                if (prefs.getBoolean(PREF_REFLECTION_PROMPTS, true))
+                    NotificationHelper.postReflectionPrompt(context, userName);
+                break;
+
+            case NotificationHelper.ACTION_ACHIEVEMENT_ALERT:
+                if (prefs.getBoolean(PREF_ACHIEVEMENTS, true)) {
+                    String goalTitle = intent.getStringExtra("goal_title");
+                    NotificationHelper.postAchievementAlert(context,
+                            goalTitle != null ? goalTitle : "your goal");
+                }
+                break;
+
+            case NotificationHelper.ACTION_WEEKLY_SUMMARY:
+                if (prefs.getBoolean(PREF_WEEKLY_SUMMARY, false)) {
+                    int active      = prefs.getInt("stat_active_goals", 0);
+                    int achieved    = prefs.getInt("stat_achieved_goals", 0);
+                    int reflections = prefs.getInt("stat_total_reflections", 0);
+                    NotificationHelper.postWeeklySummary(context, active, achieved, reflections);
+                }
+                break;
+        }
+    }
+}
+

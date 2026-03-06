@@ -12,6 +12,15 @@
 
     <style name="Theme.Personal_Refelection" parent="Base.Theme.Personal_Refelection" />
 
+    <!-- Splash screen theme – green background so no white flash on launch -->
+    <style name="Theme.Personal_Refelection.Splash" parent="Theme.Personal_Refelection">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
     <!-- Input Field Style -->
     <style name="GoalReflect.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/input_background</item>

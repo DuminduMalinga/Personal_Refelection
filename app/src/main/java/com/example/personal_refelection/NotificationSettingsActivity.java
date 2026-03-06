@@ -94,8 +94,8 @@ public class NotificationSettingsActivity extends AppCompatActivity {
 
     private void setupListeners() {
         switchGoalReminders.setOnCheckedChangeListener((btn, checked) -> {
-            if (checked && !hasNotifPermission()) {
-                btn.setChecked(false);          // revert — wait for permission result
+            if (checked && isNotifPermissionMissing()) {
+                btn.setChecked(false);
                 requestNotifPermission();
                 return;
             }
@@ -106,7 +106,7 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         });
 
         switchReflectionPrompts.setOnCheckedChangeListener((btn, checked) -> {
-            if (checked && !hasNotifPermission()) {
+            if (checked && isNotifPermissionMissing()) {
                 btn.setChecked(false);
                 requestNotifPermission();
                 return;
@@ -118,18 +118,17 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         });
 
         switchAchievements.setOnCheckedChangeListener((btn, checked) -> {
-            if (checked && !hasNotifPermission()) {
+            if (checked && isNotifPermissionMissing()) {
                 btn.setChecked(false);
                 requestNotifPermission();
                 return;
             }
             savePreference(PREF_ACHIEVEMENTS, checked);
-            // Achievement notifications are fired inline (no alarm needed)
             showSavedToast();
         });
 
         switchWeeklySummary.setOnCheckedChangeListener((btn, checked) -> {
-            if (checked && !hasNotifPermission()) {
+            if (checked && isNotifPermissionMissing()) {
                 btn.setChecked(false);
                 requestNotifPermission();
                 return;
@@ -143,11 +142,11 @@ public class NotificationSettingsActivity extends AppCompatActivity {
 
     // ── Permission helpers ────────────────────────────────────────────────────
 
-    /** Returns true if POST_NOTIFICATIONS is granted (or not required on this API level). */
-    private boolean hasNotifPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true; // API < 33
+    /** Returns true if POST_NOTIFICATIONS permission is NOT yet granted. */
+    private boolean isNotifPermissionMissing() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return false; // not needed
         return ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                == PackageManager.PERMISSION_GRANTED;
+                != PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestNotifPermission() {

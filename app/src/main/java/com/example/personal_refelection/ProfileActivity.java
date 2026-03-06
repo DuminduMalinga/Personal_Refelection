@@ -180,6 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadUserData();
         loadStats();
         restoreSavedAvatar();
     }

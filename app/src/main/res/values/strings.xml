@@ -151,4 +151,24 @@
     <string name="lbl_camera_permission_denied">Camera permission is required to take a photo</string>
     <string name="lbl_storage_permission_denied">Storage permission is required to pick a photo</string>
     <string name="lbl_permission_settings">Open Settings</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_loading">Loading your reflection space…</string>
+
+    <!-- Get Started Screen -->
+    <string name="gs_hero_tagline">Track. Reflect. Achieve.</string>
+    <string name="gs_quote_star">✦</string>
+    <string name="gs_headline">Transform Your Life</string>
+    <string name="gs_subheading">Set meaningful goals, track your progress,\nand reflect on your personal growth journey.</string>
+    <string name="gs_quote">"The journey of a thousand miles begins with a single step. Start your reflection today."</string>
+    <string name="gs_quote_author">— Lao Tzu</string>
+    <string name="gs_feature1_title">Set Powerful Goals</string>
+    <string name="gs_feature1_desc">Define your dreams and break them into achievable milestones.</string>
+    <string name="gs_feature2_title">Daily Reflections</string>
+    <string name="gs_feature2_desc">Journal your thoughts and track your emotional growth daily.</string>
+    <string name="gs_feature3_title">Celebrate Achievements</string>
+    <string name="gs_feature3_desc">Mark goals as achieved and see how far you\'ve come.</string>
+    <string name="gs_btn_get_started">Get Started — It\'s Free</string>
+    <string name="gs_btn_sign_in">Already have an account? Sign In</string>
+    <string name="gs_privacy_note">🔒  No spam. No ads. Your data stays private.</string>
 </resources>

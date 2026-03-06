@@ -31,6 +31,11 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 
 ## ✨ Features
 
+### 🚀 Onboarding Flow
+- **Splash Screen** — Full-screen branded launch screen with animated logo bounce, app name, tagline, and loading indicator; auto-navigates based on session state
+- **Get Started Screen** — Motivational onboarding screen shown on first launch; hero gradient header, rotating quote card, 3 feature highlights, and dual CTA buttons (Register / Sign In)
+- **Smart routing** — Returning users skip onboarding and go directly to Login or Dashboard
+
 ### 🔐 Authentication
 - **User Registration** — Full Name, Email, Username, Password with real-time validation
 - **User Login** — Email + Password authenticated against the Room database
@@ -38,13 +43,13 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 - **Duplicate detection** — Email and username uniqueness enforced at the database level
 - **Session-aware** — Logged-in users only see their own data
 
-### 🎯 Goal Management *(Planned)*
+### 🎯 Goal Management
 - Create personal goals with title, description, and target date
 - Mark goals as In Progress / Completed
 - Edit and delete existing goals
 - Full CRUD operations per user
 
-### 📓 Reflection Journal *(Planned)*
+### 📓 Reflection Journal
 - Write daily reflections linked to specific goals
 - View reflection history per goal
 - Edit and delete reflections
@@ -59,6 +64,9 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 - **Logout** — Confirmation dialog; clears session and redirects to Login
 
 ### 🎨 UI & Animations
+- **Splash logo bounce** — Scale + overshoot + fade animation on logo reveal
+- **Splash text slide-up** — App name and tagline animate in after logo settles
+- **Get Started entrance** — Staggered animations: logo pop → quote card slide-up → feature rows fade-in
 - Smooth screen transitions and card animations
 - Two-step forgot password flow with slide-up card transition
 - Shake animation feedback on incorrect identity verification
@@ -81,6 +89,8 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 
 | Screen | Description | Status |
 |--------|-------------|--------|
+| **Splash** | Animated logo + app name on green gradient; routes to Get Started / Login / Dashboard | ✅ Complete |
+| **Get Started** | Motivational onboarding; hero header, quote card, feature highlights, Register / Sign In buttons | ✅ Complete |
 | **Login** | Email + Password login with "Forgot password?" and "Register" links | ✅ Complete |
 | **Register** | Full Name, Email, Username, Password, Confirm Password with duplicate detection | ✅ Complete |
 | **Forgot Password** | Step 1: Verify Username + Email → Step 2: Set new password | ✅ Complete |
@@ -92,6 +102,23 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | **About App** | App info, mission, features, and tech stack | ✅ Complete |
 | **Goals** | CRUD for personal goals | 🚧 Coming Soon |
 | **Achieved** | View completed goals | 🚧 Coming Soon |
+
+### Splash Screen ✅
+- **Full-screen green gradient** — Diagonal gradient `#1D9B6A → #27C483 → #2EDBA5`
+- **Animated white logo circle** — 120dp circle; logo bounces in with scale + overshoot animation (800ms)
+- **App name + tagline** — Slide-up fade animation (delayed 900ms after logo)
+- **Loading indicator** — Small progress spinner + "Loading your reflection space…" text at bottom
+- **Smart routing** — After 2.8s: checks session → navigates to Dashboard (logged in), Login (returning user), or Get Started (first launch)
+- **Exit animation** — Scale-out fade on transition away
+
+### Get Started Screen ✅
+- **Hero gradient header** — 300dp green gradient section with rounded bottom corners, decorative circles, logo, app name, and "Track. Reflect. Achieve." tagline
+- **Quote card** — Floating white card (elevation 8dp) with motivational quote and author; overlaps the hero with `-20dp` top margin
+- **Feature highlights** — 3 rows: Set Powerful Goals (🎯), Daily Reflections (📓), Celebrate Achievements (🏆); each with coloured icon circle and descriptive text
+- **CTA buttons** — "Get Started — It's Free" (filled green gradient) and "Already have an account? Sign In" (outlined); both with `stateListAnimator="@null"` for crisp press response
+- **Privacy note** — "🔒 No spam. No ads. Your data stays private."
+- **Back press** — Minimizes app instead of navigating back
+- **Staggered animations** — Logo → quote card → features animate in sequence on screen entry
 
 ### Dashboard Features ✅
 - **Dynamic Greeting** — Time-based greeting (Morning / Afternoon / Evening) with user's name
@@ -123,6 +150,7 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 ### Design Style
 - **Background:** Soft neutral `#F8FAFB`
 - **Primary colour:** Calming green `#27C483`
+- **Splash / Get Started:** Rich green gradient `#1D9B6A → #27C483`
 - **Cards:** White (`#FFFFFF`) with elevation
 - **Typography:** `sans-serif-medium`, clean and readable
 - **Icons:** Custom vector drawables
@@ -140,9 +168,9 @@ The app's design philosophy is rooted in **minimalism**, **clarity**, and **calm
 | **AndroidX AppCompat** | 1.7.1 | Backwards-compatible Activity support |
 | **Material Components** | 1.13.0 | Material Design UI widgets (BottomNavigationView, BottomSheetDialog, SwitchMaterial, etc.) |
 | **ConstraintLayout** | 2.2.1 | Flexible, flat UI layouts |
-| **AndroidX Activity** | 1.12.4 | Edge-to-edge window support (`EdgeToEdge.enable()`); `ActivityResultLauncher` for camera/gallery |
+| **AndroidX Activity** | 1.12.4 | Edge-to-edge window support (`EdgeToEdge.enable()`); `ActivityResultLauncher` for camera/gallery; `OnBackPressedDispatcher` |
 | **FileProvider** | — | Secure camera URI sharing (AndroidX Core) |
-| **SharedPreferences** | — | Session management; notification toggles; avatar path persistence |
+| **SharedPreferences** | — | Session management; onboarding state; notification toggles; avatar path persistence |
 | **Gradle** | 9.0.1 | Build system |
 | **Android Gradle Plugin** | 9.0.1 | Android build toolchain |
 
@@ -238,6 +266,8 @@ app/src/main/
 │   │   └── DashboardRepository.java   ← Repository — dashboard & profile stats
 │   ├── models/
 │   │   └── DashboardStats.java        ← Data model for dashboard stats
+│   ├── SplashActivity.java            ← Splash screen — animated logo, smart routing
+│   ├── GetStartedActivity.java        ← Onboarding — motivational first-launch screen
 │   ├── LoginActivity.java             ← Login screen + session handling
 │   ├── RegisterActivity.java          ← Registration + auto-login
 │   ├── ForgotPasswordActivity.java    ← Two-step password recovery
@@ -247,11 +277,13 @@ app/src/main/
 │   ├── NotificationSettingsActivity.java ← Notification toggles UI
 │   ├── PrivacyPolicyActivity.java     ← Static privacy policy screen
 │   ├── AboutAppActivity.java          ← About app — info, mission, tech stack
-│   ├── GoalsActivity.java             ← Goals screen (placeholder)
-│   └── AchievedActivity.java          ← Achieved screen (placeholder)
+│   ├── GoalsActivity.java             ← Goals screen (CRUD)
+│   └── AchievedActivity.java          ← Achieved goals screen
 │
 ├── res/
 │   ├── layout/
+│   │   ├── activity_splash.xml                 ← Splash UI (green gradient, logo, progress)
+│   │   ├── activity_get_started.xml            ← Get Started UI (hero, quote card, features, CTA)
 │   │   ├── login_activity.xml                  ← Login UI
 │   │   ├── register_activity.xml               ← Register UI
 │   │   ├── forgot_password_activity.xml        ← Forgot password UI
@@ -267,63 +299,50 @@ app/src/main/
 │   │   ├── bottom_nav_menu.xml        ← 5-item bottom navigation menu
 │   │   └── dashboard_menu.xml         ← Overflow menu (Logout)
 │   ├── anim/
-│   │   ├── fade_in.xml                ← Fade-in animation
-│   │   └── scale_up.xml               ← Scale-up animation
+│   │   ├── splash_logo_bounce.xml     ← Logo scale + overshoot + fade animation
+│   │   ├── splash_text_slide_up.xml   ← Text slide-up fade-in (delayed 900ms)
+│   │   ├── splash_exit.xml            ← Scale-out fade for splash exit transition
+│   │   ├── slide_in_right.xml         ← Slide-in from right (Get Started → Register/Login)
+│   │   ├── fade_in.xml                ← Generic fade-in animation
+│   │   └── scale_up.xml               ← Generic scale-up animation
 │   ├── drawable/
+│   │   ├── bg_splash.xml              ← Diagonal green gradient (Splash background)
+│   │   ├── bg_splash_logo_circle.xml  ← White oval logo container
+│   │   ├── bg_get_started.xml         ← Light green gradient (Get Started background)
+│   │   ├── bg_get_started_hero.xml    ← Green gradient with rounded bottom corners
+│   │   ├── bg_get_started_button.xml  ← Green gradient CTA button (filled)
+│   │   ├── bg_sign_in_button.xml      ← Outlined green ghost button
+│   │   ├── bg_feature_icon.xml        ← Green pastel oval for feature row icons
 │   │   ├── ic_logo_journal.xml        ← App logo
-│   │   ├── ic_email.xml               ← Email field icon
-│   │   ├── ic_lock.xml                ← Password field icon
-│   │   ├── ic_person.xml              ← Name/username field icon
-│   │   ├── ic_shield_check.xml        ← Identity verified icon
-│   │   ├── ic_wave.xml                ← Greeting wave icon
-│   │   ├── ic_target.xml              ← Active goals icon
-│   │   ├── ic_check_circle.xml        ← Achieved goals icon
-│   │   ├── ic_reflection.xml          ← Total reflections icon
-│   │   ├── ic_add.xml                 ← Add / plus icon
-│   │   ├── ic_profile.xml             ← Profile icon
-│   │   ├── ic_dashboard.xml           ← Dashboard nav icon
-│   │   ├── ic_goals.xml               ← Goals nav icon
-│   │   ├── ic_edit.xml                ← Edit (pencil) icon
-│   │   ├── ic_edit_blue.xml           ← Blue edit icon variant
-│   │   ├── ic_bell.xml                ← Notification bell icon
-│   │   ├── ic_camera.xml              ← Camera icon (photo picker)
-│   │   ├── ic_gallery.xml             ← Gallery icon (photo picker)
-│   │   ├── ic_arrow_right.xml         ← Settings row chevron icon
-│   │   ├── ic_info.xml                ← Info icon (About App row)
-│   │   ├── ic_file_text.xml           ← Document icon (Privacy Policy row)
-│   │   ├── ic_logout.xml              ← Logout icon
-│   │   ├── bg_avatar_circle.xml       ← Circular avatar background (photo set)
-│   │   ├── bg_button_green.xml        ← Green rounded button background
-│   │   ├── bg_logo_container.xml      ← Green rounded logo background
-│   │   ├── bg_card.xml                ← White card background
-│   │   ├── bg_dashboard_card.xml      ← Dashboard card background
-│   │   ├── bg_stat_card_green.xml     ← Green pastel stat card
-│   │   ├── bg_stat_card_blue.xml      ← Blue pastel stat card
-│   │   ├── bg_stat_card_orange.xml    ← Orange pastel stat card
-│   │   ├── bg_reflection_item.xml     ← Reflection list item background
-│   │   ├── bg_profile_avatar.xml      ← Default profile avatar background
-│   │   ├── bg_profile_circle.xml      ← Circular profile background
-│   │   ├── bg_edit_badge.xml          ← Edit avatar badge background
-│   │   ├── bg_settings_icon.xml       ← Settings row icon background
-│   │   ├── bg_logout_button.xml       ← Logout button background
-│   │   ├── bg_logout_icon.xml         ← Logout icon background
-│   │   ├── bg_input_field.xml         ← Normal input background
-│   │   ├── bg_input_field_focused.xml ← Focused input (green border)
-│   │   ├── bg_login_button.xml        ← Login button background
-│   │   ├── bg_step_dot_active.xml     ← Active step indicator dot
-│   │   ├── bg_step_dot_inactive.xml   ← Inactive step indicator dot
-│   │   ├── selector_input_field.xml   ← Input focus state selector
-│   │   ├── selector_login_button.xml  ← Login button state selector
-│   │   ├── selector_register_button.xml ← Register button state selector
-│   │   ├── selector_reset_button.xml  ← Reset button state selector
-│   │   └── selector_dashboard_button.xml ← Dashboard button selector
+│   │   ├── ic_target.xml              ← Goals icon
+│   │   ├── ic_check_circle.xml        ← Achieved icon
+│   │   ├── ic_file_text.xml           ← Reflections icon
+│   │   └── ... (all other existing drawables)
 │   └── values/
 │       ├── colors.xml                 ← Brand colour palette
-│       ├── strings.xml                ← All UI text strings
-│       ├── themes.xml                 ← App theme (Material3 Light)
+│       ├── strings.xml                ← All UI text strings (incl. splash & get started)
+│       ├── themes.xml                 ← App theme (Material3 Light) + Splash theme
 │       └── dimens.xml                 ← Dimensions
 │
-└── AndroidManifest.xml
+└── AndroidManifest.xml                ← SplashActivity as launcher; GetStartedActivity registered
+```
+
+---
+
+## 🔄 App Navigation Flow
+
+```
+App Launch
+    └── SplashActivity (2.8s animated)
+            ├── isLoggedIn = true  ──────────────────→ DashboardActivity
+            ├── hasSeenOnboarding = true  ───────────→ LoginActivity
+            └── first launch  ───────────────────────→ GetStartedActivity
+                                                              ├── "Get Started" → RegisterActivity
+                                                              └── "Sign In"     → LoginActivity
+
+RegisterActivity ──→ DashboardActivity (auto-login)
+LoginActivity    ──→ DashboardActivity
+DashboardActivity ←─────────────────────────────────── all bottom nav screens
 ```
 
 ---
@@ -353,8 +372,9 @@ app/src/main/
    - Click ▶ **Run** or press `Shift + F10`
 
 5. **First use**
-   - Tap **"Register"** to create an account
-   - Log in with your registered email and password
+   - The **Splash Screen** appears for ~3 seconds with animated logo
+   - The **Get Started** screen presents the app's key features
+   - Tap **"Get Started — It's Free"** to register, or **"Already have an account? Sign In"** to log in
 
 > **Note:** The database is created automatically on first launch. No manual setup required.
 
@@ -364,9 +384,9 @@ app/src/main/
 
 | Role | Name | Responsibilities |
 |------|------|-----------------|
-| 👑 **Team Lead & Main Developer** | **Dumindu Malinga** | Project architecture, Room database setup, authentication logic (Login, Register, Forgot Password), activity development, GitHub management |
+| 👑 **Team Lead & Main Developer** | **Dumindu Malinga** | Project architecture, Room database setup, authentication logic (Login, Register, Forgot Password), Splash & Get Started screens, activity development, GitHub management |
 | 🎨 **UI Designer** | **Ishini Awanka** | Screen layouts (XML), colour palette, drawable resources, icon design, Material Design implementation, responsive UI |
-| ⚙️ **Features & Animations** | **Theekshana Bandara** | Goal CRUD features, reflection journal, transition animations, shake feedback, step indicator animations, input focus effects |
+| ⚙️ **Features & Animations** | **Theekshana Bandara** | Goal CRUD features, reflection journal, transition animations, splash animations, shake feedback, step indicator animations, input focus effects |
 
 ### Module Details
 - **Module:** ICT3214 — Mobile Application Development
@@ -381,6 +401,8 @@ Each team member must follow these rules for commits:
 
 ### ✅ Good commit messages
 ```
+Add Splash screen with animated logo bounce and smart routing
+Add Get Started onboarding screen with motivational quote and feature highlights
 Add Room database entity and DAO for users table
 Implement login validation with Room DB query
 Design register screen layout with Material components
@@ -421,6 +443,6 @@ This project is developed for academic purposes as part of the **ICT3214 — Mob
 
 **GoalReflect** — *Your journey to growth* 🌿
 
-Made By **Dumindu Malinga**, **Ishini Awanka** & **Theekshana Bandara**
+Made with ❤️ by **Dumindu Malinga**, **Ishini Awanka** & **Theekshana Bandara**
 
 </div>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- White circle container for splash logo -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#FFFFFF" />
+    <padding
+        android:left="24dp"
+        android:top="24dp"
+        android:right="24dp"
+        android:bottom="24dp" />
+</shape>
+

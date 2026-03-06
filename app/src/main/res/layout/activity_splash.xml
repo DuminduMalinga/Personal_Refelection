@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash">
+
+    <!-- Decorative circle top-right -->
+    <View
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-80dp"
+        android:layout_marginEnd="-80dp"
+        android:background="#1AFFFFFF"
+        android:alpha="0.15" />
+
+    <!-- Decorative circle bottom-left -->
+    <View
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="-50dp"
+        android:layout_marginStart="-50dp"
+        android:background="#1AFFFFFF"
+        android:alpha="0.1" />
+
+    <!-- Center content -->
+    <LinearLayout
+        android:id="@+id/splashContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <!-- Logo circle container -->
+        <FrameLayout
+            android:id="@+id/logoContainer"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="@drawable/bg_splash_logo_circle"
+            android:elevation="8dp">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_logo_journal"
+                android:contentDescription="@string/content_desc_logo" />
+        </FrameLayout>
+
+        <!-- App name -->
+        <TextView
+            android:id="@+id/tvSplashAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/app_name"
+            android:textColor="#FFFFFF"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02" />
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/tvSplashTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/app_tagline"
+            android:textColor="#CCFFFFFF"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.03" />
+
+    </LinearLayout>
+
+    <!-- Loading indicator at bottom -->
+    <LinearLayout
+        android:id="@+id/splashBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingBottom="60dp">
+
+        <ProgressBar
+            android:id="@+id/splashProgress"
+            style="@android:style/Widget.Material.ProgressBar.Small"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:indeterminateTint="#AAFFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/splash_loading"
+            android:textColor="#99FFFFFF"
+            android:textSize="13sp"
+            android:fontFamily="sans-serif" />
+
+    </LinearLayout>
+
+</FrameLayout>
+

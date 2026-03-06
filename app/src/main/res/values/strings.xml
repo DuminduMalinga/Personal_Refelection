@@ -172,6 +172,10 @@
     <string name="gs_btn_sign_in">Already have an account? Sign In</string>
     <string name="gs_privacy_note">🔒  No spam. No ads. Your data stays private.</string>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b5caecc4ad77800f998a46eda2cfd6377fde6a9e
     <!-- Notification permission dialog -->
     <string name="lbl_notif_permission_title">Enable Notifications</string>
     <string name="lbl_notif_permission_rationale">GoalReflect needs notification permission to send you goal reminders and reflection prompts. Please enable it in Settings.</string>

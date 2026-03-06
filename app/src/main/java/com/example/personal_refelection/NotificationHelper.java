@@ -1,5 +1,6 @@
 package com.example.personal_refelection;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,85 +13,65 @@ import androidx.core.app.NotificationManagerCompat;
 
 import java.util.Calendar;
 
-/**
- * NotificationHelper — central utility for:
- *  • Creating notification channels (Android 8+)
- *  • Posting immediate notifications
- *  • Scheduling recurring alarms for Goal Reminders, Reflection Prompts,
- *    Achievement Alerts, and the Weekly Summary
- */
+@SuppressLint("MissingPermission")
 public class NotificationHelper {
 
-    // ── Channel IDs ───────────────────────────────────────────────────────────
     public static final String CHANNEL_GOAL_REMINDERS     = "channel_goal_reminders";
     public static final String CHANNEL_REFLECTION_PROMPTS = "channel_reflection_prompts";
     public static final String CHANNEL_ACHIEVEMENTS       = "channel_achievements";
     public static final String CHANNEL_WEEKLY_SUMMARY     = "channel_weekly_summary";
 
-    // ── Notification IDs ──────────────────────────────────────────────────────
     public static final int NOTIF_ID_GOAL_REMINDER     = 1001;
     public static final int NOTIF_ID_REFLECTION_PROMPT = 1002;
     public static final int NOTIF_ID_ACHIEVEMENT       = 1003;
     public static final int NOTIF_ID_WEEKLY_SUMMARY    = 1004;
 
-    // ── Alarm request codes ───────────────────────────────────────────────────
     private static final int REQUEST_GOAL_REMINDER     = 2001;
     private static final int REQUEST_REFLECTION_PROMPT = 2002;
     private static final int REQUEST_WEEKLY_SUMMARY    = 2003;
 
-    // ── Broadcast actions ─────────────────────────────────────────────────────
     public static final String ACTION_GOAL_REMINDER     = "com.example.personal_refelection.GOAL_REMINDER";
     public static final String ACTION_REFLECTION_PROMPT = "com.example.personal_refelection.REFLECTION_PROMPT";
     public static final String ACTION_ACHIEVEMENT_ALERT = "com.example.personal_refelection.ACHIEVEMENT_ALERT";
     public static final String ACTION_WEEKLY_SUMMARY    = "com.example.personal_refelection.WEEKLY_SUMMARY";
 
-    // ── Channel creation ──────────────────────────────────────────────────────
+    // ── Channels ──────────────────────────────────────────────────────────────
 
-    /**
-     * Call once at app startup (SplashActivity) to register all notification
-     * channels on Android 8+. Safe to call on older devices — no-op below API 26.
-     */
-    @SuppressWarnings("deprecation")
     public static void createChannels(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
-
         NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) return;
 
-        android.app.NotificationChannel goalCh = new android.app.NotificationChannel(
-                CHANNEL_GOAL_REMINDERS, "Goal Reminders",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        goalCh.setDescription("Daily reminders to check on your active goals");
-        goalCh.enableVibration(true);
-        goalCh.setShowBadge(true);
-        nm.createNotificationChannel(goalCh);
+        android.app.NotificationChannel ch1 = new android.app.NotificationChannel(
+                CHANNEL_GOAL_REMINDERS, "Goal Reminders", NotificationManager.IMPORTANCE_DEFAULT);
+        ch1.setDescription("Daily reminders to check on your active goals");
+        ch1.enableVibration(true);
+        ch1.setShowBadge(true);
+        nm.createNotificationChannel(ch1);
 
-        android.app.NotificationChannel reflectCh = new android.app.NotificationChannel(
-                CHANNEL_REFLECTION_PROMPTS, "Reflection Prompts",
-                NotificationManager.IMPORTANCE_DEFAULT);
-        reflectCh.setDescription("Evening prompts to write your daily reflection");
-        reflectCh.enableVibration(true);
-        reflectCh.setShowBadge(true);
-        nm.createNotificationChannel(reflectCh);
+        android.app.NotificationChannel ch2 = new android.app.NotificationChannel(
+                CHANNEL_REFLECTION_PROMPTS, "Reflection Prompts", NotificationManager.IMPORTANCE_DEFAULT);
+        ch2.setDescription("Evening prompts to write your daily reflection");
+        ch2.enableVibration(true);
+        ch2.setShowBadge(true);
+        nm.createNotificationChannel(ch2);
 
-        android.app.NotificationChannel achieveCh = new android.app.NotificationChannel(
-                CHANNEL_ACHIEVEMENTS, "Achievement Alerts",
-                NotificationManager.IMPORTANCE_HIGH);
-        achieveCh.setDescription("Celebrate when you complete a goal");
-        achieveCh.enableVibration(true);
-        achieveCh.setShowBadge(true);
-        nm.createNotificationChannel(achieveCh);
+        android.app.NotificationChannel ch3 = new android.app.NotificationChannel(
+                CHANNEL_ACHIEVEMENTS, "Achievement Alerts", NotificationManager.IMPORTANCE_HIGH);
+        ch3.setDescription("Celebrate when you complete a goal");
+        ch3.enableVibration(true);
+        ch3.setShowBadge(true);
+        nm.createNotificationChannel(ch3);
 
-        android.app.NotificationChannel weeklyCh = new android.app.NotificationChannel(
-                CHANNEL_WEEKLY_SUMMARY, "Weekly Summary",
-                NotificationManager.IMPORTANCE_LOW);
-        weeklyCh.setDescription("Your weekly growth summary every Sunday");
-        weeklyCh.setShowBadge(false);
-        nm.createNotificationChannel(weeklyCh);
+        android.app.NotificationChannel ch4 = new android.app.NotificationChannel(
+                CHANNEL_WEEKLY_SUMMARY, "Weekly Summary", NotificationManager.IMPORTANCE_LOW);
+        ch4.setDescription("Your weekly growth summary every Sunday");
+        ch4.setShowBadge(false);
+        nm.createNotificationChannel(ch4);
     }
 
-    // ── Post immediate notifications ──────────────────────────────────────────
+    // ── Post notifications ────────────────────────────────────────────────────
 
     public static void postGoalReminder(Context ctx, String userName) {
         post(ctx, CHANNEL_GOAL_REMINDERS, NOTIF_ID_GOAL_REMINDER,
@@ -110,23 +91,21 @@ public class NotificationHelper {
                 "You completed: \"" + goalTitle + "\". Amazing work!");
     }
 
-    public static void postWeeklySummary(Context ctx, int activeGoals,
-                                          int achievedGoals, int reflections) {
+    public static void postWeeklySummary(Context ctx, int active, int achieved, int reflections) {
         post(ctx, CHANNEL_WEEKLY_SUMMARY, NOTIF_ID_WEEKLY_SUMMARY,
                 "📊 Your Weekly Summary",
-                "This week: " + achievedGoals + " goals achieved, "
-                        + activeGoals + " active, "
+                "This week: " + achieved + " goals achieved, " + active + " active, "
                         + reflections + " reflections written. Keep going! 🌿");
     }
 
     private static void post(Context ctx, String channelId, int notifId,
                               String title, String body) {
-        Intent tapIntent = new Intent(ctx, DashboardActivity.class);
-        tapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pi = PendingIntent.getActivity(ctx, notifId, tapIntent,
+        Intent tap = new Intent(ctx, DashboardActivity.class);
+        tap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pi = PendingIntent.getActivity(ctx, notifId, tap,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, channelId)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, channelId)
                 .setSmallIcon(R.drawable.ic_logo_journal)
                 .setContentTitle(title)
                 .setContentText(body)
@@ -136,13 +115,13 @@ public class NotificationHelper {
                 .setAutoCancel(true);
 
         try {
-            NotificationManagerCompat.from(ctx).notify(notifId, builder.build());
+            NotificationManagerCompat.from(ctx).notify(notifId, b.build());
         } catch (SecurityException e) {
             // POST_NOTIFICATIONS not granted — silent fail
         }
     }
 
-    // ── Schedule / cancel recurring alarms ───────────────────────────────────
+    // ── Schedule / cancel alarms ──────────────────────────────────────────────
 
     public static void scheduleGoalReminder(Context ctx) {
         scheduleDailyAlarm(ctx, ACTION_GOAL_REMINDER, REQUEST_GOAL_REMINDER, 9);
@@ -185,10 +164,9 @@ public class NotificationHelper {
         cancelAlarm(ctx, ACTION_WEEKLY_SUMMARY, REQUEST_WEEKLY_SUMMARY);
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
-    private static void scheduleDailyAlarm(Context ctx, String action,
-                                            int requestCode, int hour) {
+    private static void scheduleDailyAlarm(Context ctx, String action, int requestCode, int hour) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, 0);
@@ -217,7 +195,8 @@ public class NotificationHelper {
 
     private static PendingIntent buildPendingIntent(Context ctx, String action, int requestCode) {
         Intent intent = new Intent(action);
-        intent.setClass(ctx, NotificationReceiver.class);
+        intent.setClassName(ctx.getPackageName(),
+                ctx.getPackageName() + ".NotificationReceiver");
         return PendingIntent.getBroadcast(ctx, requestCode, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">GoalReflect</string>
     <string name="app_tagline">Your journey to growth</string>
     <string name="app_tagline_register">Start your journey of personal growth</string>
@@ -75,7 +75,7 @@
     <string name="profile_password_mismatch">Passwords do not match</string>
     <string name="profile_password_short">Password must be at least 6 characters</string>
     <string name="profile_name_empty">Full name cannot be empty</string>
-    <string name="format_username">@%s</string>
+    <string name="format_username" tools:ignore="TypographyDashes">@%s</string>
     <string name="lbl_logout_confirm_title">Log out of GoalReflect?</string>
     <string name="lbl_logout_confirm_message">Your progress and reflections are safely saved.</string>
     <string name="btn_logout_cancel">Cancel</string>
@@ -171,4 +171,9 @@
     <string name="gs_btn_get_started">Get Started — It\'s Free</string>
     <string name="gs_btn_sign_in">Already have an account? Sign In</string>
     <string name="gs_privacy_note">🔒  No spam. No ads. Your data stays private.</string>
+
+    <!-- Notification permission dialog -->
+    <string name="lbl_notif_permission_title">Enable Notifications</string>
+    <string name="lbl_notif_permission_rationale">GoalReflect needs notification permission to send you goal reminders and reflection prompts. Please enable it in Settings.</string>
+    <string name="lbl_notif_permission_granted">Notifications enabled ✅</string>
 </resources>

@@ -199,7 +199,7 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:boxStrokeColor="@color/profile_accent_blue"
                             app:hintTextColor="@color/profile_accent_blue"
-                            app:hint="@string/hint_full_name">
+                            android:hint="@string/hint_full_name">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etFullName"
@@ -250,7 +250,7 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:boxStrokeColor="@color/profile_accent_blue"
                             app:hintTextColor="@color/profile_accent_blue"
-                            app:hint="@string/hint_username">
+                            android:hint="@string/hint_username">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/etUsername"
@@ -300,7 +300,7 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:boxStrokeColor="@color/text_hint"
                             app:hintTextColor="@color/text_hint"
-                            app:hint="@string/hint_email"
+                            android:hint="@string/hint_email"
                             app:suffixText="@string/lbl_email_readonly"
                             app:suffixTextColor="@color/text_hint">
 
@@ -382,7 +382,7 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:boxStrokeColor="@color/profile_accent_blue"
                             app:hintTextColor="@color/profile_accent_blue"
-                            app:hint="@string/hint_new_password_optional"
+                            android:hint="@string/hint_new_password_optional"
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -433,7 +433,7 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             app:boxStrokeColor="@color/profile_accent_blue"
                             app:hintTextColor="@color/profile_accent_blue"
-                            app:hint="@string/hint_confirm_new_password"
+                            android:hint="@string/hint_confirm_new_password"
                             app:passwordToggleEnabled="true">
 
                             <com.google.android.material.textfield.TextInputEditText

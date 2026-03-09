@@ -41,6 +41,9 @@ public class LoginActivity extends AppCompatActivity {
     private SocialAuthManager socialAuthManager;
     private CallbackManager facebookCallbackManager;
 
+    // Pending callback for when Google sign-in returns
+    private SocialAuthManager.SocialAuthCallback pendingGoogleCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +56,9 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        userRepository     = new UserRepository(this);
-        sharedPreferences  = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
-        socialAuthManager  = new SocialAuthManager(this);
+        userRepository          = new UserRepository(this);
+        sharedPreferences       = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
+        socialAuthManager       = new SocialAuthManager(this);
         facebookCallbackManager = CallbackManager.Factory.create();
 
         bindViews();
@@ -79,28 +82,19 @@ public class LoginActivity extends AppCompatActivity {
     private void setupFocusListeners() {
         etEmail.setOnFocusChangeListener((v, hasFocus) ->
                 inputEmail.setBackgroundResource(hasFocus
-                        ? R.drawable.bg_input_field_focused
-                        : R.drawable.bg_input_field));
-
+                        ? R.drawable.bg_input_field_focused : R.drawable.bg_input_field));
         etPassword.setOnFocusChangeListener((v, hasFocus) ->
                 inputPassword.setBackgroundResource(hasFocus
-                        ? R.drawable.bg_input_field_focused
-                        : R.drawable.bg_input_field));
+                        ? R.drawable.bg_input_field_focused : R.drawable.bg_input_field));
     }
 
     private void setupClickListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
-
         tvForgotPassword.setOnClickListener(v ->
-                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class)));
-
+                startActivity(new Intent(this, ForgotPasswordActivity.class)));
         tvRegister.setOnClickListener(v ->
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
-
-        // Google Sign-In
+                startActivity(new Intent(this, RegisterActivity.class)));
         btnGoogleLogin.setOnClickListener(v -> handleGoogleLogin());
-
-        // Facebook Sign-In
         btnFacebookLogin.setOnClickListener(v -> handleFacebookLogin());
     }
 
@@ -108,35 +102,33 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleGoogleLogin() {
         btnGoogleLogin.setAlpha(0.6f);
-        socialAuthManager.signInWithGoogle(this, new SocialAuthManager.SocialAuthCallback() {
+
+        pendingGoogleCallback = new SocialAuthManager.SocialAuthCallback() {
             @Override
             public void onSuccess(User user) {
-                runOnUiThread(() -> {
-                    btnGoogleLogin.setAlpha(1f);
-                    Toast.makeText(LoginActivity.this,
-                            "Welcome, " + user.fullName + "! 🎉", Toast.LENGTH_SHORT).show();
-                    navigateToDashboard();
-                });
+                btnGoogleLogin.setAlpha(1f);
+                Toast.makeText(LoginActivity.this,
+                        "Welcome, " + user.fullName + "! 🎉", Toast.LENGTH_SHORT).show();
+                navigateToDashboard();
             }
-
             @Override
             public void onCancelled() {
-                runOnUiThread(() -> {
-                    btnGoogleLogin.setAlpha(1f);
-                    Toast.makeText(LoginActivity.this,
-                            getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
-                });
+                btnGoogleLogin.setAlpha(1f);
+                Toast.makeText(LoginActivity.this,
+                        getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onError(String message) {
-                runOnUiThread(() -> {
-                    btnGoogleLogin.setAlpha(1f);
-                    Toast.makeText(LoginActivity.this,
-                            getString(R.string.lbl_social_login_failed), Toast.LENGTH_SHORT).show();
-                });
+                btnGoogleLogin.setAlpha(1f);
+                Toast.makeText(LoginActivity.this,
+                        getString(R.string.lbl_social_login_failed) + "\n" + message,
+                        Toast.LENGTH_LONG).show();
             }
-        });
+        };
+
+        // Launch the Google account picker
+        startActivityForResult(socialAuthManager.getGoogleSignInIntent(),
+                SocialAuthManager.RC_GOOGLE_SIGN_IN);
     }
 
     // ── Facebook Login ────────────────────────────────────────────
@@ -148,20 +140,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupFacebookCallback() {
-        LoginManager.getInstance().registerCallback(
-                facebookCallbackManager,
+        LoginManager.getInstance().registerCallback(facebookCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         fetchFacebookProfile(loginResult);
                     }
-
                     @Override
                     public void onCancel() {
                         Toast.makeText(LoginActivity.this,
                                 getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
                     }
-
                     @Override
                     public void onError(FacebookException error) {
                         Toast.makeText(LoginActivity.this,
@@ -175,20 +164,17 @@ public class LoginActivity extends AppCompatActivity {
                 loginResult.getAccessToken(),
                 (object, response) -> {
                     try {
-                        String email    = object.has("email") ? object.getString("email")
+                        String email = object != null && object.has("email")
+                                ? object.getString("email")
                                 : loginResult.getAccessToken().getUserId() + "@facebook.com";
-                        String name     = object.has("name")  ? object.getString("name") : "Facebook User";
+                        String name  = object != null && object.has("name")
+                                ? object.getString("name") : "Facebook User";
                         String username = name.replaceAll("[^a-zA-Z0-9_]", "").toLowerCase();
                         if (username.length() < 3) username = "fb_" + username;
 
-                        final String finalEmail    = email;
-                        final String finalName     = name;
-                        final String finalUsername = username;
-
-                        socialAuthManager.findOrCreateSocialUser(
-                                finalEmail, finalName, finalUsername,
-                                "facebook_oauth",
-                                new SocialAuthManager.SocialAuthCallback() {
+                        final String fEmail = email, fName = name, fUsername = username;
+                        socialAuthManager.findOrCreateSocialUser(fEmail, fName, fUsername,
+                                "facebook_oauth", new SocialAuthManager.SocialAuthCallback() {
                                     @Override
                                     public void onSuccess(User user) {
                                         runOnUiThread(() -> {
@@ -198,8 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                                             navigateToDashboard();
                                         });
                                     }
-                                    @Override
-                                    public void onCancelled() { }
+                                    @Override public void onCancelled() { }
                                     @Override
                                     public void onError(String message) {
                                         runOnUiThread(() -> Toast.makeText(LoginActivity.this,
@@ -213,16 +198,30 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show());
                     }
                 });
-
         android.os.Bundle params = new android.os.Bundle();
         params.putString("fields", "id,name,email");
         request.setParameters(params);
         request.executeAsync();
     }
 
+    // ── Activity Result ───────────────────────────────────────────
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Facebook SDK
         facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+
+        // Google Sign-In
+        if (requestCode == SocialAuthManager.RC_GOOGLE_SIGN_IN) {
+            btnGoogleLogin.setAlpha(1f);
+            if (data != null && pendingGoogleCallback != null) {
+                socialAuthManager.handleGoogleSignInResult(data, pendingGoogleCallback);
+            } else if (pendingGoogleCallback != null) {
+                pendingGoogleCallback.onCancelled();
+            }
+            pendingGoogleCallback = null;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -233,24 +232,16 @@ public class LoginActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
-            etEmail.setError("Please enter your email");
-            etEmail.requestFocus();
-            return;
+            etEmail.setError("Please enter your email"); etEmail.requestFocus(); return;
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Enter a valid email address");
-            etEmail.requestFocus();
-            return;
+            etEmail.setError("Enter a valid email address"); etEmail.requestFocus(); return;
         }
         if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Please enter your password");
-            etPassword.requestFocus();
-            return;
+            etPassword.setError("Please enter your password"); etPassword.requestFocus(); return;
         }
         if (password.length() < 6) {
-            etPassword.setError("Password must be at least 6 characters");
-            etPassword.requestFocus();
-            return;
+            etPassword.setError("Password must be at least 6 characters"); etPassword.requestFocus(); return;
         }
 
         dismissKeyboard();
@@ -259,13 +250,12 @@ public class LoginActivity extends AppCompatActivity {
         userRepository.login(email, password, user -> {
             btnLogin.setEnabled(true);
             if (user != null) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt("user_id", user.id);
-                editor.putString("user_name", user.fullName);
-                editor.putString("user_email", user.email);
-                editor.putBoolean("isLoggedIn", true);
-                editor.apply();
-
+                sharedPreferences.edit()
+                        .putInt("user_id", user.id)
+                        .putString("user_name", user.fullName)
+                        .putString("user_email", user.email)
+                        .putBoolean("isLoggedIn", true)
+                        .apply();
                 Toast.makeText(this, "Welcome back, " + user.fullName + "! 🌿", Toast.LENGTH_SHORT).show();
                 navigateToDashboard();
             } else {
@@ -278,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToDashboard() {
-        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
@@ -286,9 +276,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void dismissKeyboard() {
         View focus = getCurrentFocus();
-        if (focus != null) {
+        if (focus != null)
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(focus.getWindowToken(), 0);
-        }
     }
 }

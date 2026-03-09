@@ -2,6 +2,8 @@ package com.example.personal_refelection;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,9 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
+
+import java.io.File;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +43,7 @@ public class DashboardActivity extends BaseActivity {
     private TextView tvGreeting, tvActiveGoalsCount, tvAchievedGoalsCount, tvTotalReflectionsCount;
     private TextView tvNoReflections;
     private LinearLayout recentReflectionsContainer;
+    private ImageView ivDashboardProfileImage;
 
     private DashboardRepository dashboardRepository;
     private SharedPreferences sharedPreferences;
@@ -70,6 +78,7 @@ public class DashboardActivity extends BaseActivity {
         }
 
         bindViews();
+        loadProfileAvatar();
         setupGreeting();
         setupClickListeners();
         loadDashboardData();
@@ -82,6 +91,36 @@ public class DashboardActivity extends BaseActivity {
         tvTotalReflectionsCount = findViewById(R.id.tvTotalReflectionsCount);
         tvNoReflections = findViewById(R.id.tvNoReflections);
         recentReflectionsContainer = findViewById(R.id.recentReflectionsContainer);
+        ivDashboardProfileImage = findViewById(R.id.ivDashboardProfileImage);
+    }
+
+    /**
+     * Load the saved profile avatar into the dashboard header icon.
+     * Falls back to the default ic_profile drawable if no photo is saved.
+     */
+    private void loadProfileAvatar() {
+        if (ivDashboardProfileImage == null) return;
+        String savedPath = sharedPreferences.getString("avatar_path", null);
+        if (savedPath != null) {
+            File f = new File(savedPath);
+            if (f.exists()) {
+                Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
+                if (bmp != null) {
+                    ivDashboardProfileImage.setImageBitmap(bmp);
+                    ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    ivDashboardProfileImage.setBackground(
+                            ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle_white));
+                    ivDashboardProfileImage.setPadding(0, 0, 0, 0);
+                    ivDashboardProfileImage.setClipToOutline(true);
+                    return;
+                }
+            }
+        }
+        // No saved avatar — restore default icon appearance
+        ivDashboardProfileImage.setImageResource(R.drawable.ic_profile);
+        ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        int pad = Math.round(9 * getResources().getDisplayMetrics().density);
+        ivDashboardProfileImage.setPadding(pad, pad, pad, pad);
     }
 
     /**
@@ -220,6 +259,7 @@ public class DashboardActivity extends BaseActivity {
         super.onResume();
         // Refresh data when returning to dashboard
         loadDashboardData();
+        loadProfileAvatar();
     }
 
     @Override

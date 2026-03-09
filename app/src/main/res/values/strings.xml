@@ -156,6 +156,24 @@
     <!-- Splash Screen -->
     <string name="splash_loading">Loading your reflection space…</string>
 
+    <!-- Social Login / Signup -->
+    <string name="lbl_or_continue">or continue with</string>
+    <string name="lbl_or_signup">or sign up with</string>
+    <string name="lbl_google">Google</string>
+    <string name="lbl_facebook">Facebook</string>
+    <string name="lbl_continue_google">Continue with Google</string>
+    <string name="lbl_continue_facebook">Continue with Facebook</string>
+    <string name="lbl_signup_google">Sign up with Google</string>
+    <string name="lbl_signup_facebook">Sign up with Facebook</string>
+    <string name="lbl_social_login_failed">Sign-in failed. Please try again.</string>
+    <string name="lbl_social_login_cancelled">Sign-in cancelled.</string>
+    <string name="lbl_google_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID.apps.googleusercontent.com</string>
+
+    <!-- Facebook SDK — replace with your actual values from developers.facebook.com -->
+    <string name="facebook_app_id" translatable="false">YOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token" translatable="false">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fbYOUR_FACEBOOK_APP_ID</string>
+
     <!-- Get Started Screen -->
     <string name="gs_hero_tagline">Track. Reflect. Achieve.</string>
     <string name="gs_quote_star">✦</string>

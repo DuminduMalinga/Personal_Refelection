@@ -18,7 +18,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.personal_refelection.database.User;
 import com.example.personal_refelection.database.UserRepository;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,9 +34,12 @@ public class LoginActivity extends AppCompatActivity {
     private LinearLayout inputEmail, inputPassword;
     private Button btnLogin;
     private TextView tvForgotPassword, tvRegister;
+    private LinearLayout btnGoogleLogin, btnFacebookLogin;
 
     private UserRepository userRepository;
     private SharedPreferences sharedPreferences;
+    private SocialAuthManager socialAuthManager;
+    private CallbackManager facebookCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +53,15 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        userRepository = new UserRepository(this);
-        sharedPreferences = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
-
+        userRepository     = new UserRepository(this);
+        sharedPreferences  = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
+        socialAuthManager  = new SocialAuthManager(this);
+        facebookCallbackManager = CallbackManager.Factory.create();
 
         bindViews();
         setupFocusListeners();
         setupClickListeners();
+        setupFacebookCallback();
     }
 
     private void bindViews() {
@@ -59,11 +72,10 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin         = findViewById(R.id.btnLogin);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
         tvRegister       = findViewById(R.id.tvRegister);
+        btnGoogleLogin   = findViewById(R.id.btnGoogleLogin);
+        btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
     }
 
-    /**
-     * Visually highlight the input container when the inner EditText gains focus.
-     */
     private void setupFocusListeners() {
         etEmail.setOnFocusChangeListener((v, hasFocus) ->
                 inputEmail.setBackgroundResource(hasFocus
@@ -84,13 +96,142 @@ public class LoginActivity extends AppCompatActivity {
 
         tvRegister.setOnClickListener(v ->
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
+
+        // Google Sign-In
+        btnGoogleLogin.setOnClickListener(v -> handleGoogleLogin());
+
+        // Facebook Sign-In
+        btnFacebookLogin.setOnClickListener(v -> handleFacebookLogin());
     }
+
+    // ── Google Login ──────────────────────────────────────────────
+
+    private void handleGoogleLogin() {
+        btnGoogleLogin.setAlpha(0.6f);
+        socialAuthManager.signInWithGoogle(this, new SocialAuthManager.SocialAuthCallback() {
+            @Override
+            public void onSuccess(User user) {
+                runOnUiThread(() -> {
+                    btnGoogleLogin.setAlpha(1f);
+                    Toast.makeText(LoginActivity.this,
+                            "Welcome, " + user.fullName + "! 🎉", Toast.LENGTH_SHORT).show();
+                    navigateToDashboard();
+                });
+            }
+
+            @Override
+            public void onCancelled() {
+                runOnUiThread(() -> {
+                    btnGoogleLogin.setAlpha(1f);
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    btnGoogleLogin.setAlpha(1f);
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.lbl_social_login_failed), Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
+
+    // ── Facebook Login ────────────────────────────────────────────
+
+    private void handleFacebookLogin() {
+        LoginManager.getInstance().logInWithReadPermissions(
+                this, facebookCallbackManager,
+                Arrays.asList("public_profile", "email"));
+    }
+
+    private void setupFacebookCallback() {
+        LoginManager.getInstance().registerCallback(
+                facebookCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        fetchFacebookProfile(loginResult);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toast.makeText(LoginActivity.this,
+                                getString(R.string.lbl_social_login_failed), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void fetchFacebookProfile(LoginResult loginResult) {
+        com.facebook.GraphRequest request = com.facebook.GraphRequest.newMeRequest(
+                loginResult.getAccessToken(),
+                (object, response) -> {
+                    try {
+                        String email    = object.has("email") ? object.getString("email")
+                                : loginResult.getAccessToken().getUserId() + "@facebook.com";
+                        String name     = object.has("name")  ? object.getString("name") : "Facebook User";
+                        String username = name.replaceAll("[^a-zA-Z0-9_]", "").toLowerCase();
+                        if (username.length() < 3) username = "fb_" + username;
+
+                        final String finalEmail    = email;
+                        final String finalName     = name;
+                        final String finalUsername = username;
+
+                        socialAuthManager.findOrCreateSocialUser(
+                                finalEmail, finalName, finalUsername,
+                                "facebook_oauth",
+                                new SocialAuthManager.SocialAuthCallback() {
+                                    @Override
+                                    public void onSuccess(User user) {
+                                        runOnUiThread(() -> {
+                                            Toast.makeText(LoginActivity.this,
+                                                    "Welcome, " + user.fullName + "! 🎉",
+                                                    Toast.LENGTH_SHORT).show();
+                                            navigateToDashboard();
+                                        });
+                                    }
+                                    @Override
+                                    public void onCancelled() { }
+                                    @Override
+                                    public void onError(String message) {
+                                        runOnUiThread(() -> Toast.makeText(LoginActivity.this,
+                                                getString(R.string.lbl_social_login_failed),
+                                                Toast.LENGTH_SHORT).show());
+                                    }
+                                });
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(LoginActivity.this,
+                                getString(R.string.lbl_social_login_failed),
+                                Toast.LENGTH_SHORT).show());
+                    }
+                });
+
+        android.os.Bundle params = new android.os.Bundle();
+        params.putString("fields", "id,name,email");
+        request.setParameters(params);
+        request.executeAsync();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // ── Email/Password Login ──────────────────────────────────────
 
     private void handleLogin() {
         String email    = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        // ── Client-side validation ────────────────────
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Please enter your email");
             etEmail.requestFocus();
@@ -115,11 +256,9 @@ public class LoginActivity extends AppCompatActivity {
         dismissKeyboard();
         btnLogin.setEnabled(false);
 
-        // ── Room DB login query ───────────────────────
         userRepository.login(email, password, user -> {
             btnLogin.setEnabled(true);
             if (user != null) {
-                // Save user session — persists across app restarts
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("user_id", user.id);
                 editor.putString("user_name", user.fullName);

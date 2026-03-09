@@ -167,7 +167,7 @@
     <string name="lbl_signup_facebook">Sign up with Facebook</string>
     <string name="lbl_social_login_failed">Sign-in failed. Please try again.</string>
     <string name="lbl_social_login_cancelled">Sign-in cancelled.</string>
-    <string name="lbl_google_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID.apps.googleusercontent.com</string>
+    <string name="lbl_google_web_client_id" translatable="false">1029883663493-9f1e0rsldjejjfmcduls5k3c54234sg4.apps.googleusercontent.com</string>
 
     <!-- Facebook SDK — replace with your actual values from developers.facebook.com -->
     <string name="facebook_app_id" translatable="false">YOUR_FACEBOOK_APP_ID</string>

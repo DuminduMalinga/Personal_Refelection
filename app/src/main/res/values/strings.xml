@@ -37,6 +37,7 @@
     <string name="greeting_morning">Good Morning</string>
     <string name="greeting_afternoon">Good Afternoon</string>
     <string name="greeting_evening">Good Evening</string>
+    <string name="greeting_format">%1$s, %2$s 👋</string>
     <string name="dashboard_tagline">Reflect. Improve. Achieve.</string>
     <string name="lbl_overview">Overview</string>
     <string name="count_zero">0</string>
@@ -75,7 +76,7 @@
     <string name="profile_password_mismatch">Passwords do not match</string>
     <string name="profile_password_short">Password must be at least 6 characters</string>
     <string name="profile_name_empty">Full name cannot be empty</string>
-    <string name="format_username" tools:ignore="TypographyDashes">@%s</string>
+    <string name="format_username" tools:ignore="TypographyDashes,StringFormatInvalid">\u0040%1$s</string>
     <string name="lbl_logout_confirm_title">Log out of GoalReflect?</string>
     <string name="lbl_logout_confirm_message">Your progress and reflections are safely saved.</string>
     <string name="btn_logout_cancel">Cancel</string>

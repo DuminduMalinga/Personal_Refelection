@@ -9,19 +9,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
-
-import java.io.File;
-
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.personal_refelection.database.DashboardRepository;
 import com.example.personal_refelection.database.Reflection;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,26 +134,7 @@ public class DashboardActivity extends BaseActivity {
             greeting = getString(R.string.greeting_evening);
         }
 
-        tvGreeting.setText(greeting + ", " + userName + " 👋");
-    }
-
-    /**
-     * Animate stat cards with staggered fade-in effect.
-     */
-    private void animateCards() {
-        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
-
-        findViewById(R.id.cardActiveGoals).startAnimation(scaleUp);
-
-        findViewById(R.id.cardAchievedGoals).postDelayed(() -> {
-            Animation scaleUp2 = AnimationUtils.loadAnimation(this, R.anim.scale_up);
-            findViewById(R.id.cardAchievedGoals).startAnimation(scaleUp2);
-        }, 100);
-
-        findViewById(R.id.cardTotalReflections).postDelayed(() -> {
-            Animation scaleUp3 = AnimationUtils.loadAnimation(this, R.anim.scale_up);
-            findViewById(R.id.cardTotalReflections).startAnimation(scaleUp3);
-        }, 200);
+        tvGreeting.setText(getString(R.string.greeting_format, greeting, userName));
     }
 
     private void setupClickListeners() {

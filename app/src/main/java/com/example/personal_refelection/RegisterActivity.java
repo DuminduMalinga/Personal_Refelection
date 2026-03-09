@@ -168,11 +168,12 @@ public class RegisterActivity extends AppCompatActivity {
                 // Fetch the newly created user to get the ID
                 userRepository.getUserByEmail(email, user -> {
                     if (user != null) {
-                        // Save user session
+                        // Save user session — persists across app restarts
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putInt("user_id", user.id);
                         editor.putString("user_name", user.fullName);
                         editor.putString("user_email", user.email);
+                        editor.putBoolean("isLoggedIn", true);
                         editor.apply();
 
                         // Navigate to dashboard

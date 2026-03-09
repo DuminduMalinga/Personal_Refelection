@@ -217,6 +217,100 @@
                     android:background="?attr/selectableItemBackground"
                     android:padding="6dp" />
 
+                <Space android:layout_width="match_parent" android:layout_height="20dp" />
+
+                <!-- ── OR Divider ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_divider_line" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:text="@string/lbl_or_continue"
+                        android:textColor="@color/text_hint"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_divider_line" />
+                </LinearLayout>
+
+                <Space android:layout_width="match_parent" android:layout_height="16dp" />
+
+                <!-- ── Sign in with Google ── -->
+                <LinearLayout
+                    android:id="@+id/btnGoogleLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_google"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_google"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@string/lbl_google" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/lbl_continue_google"
+                        android:textColor="#1A1A2E"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <Space android:layout_width="match_parent" android:layout_height="10dp" />
+
+                <!-- ── Sign in with Facebook ── -->
+                <LinearLayout
+                    android:id="@+id/btnFacebookLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_facebook"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_facebook"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@string/lbl_facebook" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/lbl_continue_facebook"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

@@ -41,6 +41,12 @@ dependencies {
     // Room Database
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
+    // Google Credential Manager (Sign-In with Google)
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services.auth)
+    implementation(libs.googleid)
+    // Facebook Login SDK
+    implementation(libs.facebook.android.sdk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

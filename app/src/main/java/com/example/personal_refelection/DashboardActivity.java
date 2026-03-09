@@ -21,8 +21,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.personal_refelection.database.DashboardRepository;
 import com.example.personal_refelection.database.Reflection;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,14 +30,12 @@ import java.util.Locale;
 
 /**
  * Dashboard screen showing overview of user's personal growth journey.
- * Displays active goals, achieved goals, total reflections, and recent activity.
  */
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends BaseActivity {
 
     private TextView tvGreeting, tvActiveGoalsCount, tvAchievedGoalsCount, tvTotalReflectionsCount;
     private TextView tvNoReflections;
     private LinearLayout recentReflectionsContainer;
-    private BottomNavigationView bottomNavigation;
 
     private DashboardRepository dashboardRepository;
     private SharedPreferences sharedPreferences;
@@ -56,7 +52,6 @@ public class DashboardActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dashboardRoot), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
-            findViewById(R.id.bottomNavigation).setPadding(0, 0, 0, systemBars.bottom);
             return insets;
         });
 
@@ -87,7 +82,6 @@ public class DashboardActivity extends AppCompatActivity {
         tvTotalReflectionsCount = findViewById(R.id.tvTotalReflectionsCount);
         tvNoReflections = findViewById(R.id.tvNoReflections);
         recentReflectionsContainer = findViewById(R.id.recentReflectionsContainer);
-        bottomNavigation = findViewById(R.id.bottomNavigation);
     }
 
     /**
@@ -140,33 +134,10 @@ public class DashboardActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         });
 
-        // Bottom Navigation
-        bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+        // Shared bottom nav – BaseActivity handles all nav item wiring
+        setupBottomNav(R.id.navDashboard);
 
-            if (itemId == R.id.nav_dashboard) {
-                return true; // Already on dashboard
-            } else if (itemId == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_add) {
-                Toast.makeText(this, "Add Goal feature coming soon! 🎯", Toast.LENGTH_SHORT).show();
-                return false;
-            } else if (itemId == R.id.nav_achieved) {
-                startActivity(new Intent(this, AchievedActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            }
-            return false;
-        });
-
-        // Profile icon click
+        // Profile icon in header
         findViewById(R.id.ivProfileIcon).setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
             overridePendingTransition(0, 0);
@@ -282,4 +253,3 @@ public class DashboardActivity extends AppCompatActivity {
         finish();
     }
 }
-

@@ -1,10 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Realistic open journal / reflection icon -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- Left page -->
     <path
+        android:pathData="M3,4 C3,3.45 3.45,3 4,3 L11.5,3 L11.5,20 L4,20 C3.45,20 3,19.55 3,19 Z"
+        android:fillColor="#F5F3FF"
+        android:strokeColor="#8B5CF6"
+        android:strokeWidth="0.8"/>
+    <!-- Right page -->
+    <path
+        android:pathData="M12.5,3 L20,3 C20.55,3 21,3.45 21,4 L21,19 C21,19.55 20.55,20 20,20 L12.5,20 Z"
+        android:fillColor="#EDE9FE"
+        android:strokeColor="#8B5CF6"
+        android:strokeWidth="0.8"/>
+    <!-- Book spine -->
+    <path
+        android:pathData="M11.5,3 L12.5,3 L12.5,20 L11.5,20 Z"
+        android:fillColor="#6C63FF"/>
+    <!-- Lines on left page -->
+    <path android:pathData="M5,7 L10,7" android:strokeColor="#6C63FF" android:strokeWidth="1.2" android:strokeLineCap="round" android:strokeAlpha="0.7"/>
+    <path android:pathData="M5,10 L10,10" android:strokeColor="#6C63FF" android:strokeWidth="1.2" android:strokeLineCap="round" android:strokeAlpha="0.7"/>
+    <path android:pathData="M5,13 L8.5,13" android:strokeColor="#6C63FF" android:strokeWidth="1.2" android:strokeLineCap="round" android:strokeAlpha="0.5"/>
+    <!-- Lines on right page -->
+    <path android:pathData="M14,7 L19,7" android:strokeColor="#8B5CF6" android:strokeWidth="1.2" android:strokeLineCap="round" android:strokeAlpha="0.7"/>
+    <path android:pathData="M14,10 L19,10" android:strokeColor="#8B5CF6" android:strokeWidth="1.2" android:strokeLineCap="round" android:strokeAlpha="0.7"/>
+    <path android:pathData="M14,13 L17,13" android:strokeColor="#8B5CF6" android:strokeWidth="1.2" android:strokeLineCap="round" android:strokeAlpha="0.5"/>
+    <!-- Bookmark ribbon on right page -->
+    <path
+        android:pathData="M18,3 L18,8 L16.5,7 L15,8 L15,3 Z"
+        android:fillColor="#FF6B6B"
+        android:fillAlpha="0.85"/>
+    <!-- Bottom shadow -->
+    <path
+        android:pathData="M3,20 L21,20 C21,20.55 20.55,21 20,21 L4,21 C3.45,21 3,20.55 3,20 Z"
         android:fillColor="#6C63FF"
-        android:pathData="M19,3h-4.18C14.4,1.84 13.3,1 12,1c-1.3,0 -2.4,0.84 -2.82,2L5,3c-1.1,0 -2,0.9 -2,2v14c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2L21,5c0,-1.1 -0.9,-2 -2,-2zM12,3c0.55,0 1,0.45 1,1s-0.45,1 -1,1 -1,-0.45 -1,-1 0.45,-1 1,-1zM14,17L7,17v-2h7v2zM17,13L7,13v-2h10v2zM17,9L7,9L7,7h10v2z"/>
+        android:fillAlpha="0.15"/>
 </vector>
-

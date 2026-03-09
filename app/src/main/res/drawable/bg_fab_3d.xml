@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D raised button background with shadow and gradient -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Drop shadow layer -->
+    <item android:top="6dp" android:left="3dp" android:right="3dp">
+        <shape android:shape="oval">
+            <solid android:color="#553730A3" />
+        </shape>
+    </item>
+    <!-- Bottom / side face (darker) -->
+    <item android:bottom="0dp">
+        <shape android:shape="oval">
+            <solid android:color="#3730A3" />
+        </shape>
+    </item>
+    <!-- Top face with gradient -->
+    <item android:bottom="4dp">
+        <shape android:shape="oval">
+            <gradient
+                android:startColor="#818CF8"
+                android:centerColor="#6C63FF"
+                android:endColor="#4F46E5"
+                android:angle="315"
+                android:type="linear"/>
+        </shape>
+    </item>
+</layer-list>
+

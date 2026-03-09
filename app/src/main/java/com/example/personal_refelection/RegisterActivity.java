@@ -41,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
     private SocialAuthManager socialAuthManager;
     private CallbackManager facebookCallbackManager;
 
+    private SocialAuthManager.SocialAuthCallback pendingGoogleCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,34 +84,27 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupFocusListeners() {
-        setInputFocus(etFullName, inputFullName);
-        setInputFocus(etEmail, inputEmail);
-        setInputFocus(etUsername, inputUsername);
-        setInputFocus(etPassword, inputPassword);
+        setInputFocus(etFullName,        inputFullName);
+        setInputFocus(etEmail,           inputEmail);
+        setInputFocus(etUsername,        inputUsername);
+        setInputFocus(etPassword,        inputPassword);
         setInputFocus(etConfirmPassword, inputConfirmPassword);
     }
 
-    private void setInputFocus(EditText editText, LinearLayout container) {
-        editText.setOnFocusChangeListener((v, hasFocus) ->
+    private void setInputFocus(EditText et, LinearLayout container) {
+        et.setOnFocusChangeListener((v, hasFocus) ->
                 container.setBackgroundResource(hasFocus
-                        ? R.drawable.bg_input_field_focused
-                        : R.drawable.bg_input_field));
+                        ? R.drawable.bg_input_field_focused : R.drawable.bg_input_field));
     }
 
     private void setupClickListeners() {
         btnRegister.setOnClickListener(v -> handleRegister());
-
         tvLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            startActivity(new Intent(this, LoginActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
             finish();
         });
-
-        // Google Sign-Up
         btnGoogleSignup.setOnClickListener(v -> handleGoogleSignup());
-
-        // Facebook Sign-Up
         btnFacebookSignup.setOnClickListener(v -> handleFacebookSignup());
     }
 
@@ -117,33 +112,32 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void handleGoogleSignup() {
         btnGoogleSignup.setAlpha(0.6f);
-        socialAuthManager.signInWithGoogle(this, new SocialAuthManager.SocialAuthCallback() {
+
+        pendingGoogleCallback = new SocialAuthManager.SocialAuthCallback() {
             @Override
             public void onSuccess(User user) {
-                runOnUiThread(() -> {
-                    btnGoogleSignup.setAlpha(1f);
-                    Toast.makeText(RegisterActivity.this,
-                            "Welcome, " + user.fullName + "! 🌱", Toast.LENGTH_SHORT).show();
-                    navigateToDashboard();
-                });
+                btnGoogleSignup.setAlpha(1f);
+                Toast.makeText(RegisterActivity.this,
+                        "Welcome, " + user.fullName + "! 🌱", Toast.LENGTH_SHORT).show();
+                navigateToDashboard();
             }
             @Override
             public void onCancelled() {
-                runOnUiThread(() -> {
-                    btnGoogleSignup.setAlpha(1f);
-                    Toast.makeText(RegisterActivity.this,
-                            getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
-                });
+                btnGoogleSignup.setAlpha(1f);
+                Toast.makeText(RegisterActivity.this,
+                        getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onError(String message) {
-                runOnUiThread(() -> {
-                    btnGoogleSignup.setAlpha(1f);
-                    Toast.makeText(RegisterActivity.this,
-                            getString(R.string.lbl_social_login_failed), Toast.LENGTH_SHORT).show();
-                });
+                btnGoogleSignup.setAlpha(1f);
+                Toast.makeText(RegisterActivity.this,
+                        getString(R.string.lbl_social_login_failed) + "\n" + message,
+                        Toast.LENGTH_LONG).show();
             }
-        });
+        };
+
+        startActivityForResult(socialAuthManager.getGoogleSignInIntent(),
+                SocialAuthManager.RC_GOOGLE_SIGN_IN);
     }
 
     // ── Facebook Sign-Up ──────────────────────────────────────────
@@ -155,8 +149,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupFacebookCallback() {
-        LoginManager.getInstance().registerCallback(
-                facebookCallbackManager,
+        LoginManager.getInstance().registerCallback(facebookCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
@@ -180,17 +173,17 @@ public class RegisterActivity extends AppCompatActivity {
                 loginResult.getAccessToken(),
                 (object, response) -> {
                     try {
-                        String email    = object.has("email") ? object.getString("email")
+                        String email = object != null && object.has("email")
+                                ? object.getString("email")
                                 : loginResult.getAccessToken().getUserId() + "@facebook.com";
-                        String name     = object.has("name")  ? object.getString("name") : "Facebook User";
+                        String name  = object != null && object.has("name")
+                                ? object.getString("name") : "Facebook User";
                         String username = name.replaceAll("[^a-zA-Z0-9_]", "").toLowerCase();
                         if (username.length() < 3) username = "fb_" + username;
 
                         final String fEmail = email, fName = name, fUsername = username;
-
                         socialAuthManager.findOrCreateSocialUser(fEmail, fName, fUsername,
-                                "facebook_oauth",
-                                new SocialAuthManager.SocialAuthCallback() {
+                                "facebook_oauth", new SocialAuthManager.SocialAuthCallback() {
                                     @Override
                                     public void onSuccess(User user) {
                                         runOnUiThread(() -> {
@@ -220,9 +213,22 @@ public class RegisterActivity extends AppCompatActivity {
         request.executeAsync();
     }
 
+    // ── Activity Result ───────────────────────────────────────────
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SocialAuthManager.RC_GOOGLE_SIGN_IN) {
+            btnGoogleSignup.setAlpha(1f);
+            if (data != null && pendingGoogleCallback != null) {
+                socialAuthManager.handleGoogleSignInResult(data, pendingGoogleCallback);
+            } else if (pendingGoogleCallback != null) {
+                pendingGoogleCallback.onCancelled();
+            }
+            pendingGoogleCallback = null;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -235,36 +241,16 @@ public class RegisterActivity extends AppCompatActivity {
         String password        = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(fullName)) {
-            etFullName.setError("Please enter your full name"); etFullName.requestFocus(); return;
-        }
-        if (fullName.length() < 2) {
-            etFullName.setError("Name must be at least 2 characters"); etFullName.requestFocus(); return;
-        }
-        if (TextUtils.isEmpty(email)) {
-            etEmail.setError("Please enter your email"); etEmail.requestFocus(); return;
-        }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Enter a valid email address"); etEmail.requestFocus(); return;
-        }
-        if (TextUtils.isEmpty(username)) {
-            etUsername.setError("Please enter a username"); etUsername.requestFocus(); return;
-        }
-        if (username.length() < 3) {
-            etUsername.setError("Username must be at least 3 characters"); etUsername.requestFocus(); return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Please enter a password"); etPassword.requestFocus(); return;
-        }
-        if (password.length() < 6) {
-            etPassword.setError("Password must be at least 6 characters"); etPassword.requestFocus(); return;
-        }
-        if (TextUtils.isEmpty(confirmPassword)) {
-            etConfirmPassword.setError("Please confirm your password"); etConfirmPassword.requestFocus(); return;
-        }
-        if (!password.equals(confirmPassword)) {
-            etConfirmPassword.setError("Passwords do not match"); etConfirmPassword.requestFocus(); return;
-        }
+        if (TextUtils.isEmpty(fullName))        { etFullName.setError("Please enter your full name"); etFullName.requestFocus(); return; }
+        if (fullName.length() < 2)              { etFullName.setError("Name must be at least 2 characters"); etFullName.requestFocus(); return; }
+        if (TextUtils.isEmpty(email))           { etEmail.setError("Please enter your email"); etEmail.requestFocus(); return; }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) { etEmail.setError("Enter a valid email address"); etEmail.requestFocus(); return; }
+        if (TextUtils.isEmpty(username))        { etUsername.setError("Please enter a username"); etUsername.requestFocus(); return; }
+        if (username.length() < 3)              { etUsername.setError("Username must be at least 3 characters"); etUsername.requestFocus(); return; }
+        if (TextUtils.isEmpty(password))        { etPassword.setError("Please enter a password"); etPassword.requestFocus(); return; }
+        if (password.length() < 6)              { etPassword.setError("Password must be at least 6 characters"); etPassword.requestFocus(); return; }
+        if (TextUtils.isEmpty(confirmPassword)) { etConfirmPassword.setError("Please confirm your password"); etConfirmPassword.requestFocus(); return; }
+        if (!password.equals(confirmPassword))  { etConfirmPassword.setError("Passwords do not match"); etConfirmPassword.requestFocus(); return; }
 
         dismissKeyboard();
         btnRegister.setEnabled(false);
@@ -300,7 +286,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void navigateToDashboard() {
-        Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
@@ -308,9 +294,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void dismissKeyboard() {
         View focus = getCurrentFocus();
-        if (focus != null) {
+        if (focus != null)
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(focus.getWindowToken(), 0);
-        }
     }
 }

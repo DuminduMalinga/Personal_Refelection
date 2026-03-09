@@ -84,10 +84,17 @@ public class SocialAuthManager {
 
         } catch (ApiException e) {
             Log.e(TAG, "Google sign-in failed  code=" + e.getStatusCode() + "  msg=" + e.getMessage());
-            if (e.getStatusCode() == 12501) {          // 12501 = user cancelled
+            if (e.getStatusCode() == 12501) {
+                // User pressed back / cancelled
                 callback.onCancelled();
+            } else if (e.getStatusCode() == 10) {
+                // Developer error — SHA-1 not registered in Google Cloud Console
+                callback.onError("Configuration error (10): Please register the app SHA-1 in Google Cloud Console.");
+            } else if (e.getStatusCode() == 7) {
+                // Network error
+                callback.onError("Network error. Please check your internet connection.");
             } else {
-                callback.onError("Google sign-in failed (code " + e.getStatusCode() + ")");
+                callback.onError("Google sign-in failed (code " + e.getStatusCode() + "). Check Logcat for details.");
             }
         }
     }

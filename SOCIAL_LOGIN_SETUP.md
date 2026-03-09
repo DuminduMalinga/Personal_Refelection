@@ -36,7 +36,7 @@ Open `app/src/main/res/values/strings.xml` and replace:
 ```
 With your actual Web Client ID:
 ```xml
-<string name="lbl_google_web_client_id" translatable="false">123456789-abcdefgh.apps.googleusercontent.com</string>
+<string name="lbl_google_web_client_id" translatable="false">1029883663493-9f1e0rsldjejjfmcduls5k3c54234sg4.apps.googleusercontent.com</string>
 ```
 
 ---

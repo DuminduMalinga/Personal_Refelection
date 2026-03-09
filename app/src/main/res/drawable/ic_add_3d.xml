@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 3D realistic teal/purple add button icon -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:viewportWidth="32"
+    android:viewportHeight="32">
+
+    <!-- Shadow layer (bottom) -->
+    <path
+        android:pathData="M16,28 A12,4 0,1 0,16,36 A12,4 0,1 0,16,28 Z"
+        android:fillColor="#000000"
+        android:fillAlpha="0.18"/>
+
+    <!-- 3D base / bottom face (darker shade) -->
+    <path
+        android:pathData="M4,16 A12,12 0,1 0,28,16 A12,12 0,1 0,4,16 Z"
+        android:fillColor="#3730A3"/>
+
+    <!-- Main circle face -->
+    <path
+        android:pathData="M5,14 A11,11 0,1 0,27,14 A11,11 0,1 0,5,14 Z"
+        android:fillColor="#6C63FF"/>
+
+    <!-- Top highlight gradient arc (gives 3D dome feel) -->
+    <path
+        android:pathData="M10,8 C12,5.5 20,5.5 22,8"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.35"/>
+
+    <!-- Specular shine spot -->
+    <path
+        android:pathData="M11,9 A3,2 0,1 0,17,9 A3,2 0,1 0,11,9 Z"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.22"/>
+
+    <!-- Plus horizontal bar -->
+    <path
+        android:pathData="M10,14 L22,14"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"/>
+
+    <!-- Plus vertical bar -->
+    <path
+        android:pathData="M16,8 L16,20"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"/>
+</vector>
+

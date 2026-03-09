@@ -1,10 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Realistic plus/add icon with circle background -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- Circle background -->
     <path
-        android:fillColor="#2DC08E"
-        android:pathData="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        android:pathData="M12,2 A10,10 0,1 0,12,22 A10,10 0,1 0,12,2 Z"
+        android:fillColor="#6C63FF"/>
+    <!-- Highlight arc -->
+    <path
+        android:pathData="M7,6 C8.5,4.5 10.5,3.5 12.5,3.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.3"/>
+    <!-- Plus horizontal bar -->
+    <path
+        android:pathData="M7.5,12 L16.5,12"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"/>
+    <!-- Plus vertical bar -->
+    <path
+        android:pathData="M12,7.5 L12,16.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"/>
 </vector>
-

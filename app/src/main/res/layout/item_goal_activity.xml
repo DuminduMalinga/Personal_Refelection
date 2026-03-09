@@ -4,80 +4,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp">
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/card_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="18dp">
 
         <!-- Goal Title -->
         <TextView
             android:id="@+id/tvGoalTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Goal Title"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#1E293B"
+            android:textColor="@color/text_primary"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginBottom="4dp" />
 
         <!-- Goal Description -->
         <TextView
             android:id="@+id/tvGoalDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Goal Description"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:lineSpacingExtra="2dp" />
+
+        <!-- Left accent bar -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/divider" />
 
         <!-- Buttons Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="12dp">
+            android:gravity="end">
 
-            <!-- Edit Button -->
             <ImageButton
                 android:id="@+id/btnEdit"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:layout_marginStart="8dp"
-                android:background="@android:color/transparent"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_stat_card_blue"
                 android:contentDescription="Edit"
-                android:src="@android:drawable/ic_menu_edit" />
+                android:src="@drawable/ic_edit_blue"
+                android:scaleType="center"
+                android:layout_marginStart="8dp" />
 
-            <!-- Delete Button -->
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:layout_marginStart="8dp"
-                android:background="@android:color/transparent"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_logout_icon"
                 android:contentDescription="Delete"
-                android:src="@android:drawable/ic_delete" />
+                android:src="@android:drawable/ic_delete"
+                android:scaleType="center"
+                android:layout_marginStart="8dp" />
 
-            <!-- Mark Achieved Button -->
             <ImageButton
                 android:id="@+id/btnMarkAchieved"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:layout_marginStart="8dp"
-                android:background="@android:color/transparent"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_stat_card_green"
                 android:contentDescription="Mark Achieved"
-                android:src="@drawable/ic_check_circle" />
-
+                android:src="@drawable/ic_check_circle"
+                android:scaleType="center"
+                android:layout_marginStart="8dp"
+                app:tint="@color/stat_green" />
         </LinearLayout>
 
     </LinearLayout>

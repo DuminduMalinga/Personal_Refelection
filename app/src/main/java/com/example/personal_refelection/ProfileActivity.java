@@ -10,13 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
 import com.example.personal_refelection.database.DashboardRepository;
 import com.example.personal_refelection.database.UserRepository;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
 
@@ -24,12 +22,11 @@ import java.io.File;
  * Profile screen — shows user info, journey stats, account settings list,
  * and logout with a confirmation dialog.
  */
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     private TextView tvFullName, tvEmail, tvUsername;
     private TextView tvStatActiveGoals, tvStatAchievedGoals, tvStatTotalReflections;
     private ImageView ivProfileImage;
-    private BottomNavigationView bottomNavigation;
 
     private UserRepository userRepository;
     private DashboardRepository dashboardRepository;
@@ -60,22 +57,21 @@ public class ProfileActivity extends AppCompatActivity {
         loadUserData();
         loadStats();
         setupSettingsRows();
-        setupBottomNavigation();
+        // Use shared bottom nav from BaseActivity, highlight Profile
+        setupBottomNav(R.id.navProfile);
     }
 
     // ── View Binding ──────────────────────────────────────────────
 
     private void bindViews() {
-        tvFullName               = findViewById(R.id.tvFullName);
-        tvEmail                  = findViewById(R.id.tvEmail);
-        tvUsername               = findViewById(R.id.tvUsername);
-        tvStatActiveGoals        = findViewById(R.id.tvStatActiveGoals);
-        tvStatAchievedGoals      = findViewById(R.id.tvStatAchievedGoals);
-        tvStatTotalReflections   = findViewById(R.id.tvStatTotalReflections);
-        ivProfileImage           = findViewById(R.id.ivProfileImage);
-        bottomNavigation         = findViewById(R.id.bottomNavigation);
+        tvFullName             = findViewById(R.id.tvFullName);
+        tvEmail                = findViewById(R.id.tvEmail);
+        tvUsername             = findViewById(R.id.tvUsername);
+        tvStatActiveGoals      = findViewById(R.id.tvStatActiveGoals);
+        tvStatAchievedGoals    = findViewById(R.id.tvStatAchievedGoals);
+        tvStatTotalReflections = findViewById(R.id.tvStatTotalReflections);
+        ivProfileImage         = findViewById(R.id.ivProfileImage);
 
-        // Edit avatar badge → open Edit Profile
         findViewById(R.id.btnEditAvatar).setOnClickListener(v ->
                 startActivity(new Intent(this, EditProfileActivity.class)));
     }
@@ -121,14 +117,14 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.rowLogout).setOnClickListener(v -> showLogoutDialog());
     }
 
-    // ── Logout Confirmation Dialog ────────────────────────────────
+    // ── Logout ────────────────────────────────────────────────────
 
     private void showLogoutDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.lbl_logout_confirm_title))
                 .setMessage(getString(R.string.lbl_logout_confirm_message))
-                .setNegativeButton(getString(R.string.btn_logout_cancel), (dialog, which) -> dialog.dismiss())
-                .setPositiveButton(getString(R.string.btn_logout_confirm), (dialog, which) -> performLogout())
+                .setNegativeButton(getString(R.string.btn_logout_cancel), (d, w) -> d.dismiss())
+                .setPositiveButton(getString(R.string.btn_logout_confirm), (d, w) -> performLogout())
                 .setCancelable(true)
                 .show();
     }
@@ -144,37 +140,6 @@ public class ProfileActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
-    }
-
-    // ── Bottom Navigation ─────────────────────────────────────────
-
-    private void setupBottomNavigation() {
-        bottomNavigation.setSelectedItemId(R.id.nav_profile);
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_profile) {
-                return true;
-            } else if (id == R.id.nav_dashboard) {
-                startActivity(new Intent(this, DashboardActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-                return true;
-            } else if (id == R.id.nav_goals) {
-                startActivity(new Intent(this, GoalsActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-                return true;
-            } else if (id == R.id.nav_achieved) {
-                startActivity(new Intent(this, AchievedActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
-                return true;
-            } else if (id == R.id.nav_add) {
-                Toast.makeText(this, "Add Goal — coming soon! 🎯", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            return false;
-        });
     }
 
     @Override

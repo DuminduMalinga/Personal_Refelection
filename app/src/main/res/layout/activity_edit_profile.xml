@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/profile_background"
+    android:background="@color/background"
     android:scrollbars="none"
     android:fillViewport="true">
 
@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingBottom="48dp">
 
-        <!-- ══════════════════ TOOLBAR ══════════════════ -->
+        <!-- ══ TOOLBAR ══ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -61,48 +61,48 @@
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:text="@string/btn_save_changes"
-                android:textColor="@color/profile_accent_blue"
+                android:textColor="@color/primary_green"
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- ══════════════════ AVATAR SECTION ══════════════════ -->
+        <!-- ══ HERO AVATAR SECTION ══ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:paddingTop="28dp"
-            android:paddingBottom="28dp"
-            android:background="@color/card_background">
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp"
+            android:background="@drawable/bg_dashboard_header">
 
             <FrameLayout
                 android:id="@+id/avatarContainer"
-                android:layout_width="88dp"
-                android:layout_height="88dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackgroundBorderless">
 
                 <ImageView
                     android:id="@+id/ivEditAvatar"
-                    android:layout_width="88dp"
-                    android:layout_height="88dp"
-                    android:background="@drawable/bg_profile_avatar"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:background="@drawable/bg_avatar_circle_white"
                     android:src="@drawable/ic_person"
-                    android:scaleType="centerCrop"
+                    android:scaleType="center"
                     android:padding="20dp"
                     android:contentDescription="@string/content_desc_profile_icon" />
 
                 <FrameLayout
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="bottom|end"
                     android:background="@drawable/bg_edit_badge"
                     android:elevation="4dp">
                     <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_camera"
                         android:contentDescription="@string/lbl_change_photo"
@@ -115,11 +115,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/hint_full_name"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
+                android:textColor="#FFFFFF"
                 android:fontFamily="sans-serif-medium"
-                android:layout_marginTop="14dp" />
+                android:layout_marginTop="16dp" />
 
             <TextView
                 android:id="@+id/tvEditDisplayEmail"
@@ -127,21 +127,21 @@
                 android:layout_height="wrap_content"
                 android:text="@string/hint_email"
                 android:textSize="13sp"
-                android:textColor="@color/text_secondary"
+                android:textColor="#CCE0DFFF"
                 android:fontFamily="sans-serif"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
-        <!-- ══════════════════ FORM SECTION ══════════════════ -->
+        <!-- ══ FORM SECTION ══ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:paddingTop="24dp">
 
-            <!-- Section label: Personal Info -->
+            <!-- Personal Info Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -157,8 +157,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/card_background">
 
                 <LinearLayout
@@ -170,7 +170,7 @@
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp">
 
-                    <!-- Full Name field -->
+                    <!-- Full Name -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -197,8 +197,8 @@
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/profile_accent_blue"
-                            app:hintTextColor="@color/profile_accent_blue"
+                            app:boxStrokeColor="@color/primary_green"
+                            app:hintTextColor="@color/primary_green"
                             android:hint="@string/hint_full_name">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -216,11 +216,10 @@
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:layout_marginStart="52dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginStart="52dp" android:layout_marginBottom="4dp"
                         android:background="@color/divider" />
 
-                    <!-- Username field -->
+                    <!-- Username -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -248,8 +247,8 @@
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/profile_accent_blue"
-                            app:hintTextColor="@color/profile_accent_blue"
+                            app:boxStrokeColor="@color/primary_green"
+                            app:hintTextColor="@color/primary_green"
                             android:hint="@string/hint_username">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -267,11 +266,10 @@
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:layout_marginStart="52dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginStart="52dp" android:layout_marginBottom="4dp"
                         android:background="@color/divider" />
 
-                    <!-- Email field (read-only) -->
+                    <!-- Email (read-only) -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -320,11 +318,10 @@
                                 android:fontFamily="sans-serif" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Section label: Security -->
+            <!-- Security Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -339,9 +336,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                android:layout_marginBottom="28dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/card_background">
 
                 <LinearLayout
@@ -380,8 +377,8 @@
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/profile_accent_blue"
-                            app:hintTextColor="@color/profile_accent_blue"
+                            app:boxStrokeColor="@color/primary_green"
+                            app:hintTextColor="@color/primary_green"
                             android:hint="@string/hint_new_password_optional"
                             app:passwordToggleEnabled="true">
 
@@ -400,8 +397,7 @@
                     </LinearLayout>
 
                     <View android:layout_width="match_parent" android:layout_height="1dp"
-                        android:layout_marginStart="52dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginStart="52dp" android:layout_marginBottom="4dp"
                         android:background="@color/divider" />
 
                     <!-- Confirm Password -->
@@ -431,8 +427,8 @@
                             android:layout_weight="1"
                             android:layout_marginStart="16dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                            app:boxStrokeColor="@color/profile_accent_blue"
-                            app:hintTextColor="@color/profile_accent_blue"
+                            app:boxStrokeColor="@color/primary_green"
+                            app:hintTextColor="@color/primary_green"
                             android:hint="@string/hint_confirm_new_password"
                             app:passwordToggleEnabled="true">
 
@@ -449,7 +445,6 @@
                                 android:fontFamily="sans-serif" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -459,7 +454,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="@string/btn_save_changes"
-                android:background="@drawable/selector_register_button"
+                android:background="@drawable/bg_button_green"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -468,10 +463,8 @@
                 android:stateListAnimator="@null"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:elevation="2dp" />
+                android:elevation="0dp" />
 
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
-

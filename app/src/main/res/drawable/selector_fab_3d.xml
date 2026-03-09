@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <layer-list>
+            <!-- Smaller shadow when pressed -->
+            <item android:top="2dp" android:left="3dp" android:right="3dp">
+                <shape android:shape="oval">
+                    <solid android:color="#443730A3" />
+                </shape>
+            </item>
+            <!-- Pressed face slightly down -->
+            <item android:bottom="2dp">
+                <shape android:shape="oval">
+                    <gradient
+                        android:startColor="#4F46E5"
+                        android:endColor="#3730A3"
+                        android:angle="315"
+                        android:type="linear"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item android:drawable="@drawable/bg_fab_3d" />
+</selector>
+

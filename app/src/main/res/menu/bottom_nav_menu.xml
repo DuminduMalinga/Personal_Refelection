@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_dashboard"
-        android:icon="@drawable/ic_logo_journal"
+        android:icon="@drawable/ic_home"
         android:title="@string/nav_dashboard" />
 
     <item
@@ -25,4 +25,3 @@
         android:icon="@drawable/ic_profile"
         android:title="@string/nav_profile" />
 </menu>
-

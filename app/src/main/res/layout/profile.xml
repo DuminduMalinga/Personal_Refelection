@@ -5,7 +5,7 @@
     android:id="@+id/profileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/profile_background">
+    android:background="@color/background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,11 +26,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:paddingTop="40dp"
-                android:paddingBottom="32dp"
+                android:paddingTop="48dp"
+                android:paddingBottom="36dp"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:background="@color/card_background">
+                android:background="@drawable/bg_dashboard_header">
 
                 <!-- Avatar + Edit Badge -->
                 <FrameLayout
@@ -42,7 +42,7 @@
                         android:id="@+id/ivProfileImage"
                         android:layout_width="104dp"
                         android:layout_height="104dp"
-                        android:background="@drawable/bg_profile_avatar"
+                        android:background="@drawable/bg_avatar_circle_white"
                         android:src="@drawable/ic_person"
                         android:scaleType="center"
                         android:padding="24dp"
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/hint_full_name"
                     android:textSize="22sp"
-                    android:textColor="@color/text_primary"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginTop="16dp" />
@@ -91,7 +91,7 @@
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif"
                     android:text="@string/hint_email"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="#CCE0DFFF"
                     android:textSize="14sp" />
 
                 <TextView
@@ -140,7 +140,7 @@
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -196,7 +196,7 @@
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -251,7 +251,7 @@
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
+                        app:cardElevation="0dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -327,7 +327,7 @@
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/card_background"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -558,7 +558,7 @@
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/card_background"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="0dp">
 
                     <!-- Logout Row -->
                     <LinearLayout
@@ -627,8 +627,8 @@
             android:layout_height="wrap_content"
             android:background="@color/card_background"
             android:elevation="8dp"
-            app:itemIconTint="@color/profile_accent_blue"
-            app:itemTextColor="@color/profile_accent_blue"
+            app:itemIconTint="@color/primary_green"
+            app:itemTextColor="@color/primary_green"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>

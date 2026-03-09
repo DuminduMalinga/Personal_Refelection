@@ -172,6 +172,14 @@
     <string name="gs_btn_sign_in">Already have an account? Sign In</string>
     <string name="gs_privacy_note">🔒  No spam. No ads. Your data stays private.</string>
 
+    <!-- Goals screen -->
+    <string name="lbl_my_goals">My Goals</string>
+    <string name="btn_add_goal">+ Add New Goal</string>
+    <string name="lbl_total_achieved">Total Achieved Goals</string>
+    <string name="lbl_goal_details">Goal Details</string>
+    <string name="hint_goal_title">Goal Title</string>
+    <string name="hint_goal_description">Goal Description (optional)</string>
+
     <!-- Notification permission dialog -->
     <string name="lbl_notif_permission_title">Enable Notifications</string>
     <string name="lbl_notif_permission_rationale">GoalReflect needs notification permission to send you goal reminders and reflection prompts. Please enable it in Settings.</string>

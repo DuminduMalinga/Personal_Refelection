@@ -144,7 +144,26 @@ public class LoginActivity extends AppCompatActivity {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        fetchFacebookProfile(loginResult);
+                        // Pass access token directly to Firebase
+                        socialAuthManager.handleFacebookAccessToken(
+                                loginResult.getAccessToken(),
+                                new SocialAuthManager.SocialAuthCallback() {
+                                    @Override
+                                    public void onSuccess(User user) {
+                                        Toast.makeText(LoginActivity.this,
+                                                "Welcome, " + user.fullName + "! 🎉",
+                                                Toast.LENGTH_SHORT).show();
+                                        navigateToDashboard();
+                                    }
+                                    @Override
+                                    public void onCancelled() { }
+                                    @Override
+                                    public void onError(String message) {
+                                        Toast.makeText(LoginActivity.this,
+                                                getString(R.string.lbl_social_login_failed) + "\n" + message,
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
                     }
                     @Override
                     public void onCancel() {
@@ -157,51 +176,6 @@ public class LoginActivity extends AppCompatActivity {
                                 getString(R.string.lbl_social_login_failed), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private void fetchFacebookProfile(LoginResult loginResult) {
-        com.facebook.GraphRequest request = com.facebook.GraphRequest.newMeRequest(
-                loginResult.getAccessToken(),
-                (object, response) -> {
-                    try {
-                        String email = object != null && object.has("email")
-                                ? object.getString("email")
-                                : loginResult.getAccessToken().getUserId() + "@facebook.com";
-                        String name  = object != null && object.has("name")
-                                ? object.getString("name") : "Facebook User";
-                        String username = name.replaceAll("[^a-zA-Z0-9_]", "").toLowerCase();
-                        if (username.length() < 3) username = "fb_" + username;
-
-                        final String fEmail = email, fName = name, fUsername = username;
-                        socialAuthManager.findOrCreateSocialUser(fEmail, fName, fUsername,
-                                "facebook_oauth", new SocialAuthManager.SocialAuthCallback() {
-                                    @Override
-                                    public void onSuccess(User user) {
-                                        runOnUiThread(() -> {
-                                            Toast.makeText(LoginActivity.this,
-                                                    "Welcome, " + user.fullName + "! 🎉",
-                                                    Toast.LENGTH_SHORT).show();
-                                            navigateToDashboard();
-                                        });
-                                    }
-                                    @Override public void onCancelled() { }
-                                    @Override
-                                    public void onError(String message) {
-                                        runOnUiThread(() -> Toast.makeText(LoginActivity.this,
-                                                getString(R.string.lbl_social_login_failed),
-                                                Toast.LENGTH_SHORT).show());
-                                    }
-                                });
-                    } catch (Exception e) {
-                        runOnUiThread(() -> Toast.makeText(LoginActivity.this,
-                                getString(R.string.lbl_social_login_failed),
-                                Toast.LENGTH_SHORT).show());
-                    }
-                });
-        android.os.Bundle params = new android.os.Bundle();
-        params.putString("fields", "id,name,email");
-        request.setParameters(params);
-        request.executeAsync();
     }
 
     // ── Activity Result ───────────────────────────────────────────

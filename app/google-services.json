@@ -1,35 +1,47 @@
 {
   "project_info": {
-    "project_number": "1029883663493",
-    "project_id": "personal-refelection",
-    "storage_bucket": "personal-refelection.appspot.com"
+    "project_number": "618642347882",
+    "project_id": "personalgoalreflection",
+    "storage_bucket": "personalgoalreflection.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1029883663493:android:REPLACE_WITH_YOUR_APP_ID",
+        "mobilesdk_app_id": "1:618642347882:android:da22ccb8bb3859245af713",
         "android_client_info": {
           "package_name": "com.example.personal_refelection"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1029883663493-9f1e0rsldjejjfmcduls5k3c54234sg4.apps.googleusercontent.com",
+          "client_id": "618642347882-4mtokpgvptnv2evmlbk6a23teeddns1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.personal_refelection",
+            "certificate_hash": "bcb493a8ade9468df99bda56cfddf5746cbde127"
+          }
+        },
+        {
+          "client_id": "618642347882-c64tprh7h90vk2sffi7n58pk62t4pv5q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "REPLACE_WITH_YOUR_API_KEY"
+          "current_key": "AIzaSyBC2__rd8W2LpIGOCLYIB4onX15AdmhJx0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618642347882-c64tprh7h90vk2sffi7n58pk62t4pv5q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
   ],
   "configuration_version": "1"
 }
-

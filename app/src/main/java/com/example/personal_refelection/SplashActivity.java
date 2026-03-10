@@ -13,6 +13,9 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class SplashActivity extends AppCompatActivity {
 
     private static final int SPLASH_DURATION = 2800; // ms
@@ -51,6 +54,19 @@ public class SplashActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
             boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
             boolean hasSeenOnboarding = prefs.getBoolean("hasSeenOnboarding", false);
+
+            // Also check Firebase — social login users should stay logged in
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (firebaseUser != null && !isLoggedIn) {
+                // Firebase session active but local prefs lost — restore session
+                isLoggedIn = true;
+                prefs.edit().putBoolean("isLoggedIn", true)
+                        .putString("user_email", firebaseUser.getEmail() != null
+                                ? firebaseUser.getEmail() : "")
+                        .putString("user_name", firebaseUser.getDisplayName() != null
+                                ? firebaseUser.getDisplayName() : "")
+                        .apply();
+            }
 
             Intent intent;
             if (isLoggedIn) {

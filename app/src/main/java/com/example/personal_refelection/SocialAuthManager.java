@@ -189,10 +189,18 @@ public class SocialAuthManager {
     // ────────────────────────────────────────────────────────────
 
     private void saveSession(User user) {
+        // Get photo URL from Firebase current user (Google/Facebook provides this)
+        String photoUrl = "";
+        com.google.firebase.auth.FirebaseUser fbUser = firebaseAuth.getCurrentUser();
+        if (fbUser != null && fbUser.getPhotoUrl() != null) {
+            photoUrl = fbUser.getPhotoUrl().toString();
+        }
+
         prefs.edit()
                 .putInt("user_id",        user.id)
                 .putString("user_name",   user.fullName)
                 .putString("user_email",  user.email)
+                .putString("social_photo_url", photoUrl)
                 .putBoolean("isLoggedIn", true)
                 .apply();
     }

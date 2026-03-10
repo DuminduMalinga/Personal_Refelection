@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.personal_refelection.database.DashboardRepository;
 import com.example.personal_refelection.database.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 
@@ -48,6 +49,34 @@ public class ProfileActivity extends BaseActivity {
         userEmail = sharedPreferences.getString("user_email", "");
 
         if (userId == -1) {
+            // Check if Firebase has a current user (social login)
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser != null && fbUser.getEmail() != null) {
+                userEmail = fbUser.getEmail();
+                // Try to resolve the local user by email, then reload
+                userRepository.getUserByEmail(userEmail, user -> {
+                    if (user != null) {
+                        sharedPreferences.edit()
+                                .putInt("user_id", user.id)
+                                .putString("user_name", user.fullName)
+                                .putString("user_email", user.email)
+                                .putBoolean("isLoggedIn", true)
+                                .apply();
+                        // Restart this activity with the fixed session
+                        runOnUiThread(() -> {
+                            startActivity(new Intent(this, ProfileActivity.class));
+                            finish();
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            startActivity(new Intent(this, LoginActivity.class));
+                            finish();
+                        });
+                    }
+                });
+                return;
+            }
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
@@ -130,6 +159,9 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void performLogout() {
+        // Sign out from Firebase (covers Google + Facebook sessions)
+        FirebaseAuth.getInstance().signOut();
+
         // Reset dark mode to default before clearing prefs
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
@@ -151,8 +183,10 @@ public class ProfileActivity extends BaseActivity {
     }
 
     // ── Restore saved avatar ──────────────────────────────────────
+    // Priority: 1) local file, 2) social photo URL from Google/Facebook, 3) default
 
     private void restoreSavedAvatar() {
+        // 1 — User-selected local photo
         String savedPath = sharedPreferences.getString("avatar_path", null);
         if (savedPath != null) {
             File f = new File(savedPath);
@@ -164,8 +198,32 @@ public class ProfileActivity extends BaseActivity {
                             ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle));
                     ivProfileImage.setImageBitmap(bmp);
                     ivProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    return;
                 }
             }
+        }
+
+        // 2 — Google / Facebook social photo URL
+        String socialPhotoUrl = sharedPreferences.getString("social_photo_url", null);
+        if (socialPhotoUrl == null || socialPhotoUrl.isEmpty()) {
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser != null && fbUser.getPhotoUrl() != null) {
+                socialPhotoUrl = fbUser.getPhotoUrl().toString();
+            }
+        }
+
+        if (socialPhotoUrl != null && !socialPhotoUrl.isEmpty()) {
+            ivProfileImage.setPadding(0, 0, 0, 0);
+            ivProfileImage.setBackground(
+                    ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle));
+            ivProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            com.bumptech.glide.Glide.with(this)
+                    .load(socialPhotoUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
+                    .into(ivProfileImage);
         }
     }
 }

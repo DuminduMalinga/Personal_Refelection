@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "1029883663493",
+    "project_id": "personal-refelection",
+    "storage_bucket": "personal-refelection.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029883663493:android:REPLACE_WITH_YOUR_APP_ID",
+        "android_client_info": {
+          "package_name": "com.example.personal_refelection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1029883663493-9f1e0rsldjejjfmcduls5k3c54234sg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "REPLACE_WITH_YOUR_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+

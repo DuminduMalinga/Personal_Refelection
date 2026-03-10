@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -45,6 +46,9 @@ dependencies {
     implementation(libs.play.services.auth)
     // Facebook Login SDK
     implementation(libs.facebook.android.sdk)
+    // Firebase (BOM manages all Firebase library versions)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

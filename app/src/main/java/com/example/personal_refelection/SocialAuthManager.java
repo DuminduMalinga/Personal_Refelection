@@ -1,6 +1,5 @@
 package com.example.personal_refelection;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,14 +13,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 /**
- * Google Sign-In using the proven play-services-auth GoogleSignIn API.
- * Works on all Android devices that have Google Play Services.
+ * Firebase-backed social authentication.
  *
- * Usage:
- *   1. Call getGoogleSignInIntent() to get the Intent and launch it with startActivityForResult
- *   2. In onActivityResult pass the data to handleGoogleSignInResult()
+ * Google  → GoogleSignIn picks the account  → Firebase signInWithCredential
+ * Facebook → Facebook SDK returns AccessToken → Firebase signInWithCredential
+ *
+ * After Firebase auth succeeds, the user is found-or-created in the local Room DB
+ * so the rest of the app (goals, reflections, etc.) works completely offline too.
  */
 public class SocialAuthManager {
 
@@ -34,138 +39,160 @@ public class SocialAuthManager {
         void onError(String message);
     }
 
-    private final Context        context;
-    private final UserRepository userRepository;
+    private final Context           context;
+    private final UserRepository    userRepository;
     private final SharedPreferences prefs;
+    private final FirebaseAuth      firebaseAuth;
     private final GoogleSignInClient googleSignInClient;
 
     public SocialAuthManager(Context context) {
         this.context        = context;
         this.userRepository = new UserRepository(context);
         this.prefs          = context.getSharedPreferences("GoalReflectPrefs", Context.MODE_PRIVATE);
+        this.firebaseAuth   = FirebaseAuth.getInstance();
 
-        // Build GoogleSignInOptions with the Web Client ID
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.lbl_google_web_client_id))
+                .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .requestProfile()
                 .build();
-
         this.googleSignInClient = GoogleSignIn.getClient(context, gso);
     }
 
-    // ── Step 1: get the sign-in Intent ────────────────────────────
+    // ────────────────────────────────────────────────────────────
+    //  GOOGLE — Step 1: get Intent to launch account picker
+    // ────────────────────────────────────────────────────────────
 
-    /** Call this to launch the Google account picker */
     public Intent getGoogleSignInIntent() {
-        // Always sign out first so the picker always shows the account chooser
-        googleSignInClient.signOut();
+        googleSignInClient.signOut(); // always show picker
         return googleSignInClient.getSignInIntent();
     }
 
-    // ── Step 2: handle the result ─────────────────────────────────
+    // ────────────────────────────────────────────────────────────
+    //  GOOGLE — Step 2: handle result from onActivityResult
+    // ────────────────────────────────────────────────────────────
 
-    /** Call this from onActivityResult when requestCode == RC_GOOGLE_SIGN_IN */
     public void handleGoogleSignInResult(Intent data, SocialAuthCallback callback) {
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            String email    = account.getEmail();
-            String fullName = account.getDisplayName();
-            if (email == null) {
-                callback.onError("Google account has no email address.");
+            String idToken = account.getIdToken();
+            if (idToken == null) {
+                callback.onError("Google sign-in failed: no ID token received.");
                 return;
             }
-            if (fullName == null || fullName.isEmpty()) fullName = email;
-            String username = generateUsername(email);
-
-            Log.d(TAG, "Google sign-in OK  email=" + email + "  name=" + fullName);
-            findOrCreateSocialUser(email, fullName, username, "google_oauth", callback);
+            Log.d(TAG, "Google ID token received, authenticating with Firebase...");
+            AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+            firebaseSignIn(credential, callback);
 
         } catch (ApiException e) {
-            Log.e(TAG, "Google sign-in failed  code=" + e.getStatusCode() + "  msg=" + e.getMessage());
+            Log.e(TAG, "Google ApiException code=" + e.getStatusCode());
             if (e.getStatusCode() == 12501) {
-                // User pressed back / cancelled
                 callback.onCancelled();
             } else if (e.getStatusCode() == 10) {
-                // Developer error — SHA-1 not registered in Google Cloud Console
-                callback.onError("Configuration error (10): Please register the app SHA-1 in Google Cloud Console.");
-            } else if (e.getStatusCode() == 7) {
-                // Network error
-                callback.onError("Network error. Please check your internet connection.");
+                callback.onError("SHA-1 not registered in Firebase Console (code 10). See setup guide.");
             } else {
-                callback.onError("Google sign-in failed (code " + e.getStatusCode() + "). Check Logcat for details.");
+                callback.onError("Google sign-in failed (code " + e.getStatusCode() + ").");
             }
         }
     }
 
-    // ── Find-or-create social user in Room DB ─────────────────────
-    // Called on the MAIN thread → UserRepository callbacks are safe
+    // ────────────────────────────────────────────────────────────
+    //  FACEBOOK — call this with the AccessToken from Facebook SDK
+    // ────────────────────────────────────────────────────────────
 
-    public void findOrCreateSocialUser(String email, String fullName,
-                                        String username, String passwordToken,
-                                        SocialAuthCallback callback) {
+    public void handleFacebookAccessToken(com.facebook.AccessToken token, SocialAuthCallback callback) {
+        Log.d(TAG, "Facebook token received, authenticating with Firebase...");
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        firebaseSignIn(credential, callback);
+    }
 
+    // ────────────────────────────────────────────────────────────
+    //  SHARED — Firebase sign-in → find/create local Room user
+    // ────────────────────────────────────────────────────────────
+
+    private void firebaseSignIn(AuthCredential credential, SocialAuthCallback callback) {
+        firebaseAuth.signInWithCredential(credential)
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser fbUser = authResult.getUser();
+                    if (fbUser == null) {
+                        callback.onError("Firebase returned null user.");
+                        return;
+                    }
+                    String email    = fbUser.getEmail();
+                    String fullName = fbUser.getDisplayName();
+                    if (email == null) email = fbUser.getUid() + "@social.user";
+                    if (fullName == null || fullName.isEmpty()) fullName = email;
+
+                    Log.d(TAG, "Firebase auth OK  uid=" + fbUser.getUid() + "  email=" + email);
+                    String username = generateUsername(email);
+                    findOrCreateLocalUser(email, fullName, username, callback);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Firebase signInWithCredential failed: " + e.getMessage());
+                    callback.onError("Authentication failed: " + e.getMessage());
+                });
+    }
+
+    // ────────────────────────────────────────────────────────────
+    //  Find-or-create user in local Room DB (runs on main thread)
+    // ────────────────────────────────────────────────────────────
+
+    public void findOrCreateLocalUser(String email, String fullName,
+                                       String username, SocialAuthCallback callback) {
         String safeUsername = (username == null || username.length() < 3)
                 ? "user" + Math.abs(email.hashCode() % 10000) : username;
 
-        // 1 — Does the user already exist?
-        userRepository.getUserByEmail(email, existingUser -> {
-            if (existingUser != null) {
-                Log.d(TAG, "Social user exists, logging in: " + email);
-                saveSession(existingUser);
-                callback.onSuccess(existingUser);
+        userRepository.getUserByEmail(email, existing -> {
+            if (existing != null) {
+                Log.d(TAG, "Local user found, logging in: " + email);
+                saveSession(existing);
+                callback.onSuccess(existing);
                 return;
             }
 
-            // 2 — New user — register them
-            Log.d(TAG, "Social user not found, registering: " + email);
-            User newUser = new User(fullName, email, safeUsername, passwordToken);
+            Log.d(TAG, "Local user not found, creating: " + email);
+            User newUser = new User(fullName, email, safeUsername, "firebase_oauth");
             userRepository.register(newUser, result -> {
                 if (result > 0) {
-                    // 3 — Fetch the newly created user to get their DB id
                     userRepository.getUserByEmail(email, created -> {
                         if (created != null) {
-                            Log.d(TAG, "Registered user id=" + created.id);
                             saveSession(created);
                             callback.onSuccess(created);
                         } else {
                             callback.onError("Could not retrieve new account.");
                         }
                     });
-
                 } else if (result == -3) {
-                    // Username collision — retry with unique suffix
-                    String alt   = safeUsername + (System.currentTimeMillis() % 9000 + 1000);
-                    User   retry = new User(fullName, email, alt, passwordToken);
+                    String alt = safeUsername + (System.currentTimeMillis() % 9000 + 1000);
+                    User retry = new User(fullName, email, alt, "firebase_oauth");
                     userRepository.register(retry, r2 ->
                         userRepository.getUserByEmail(email, created -> {
                             if (created != null) { saveSession(created); callback.onSuccess(created); }
                             else callback.onError("Registration failed after username retry.");
                         })
                     );
-
                 } else if (result == -2) {
-                    // Email exists (race) — just log them in
-                    userRepository.getUserByEmail(email, existing -> {
-                        if (existing != null) { saveSession(existing); callback.onSuccess(existing); }
+                    userRepository.getUserByEmail(email, exists -> {
+                        if (exists != null) { saveSession(exists); callback.onSuccess(exists); }
                         else callback.onError("Account exists but could not be loaded.");
                     });
-
                 } else {
-                    callback.onError("Registration failed (code " + result + ").");
+                    callback.onError("Local registration failed (code " + result + ").");
                 }
             });
         });
     }
 
-    // ── Helpers ───────────────────────────────────────────────────
+    // ────────────────────────────────────────────────────────────
+    //  Helpers
+    // ────────────────────────────────────────────────────────────
 
     private void saveSession(User user) {
         prefs.edit()
-                .putInt("user_id",    user.id)
-                .putString("user_name",  user.fullName)
-                .putString("user_email", user.email)
+                .putInt("user_id",        user.id)
+                .putString("user_name",   user.fullName)
+                .putString("user_email",  user.email)
                 .putBoolean("isLoggedIn", true)
                 .apply();
     }

@@ -23,6 +23,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import androidx.core.content.FileProvider;
 
 import com.example.personal_refelection.database.UserRepository;
@@ -133,12 +136,36 @@ public class EditProfileActivity extends AppCompatActivity {
     // ── Restore saved avatar if any ───────────────────────────────
 
     private void restoreSavedAvatar() {
+        // 1 — Local file saved by user
         String savedPath = sharedPreferences.getString(PREF_AVATAR_PATH, null);
         if (savedPath != null) {
             File f = new File(savedPath);
             if (f.exists()) {
                 setAvatarFromFile(f);
+                return;
             }
+        }
+
+        // 2 — Google / Facebook social photo URL
+        String socialPhotoUrl = sharedPreferences.getString("social_photo_url", null);
+        if (socialPhotoUrl == null || socialPhotoUrl.isEmpty()) {
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser != null && fbUser.getPhotoUrl() != null) {
+                socialPhotoUrl = fbUser.getPhotoUrl().toString();
+            }
+        }
+
+        if (socialPhotoUrl != null && !socialPhotoUrl.isEmpty()) {
+            ivEditAvatar.setPadding(0, 0, 0, 0);
+            ivEditAvatar.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle));
+            ivEditAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(this)
+                    .load(socialPhotoUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
+                    .into(ivEditAvatar);
         }
     }
 

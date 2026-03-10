@@ -22,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.personal_refelection.database.DashboardRepository;
 import com.example.personal_refelection.database.Reflection;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -67,9 +68,17 @@ public class DashboardActivity extends BaseActivity {
 
         // Redirect to login if not logged in
         if (userId == -1) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
+            // Check Firebase for active social session
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser == null) {
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return;
+            }
+            // Firebase session exists but local prefs lost — will be fixed in SplashActivity
+            // Use Firebase display name as fallback
+            userName = fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "User";
         }
 
         bindViews();
@@ -91,10 +100,12 @@ public class DashboardActivity extends BaseActivity {
 
     /**
      * Load the saved profile avatar into the dashboard header icon.
-     * Falls back to the default ic_profile drawable if no photo is saved.
+     * Priority: 1) local file saved by user, 2) Google/Facebook photo URL, 3) default icon
      */
     private void loadProfileAvatar() {
         if (ivDashboardProfileImage == null) return;
+
+        // 1 — User-selected local photo (highest priority)
         String savedPath = sharedPreferences.getString("avatar_path", null);
         if (savedPath != null) {
             File f = new File(savedPath);
@@ -111,7 +122,34 @@ public class DashboardActivity extends BaseActivity {
                 }
             }
         }
-        // No saved avatar — restore default icon appearance
+
+        // 2 — Google / Facebook social photo URL
+        String socialPhotoUrl = sharedPreferences.getString("social_photo_url", null);
+        if (socialPhotoUrl == null || socialPhotoUrl.isEmpty()) {
+            // Also check FirebaseAuth directly in case prefs were lost
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser != null && fbUser.getPhotoUrl() != null) {
+                socialPhotoUrl = fbUser.getPhotoUrl().toString();
+            }
+        }
+
+        if (socialPhotoUrl != null && !socialPhotoUrl.isEmpty()) {
+            ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ivDashboardProfileImage.setBackground(
+                    ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle_white));
+            ivDashboardProfileImage.setPadding(0, 0, 0, 0);
+            ivDashboardProfileImage.setClipToOutline(true);
+            com.bumptech.glide.Glide.with(this)
+                    .load(socialPhotoUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
+                    .into(ivDashboardProfileImage);
+            return;
+        }
+
+        // 3 — Default icon fallback
         ivDashboardProfileImage.setImageResource(R.drawable.ic_profile);
         ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         int pad = Math.round(9 * getResources().getDisplayMetrics().density);
@@ -257,9 +295,10 @@ public class DashboardActivity extends BaseActivity {
      * Log out user and clear session data.
      */
     private void logout() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+        // Sign out from Firebase (covers Google + Facebook sessions)
+        FirebaseAuth.getInstance().signOut();
+
+        sharedPreferences.edit().clear().apply();
 
         Toast.makeText(this, "Logged out successfully 👋", Toast.LENGTH_SHORT).show();
 

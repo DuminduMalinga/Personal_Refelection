@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -39,7 +38,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ReflectionsActivity extends AppCompatActivity {
+public class ReflectionsActivity extends BaseActivity {
 
     // ── Views ──────────────────────────────────────────────────────────
     private TextInputLayout    tilReflectionContent;
@@ -79,6 +78,7 @@ public class ReflectionsActivity extends AppCompatActivity {
         goalDao        = db.goalDao();
 
         bindViews();
+        setupTopNav("MY REFLECTIONS");
         setupBack();
         loadGoalsForSpinner();
         loadAllReflections();

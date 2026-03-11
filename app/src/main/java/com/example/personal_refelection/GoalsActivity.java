@@ -86,6 +86,7 @@ public class GoalsActivity extends BaseActivity {
         goalDao = AppDatabase.getInstance(this).goalDao();
 
         bindViews();
+        setupTopNav("MY GOALS");
         setupRecycler();
         setupChips();
         setupFab();
@@ -97,6 +98,7 @@ public class GoalsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         loadGoals();
+        setupTopNav("MY GOALS");
     }
 
     // ── Bind ──────────────────────────────────────────────────────────────

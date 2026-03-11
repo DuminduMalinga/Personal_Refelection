@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared top navigation bar — NO background here, AppBarLayout provides it -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/topNavInclude"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="44dp"
+    android:paddingBottom="12dp">
+
+    <!-- Left: screen label + greeting + tagline -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/topNavScreenLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PERSONAL GOALS"
+            android:textColor="#AACCE0FF"
+            android:textSize="10sp"
+            android:letterSpacing="0.12"
+            android:textAllCaps="true"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:id="@+id/topNavGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Good Morning 👋"
+            android:textColor="#FFFFFF"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginTop="1dp" />
+
+        <TextView
+            android:id="@+id/topNavTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reflect. Improve. Achieve."
+            android:textColor="#99D0CFFF"
+            android:textSize="11sp"
+            android:layout_marginTop="1dp" />
+    </LinearLayout>
+
+    <!-- Right: profile avatar -->
+    <FrameLayout
+        android:id="@+id/topNavProfileIcon"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:background="@drawable/bg_avatar_ring"
+        android:clickable="true"
+        android:focusable="true">
+
+        <FrameLayout
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_avatar_circle_white">
+
+            <ImageView
+                android:id="@+id/topNavProfileImage"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:clipToOutline="true"
+                android:src="@drawable/ic_profile"
+                android:contentDescription="@string/content_desc_profile_icon" />
+        </FrameLayout>
+    </FrameLayout>
+
+</LinearLayout>

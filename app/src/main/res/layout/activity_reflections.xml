@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Sub-header: back + title + count + Add button -->
+        <!-- Sub-header: title + count -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,26 +34,6 @@
             android:paddingTop="4dp"
             android:paddingBottom="16dp">
 
-            <!-- Back -->
-            <FrameLayout
-                android:id="@+id/btnBack"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/bg_chip_inactive_pill"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginEnd="12dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="←"
-                    android:textSize="16sp"
-                    android:textColor="#6C63FF"
-                    android:textStyle="bold"
-                    android:clickable="false"
-                    android:focusable="false"/>
-            </FrameLayout>
 
             <!-- Title -->
             <LinearLayout
@@ -106,29 +86,6 @@
                     android:textColor="#6C63FF"/>
             </LinearLayout>
 
-            <!-- ++ Add Reflection button in header -->
-            <LinearLayout
-                android:id="@+id/btnAddReflectionHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:background="@drawable/bg_chip_active_pill"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:clickable="true"
-                android:focusable="true">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="+ Add"
-                    android:textColor="#FFFFFF"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium"
-                    android:clickable="false"
-                    android:focusable="false"/>
-            </LinearLayout>
 
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -258,7 +215,7 @@
         android:layout_height="54dp"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="90dp"
         android:background="@drawable/bg_fab_goals"
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -285,5 +242,13 @@
             android:textColor="#FFFFFF"
             android:fontFamily="sans-serif-medium"/>
     </LinearLayout>
+
+    <!-- ══ Bottom Nav ══ -->
+    <include
+        android:id="@+id/bottomNavInclude"
+        layout="@layout/layout_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

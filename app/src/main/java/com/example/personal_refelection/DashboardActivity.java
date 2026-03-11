@@ -5,12 +5,17 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,16 +25,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.personal_refelection.database.AppDatabase;
 import com.example.personal_refelection.database.DashboardRepository;
+import com.example.personal_refelection.database.Goal;
+import com.example.personal_refelection.database.GoalDao;
 import com.example.personal_refelection.database.Reflection;
+import com.example.personal_refelection.database.ReflectionDao;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Dashboard screen showing overview of user's personal growth journey.
@@ -43,6 +58,14 @@ public class DashboardActivity extends BaseActivity {
 
     private DashboardRepository dashboardRepository;
     private SharedPreferences sharedPreferences;
+
+    private ReflectionDao reflectionDao;
+    private GoalDao goalDao;
+    private List<Goal> cachedGoals = new ArrayList<>();
+    private String selectedMood = "";
+
+    private final ExecutorService executor    = Executors.newSingleThreadExecutor();
+    private final Handler         mainHandler = new Handler(Looper.getMainLooper());
 
     private int userId;
     private String userName;
@@ -61,6 +84,10 @@ public class DashboardActivity extends BaseActivity {
 
         dashboardRepository = new DashboardRepository(this);
         sharedPreferences = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
+
+        AppDatabase db = AppDatabase.getInstance(this);
+        reflectionDao  = db.reflectionDao();
+        goalDao        = db.goalDao();
 
         // Get user info from SharedPreferences
         userId = sharedPreferences.getInt("user_id", -1);
@@ -194,6 +221,10 @@ public class DashboardActivity extends BaseActivity {
         View seeAll = findViewById(R.id.tvSeeAllReflections);
         if (seeAll != null) seeAll.setOnClickListener(v -> openReflections());
 
+        // "+ Add" button next to Recent Reflections → open bottom sheet
+        View btnDashAdd = findViewById(R.id.btnDashAddReflection);
+        if (btnDashAdd != null) btnDashAdd.setOnClickListener(v -> openAddReflectionSheet());
+
         // Shared bottom nav – BaseActivity handles all nav item wiring
         setupBottomNav(R.id.navDashboard);
 
@@ -202,6 +233,109 @@ public class DashboardActivity extends BaseActivity {
             startActivity(new Intent(this, ProfileActivity.class));
             overridePendingTransition(0, 0);
         });
+    }
+
+    /**
+     * Open the Add Reflection bottom sheet directly from Dashboard.
+     */
+    private void openAddReflectionSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View sheetView = LayoutInflater.from(this)
+                .inflate(R.layout.bottom_sheet_add_reflection, null);
+        sheet.setContentView(sheetView);
+
+        TextInputLayout   tilContent    = sheetView.findViewById(R.id.tilSheetReflectionContent);
+        TextInputEditText etContent     = sheetView.findViewById(R.id.etSheetReflectionContent);
+        Spinner           spinnerGoal   = sheetView.findViewById(R.id.sheetSpinnerGoal);
+        View              btnSave       = sheetView.findViewById(R.id.btnSheetSaveReflection);
+        View              btnClose      = sheetView.findViewById(R.id.btnCloseSheet);
+
+        TextView moodHappy     = sheetView.findViewById(R.id.moodHappy);
+        TextView moodNeutral   = sheetView.findViewById(R.id.moodNeutral);
+        TextView moodSad       = sheetView.findViewById(R.id.moodSad);
+        TextView moodMotivated = sheetView.findViewById(R.id.moodMotivated);
+
+        selectedMood = "";
+        setupMoodButtons(moodHappy, moodNeutral, moodSad, moodMotivated);
+
+        // Load goals into spinner
+        executor.execute(() -> {
+            List<Goal> active   = goalDao.getActiveGoals(userId);
+            List<Goal> achieved = goalDao.getAchievedGoals(userId);
+            cachedGoals = new ArrayList<>();
+            cachedGoals.addAll(active);
+            cachedGoals.addAll(achieved);
+
+            List<String> titles = new ArrayList<>();
+            titles.add("— No goal linked —");
+            for (Goal g : cachedGoals) titles.add(g.title);
+
+            mainHandler.post(() -> {
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        this, android.R.layout.simple_spinner_item, titles);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerGoal.setAdapter(adapter);
+            });
+        });
+
+        btnClose.setOnClickListener(v -> sheet.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            String content = etContent.getText() != null
+                    ? etContent.getText().toString().trim() : "";
+
+            if (TextUtils.isEmpty(content)) {
+                tilContent.setError("Please write something to reflect on");
+                etContent.requestFocus();
+                return;
+            }
+            tilContent.setError(null);
+
+            int selectedPos = spinnerGoal.getSelectedItemPosition();
+            final int goalId;
+            if (selectedPos > 0 && selectedPos - 1 < cachedGoals.size()) {
+                goalId = cachedGoals.get(selectedPos - 1).id;
+            } else {
+                if (cachedGoals.isEmpty()) {
+                    Toast.makeText(this, "Please create a goal first!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                goalId = cachedGoals.get(0).id;
+            }
+
+            String moodTag = selectedMood.isEmpty() ? "" : " " + selectedMood;
+            Reflection reflection = new Reflection(goalId, content + moodTag);
+
+            executor.execute(() -> {
+                reflectionDao.insertReflection(reflection);
+                mainHandler.post(() -> {
+                    Toast.makeText(this, "Reflection saved! 💡", Toast.LENGTH_SHORT).show();
+                    sheet.dismiss();
+                    loadDashboardData(); // refresh counts + recent list
+                });
+            });
+        });
+
+        sheet.show();
+    }
+
+    private void setupMoodButtons(TextView happy, TextView neutral, TextView sad, TextView motivated) {
+        View.OnClickListener listener = v -> {
+            resetMoodBg(happy, neutral, sad, motivated);
+            ((TextView) v).setBackgroundResource(R.drawable.bg_chip_active_pill);
+            if      (v.getId() == R.id.moodHappy)     selectedMood = "😊";
+            else if (v.getId() == R.id.moodNeutral)   selectedMood = "😐";
+            else if (v.getId() == R.id.moodSad)       selectedMood = "😔";
+            else if (v.getId() == R.id.moodMotivated) selectedMood = "🔥";
+        };
+        happy.setOnClickListener(listener);
+        neutral.setOnClickListener(listener);
+        sad.setOnClickListener(listener);
+        motivated.setOnClickListener(listener);
+    }
+
+    private void resetMoodBg(TextView... views) {
+        for (TextView tv : views) tv.setBackgroundResource(R.drawable.bg_chip_inactive_pill);
     }
 
     /**
@@ -289,6 +423,12 @@ public class DashboardActivity extends BaseActivity {
         // Refresh data when returning to dashboard
         loadDashboardData();
         loadProfileAvatar();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdownNow();
     }
 
     @Override

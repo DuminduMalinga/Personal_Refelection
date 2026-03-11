@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,7 +29,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class AddGoalActivity extends AppCompatActivity {
+public class AddGoalActivity extends BaseActivity {
 
     public static final String EXTRA_GOAL_ID    = "goal_id";
     public static final String EXTRA_GOAL_TITLE = "goal_title";
@@ -43,7 +42,7 @@ public class AddGoalActivity extends AppCompatActivity {
     private TextView           tvHeaderLabel, tvHeaderTitle, tvHeaderSubtitle;
     private TextView           tvProgressValue;
     private Button             chipLow, chipMedium, chipHigh;
-    private Button             chipCatHealth, chipCatStudy, chipCatCareer,
+    private TextView           chipCatHealth, chipCatStudy, chipCatCareer,
                                chipCatPersonal, chipCatFinance, chipCatOther;
     private Button             btnPickDate, btnSaveGoal;
     private SeekBar            seekBarProgress;
@@ -93,6 +92,8 @@ public class AddGoalActivity extends AppCompatActivity {
         }
 
         bindViews();
+        setupTopNav("MY GOALS");
+        setupBottomNav(R.id.navGoals);
         setupHeaderMode();
         setupCategoryChips();
         setupPriorityChips();
@@ -100,7 +101,6 @@ public class AddGoalActivity extends AppCompatActivity {
         setupDatePicker();
         setupReminder();
         setupSave();
-        setupBack();
 
         if (isEditMode) prefillFields();
     }
@@ -126,8 +126,7 @@ public class AddGoalActivity extends AppCompatActivity {
         chipCatCareer     = findViewById(R.id.chipCatCareer);
         chipCatPersonal   = findViewById(R.id.chipCatPersonal);
         chipCatFinance    = findViewById(R.id.chipCatFinance);
-        chipCatOther      = findViewById(R.id.chipCatOther);
-    }
+        chipCatOther      = findViewById(R.id.chipCatOther);    }
 
     // ── Header ─────────────────────────────────────────────────────────
     private void setupHeaderMode() {
@@ -141,8 +140,8 @@ public class AddGoalActivity extends AppCompatActivity {
 
     // ── Category Chips ─────────────────────────────────────────────────
     private void setupCategoryChips() {
-        Button[] cats = {chipCatHealth, chipCatStudy, chipCatCareer,
-                         chipCatPersonal, chipCatFinance, chipCatOther};
+        TextView[] cats = {chipCatHealth, chipCatStudy, chipCatCareer,
+                           chipCatPersonal, chipCatFinance, chipCatOther};
         String[] labels = {"Health","Study","Career","Personal","Finance","Other"};
         for (int i = 0; i < cats.length; i++) {
             final String cat = labels[i];
@@ -152,16 +151,15 @@ public class AddGoalActivity extends AppCompatActivity {
 
     private void selectCategory(String cat) {
         selectedCategory = cat;
-        Button[] chips  = {chipCatHealth, chipCatStudy, chipCatCareer,
-                           chipCatPersonal, chipCatFinance, chipCatOther};
-        String[] labels = {"Health","Study","Career","Personal","Finance","Other"};
+        TextView[] chips = {chipCatHealth, chipCatStudy, chipCatCareer,
+                            chipCatPersonal, chipCatFinance, chipCatOther};
+        String[] labels  = {"Health","Study","Career","Personal","Finance","Other"};
         for (int i = 0; i < chips.length; i++) {
             boolean sel = labels[i].equals(cat);
             chips[i].setBackgroundResource(sel
                     ? R.drawable.bg_category_chip_selected
                     : R.drawable.bg_category_chip_unselected);
-            // Use ColorStateList.valueOf to force-override Material Button text color
-            chips[i].setTextColor(ColorStateList.valueOf(sel ? COLOR_WHITE : 0xFF1A1A2E));
+            chips[i].setTextColor(sel ? COLOR_WHITE : COLOR_PURPLE);
         }
     }
 
@@ -333,13 +331,6 @@ public class AddGoalActivity extends AppCompatActivity {
         }
     }
 
-    // ── Back ───────────────────────────────────────────────────────────
-    private void setupBack() {
-        findViewById(R.id.btnBack).setOnClickListener(v -> finishWithAnimation());
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override public void handleOnBackPressed() { finishWithAnimation(); }
-        });
-    }
 
     private void finishWithAnimation() {
         finish();

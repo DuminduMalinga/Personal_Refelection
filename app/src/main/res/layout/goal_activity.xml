@@ -120,97 +120,154 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="14dp"
-                android:paddingBottom="6dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:weightSum="2">
 
-                <LinearLayout
+                <!-- Active Goals card -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_goals_stat_card"
-                    android:padding="16dp"
                     android:layout_marginEnd="8dp"
-                    android:elevation="3dp">
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#6C63FF">
 
-                    <FrameLayout
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_stat_card_blue">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_target"
-                            android:scaleType="fitCenter"
-                            android:contentDescription="@string/content_desc_target_icon" />
-                    </FrameLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvHeaderActiveCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="30sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_green"
-                        android:fontFamily="sans-serif-medium"
-                        android:layout_marginTop="8dp" />
+                        <!-- Top section: icon + count -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lbl_active_goals"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="2dp" />
-                </LinearLayout>
+                            <FrameLayout
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:background="@drawable/bg_stat_icon_circle">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_target"
+                                    android:scaleType="fitCenter"
+                                    app:tint="#FFFFFF"
+                                    android:contentDescription="@string/content_desc_target_icon" />
+                            </FrameLayout>
 
-                <LinearLayout
+                            <TextView
+                                android:id="@+id/tvHeaderActiveCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="0"
+                                android:textColor="#FFFFFF"
+                                android:textSize="36sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Bottom tab: label -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="#33000000"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Active Goals"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF"
+                                android:fontFamily="sans-serif-medium"
+                                android:letterSpacing="0.04"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Achieved Goals card -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_goals_stat_card"
-                    android:padding="16dp"
                     android:layout_marginStart="8dp"
-                    android:elevation="3dp">
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#06D6A0">
 
-                    <FrameLayout
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_stat_card_green">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_check_circle"
-                            android:scaleType="fitCenter"
-                            android:contentDescription="@string/content_desc_check_icon" />
-                    </FrameLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvHeaderAchievedCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="30sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/stat_green"
-                        android:fontFamily="sans-serif-medium"
-                        android:layout_marginTop="8dp" />
+                        <!-- Top section: icon + count -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lbl_achieved_goals"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="2dp" />
-                </LinearLayout>
+                            <FrameLayout
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:background="@drawable/bg_stat_icon_circle">
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_check_circle"
+                                    android:scaleType="fitCenter"
+                                    app:tint="#FFFFFF"
+                                    android:contentDescription="@string/content_desc_check_icon" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:id="@+id/tvHeaderAchievedCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="36sp"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF"
+                                android:fontFamily="sans-serif-medium"
+                                android:layout_marginTop="6dp"/>
+                        </LinearLayout>
+
+                        <!-- Bottom tab: label -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="#33000000"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Achieved Goals"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="#FFFFFF"
+                                android:fontFamily="sans-serif-medium"
+                                android:letterSpacing="0.04"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
             </LinearLayout>
 
             <!-- ── Goals RecyclerView ── -->
@@ -306,22 +363,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:gravity="center"
-            android:includeFontPadding="false" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/btn_add_goal"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginStart="8dp" />
+            android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
     <!-- ══ Bottom Nav ══ -->

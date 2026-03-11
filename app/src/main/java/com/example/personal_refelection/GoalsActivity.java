@@ -1,8 +1,8 @@
 package com.example.personal_refelection;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -60,9 +62,14 @@ public class GoalsActivity extends BaseActivity {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    // ── Chip colours ──────────────────────────────────────────────────────
-    private static final int COLOR_CHIP_SELECTED_TEXT   = 0xFFFFFFFF;
-    private static final int COLOR_CHIP_UNSELECTED_TEXT = 0xFF6B7280;
+    // ── Launcher ──────────────────────────────────────────────────────────
+    private final ActivityResultLauncher<Intent> addGoalLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    loadGoals(); // refresh after goal added
+                }
+            });
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +117,7 @@ public class GoalsActivity extends BaseActivity {
         // Empty state button
         View btnAddEmpty = findViewById(R.id.btnAddGoalEmpty);
         if (btnAddEmpty != null) {
-            btnAddEmpty.setOnClickListener(v -> showAddEditDialog(null));
+            btnAddEmpty.setOnClickListener(v -> openAddGoalScreen());
         }
     }
 
@@ -132,7 +139,13 @@ public class GoalsActivity extends BaseActivity {
     }
 
     private void setupFab() {
-        fabAddGoal.setOnClickListener(v -> showAddEditDialog(null));
+        fabAddGoal.setOnClickListener(v -> openAddGoalScreen());
+    }
+
+    private void openAddGoalScreen() {
+        Intent intent = new Intent(this, AddGoalActivity.class);
+        addGoalLauncher.launch(intent);
+        overridePendingTransition(android.R.anim.fade_in, 0);
     }
 
     // ── Filter ────────────────────────────────────────────────────────────

@@ -214,10 +214,8 @@ public class DashboardActivity extends BaseActivity {
             overridePendingTransition(0, 0);
         });
 
-        // Total Reflections card → open ReflectionsActivity
-        findViewById(R.id.cardTotalReflections).setOnClickListener(v -> openReflections());
 
-        // "See All" text next to Recent Reflections
+        // "See All" → navigate to ReflectionsActivity to see full list
         View seeAll = findViewById(R.id.tvSeeAllReflections);
         if (seeAll != null) seeAll.setOnClickListener(v -> openReflections());
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camera temp files stored in app's cache directory -->
+    <cache-path
+        name="camera_images"
+        path="images/" />
+    <!-- Also expose external files dir for broader compatibility -->
+    <external-files-path
+        name="external_images"
+        path="Pictures/" />
+</paths>
+

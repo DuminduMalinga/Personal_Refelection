@@ -2,28 +2,29 @@ package com.example.personal_refelection;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.personal_refelection.database.DashboardRepository;
 import com.example.personal_refelection.database.Reflection;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,14 +33,13 @@ import java.util.Locale;
 
 /**
  * Dashboard screen showing overview of user's personal growth journey.
- * Displays active goals, achieved goals, total reflections, and recent activity.
  */
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends BaseActivity {
 
     private TextView tvGreeting, tvActiveGoalsCount, tvAchievedGoalsCount, tvTotalReflectionsCount;
     private TextView tvNoReflections;
     private LinearLayout recentReflectionsContainer;
-    private BottomNavigationView bottomNavigation;
+    private ImageView ivDashboardProfileImage;
 
     private DashboardRepository dashboardRepository;
     private SharedPreferences sharedPreferences;
@@ -55,7 +55,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dashboardRoot), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
@@ -68,12 +68,21 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Redirect to login if not logged in
         if (userId == -1) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
+            // Check Firebase for active social session
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser == null) {
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return;
+            }
+            // Firebase session exists but local prefs lost — will be fixed in SplashActivity
+            // Use Firebase display name as fallback
+            userName = fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "User";
         }
 
         bindViews();
+        loadProfileAvatar();
         setupGreeting();
         setupClickListeners();
         loadDashboardData();
@@ -86,7 +95,65 @@ public class DashboardActivity extends AppCompatActivity {
         tvTotalReflectionsCount = findViewById(R.id.tvTotalReflectionsCount);
         tvNoReflections = findViewById(R.id.tvNoReflections);
         recentReflectionsContainer = findViewById(R.id.recentReflectionsContainer);
-        bottomNavigation = findViewById(R.id.bottomNavigation);
+        ivDashboardProfileImage = findViewById(R.id.ivDashboardProfileImage);
+    }
+
+    /**
+     * Load the saved profile avatar into the dashboard header icon.
+     * Priority: 1) local file saved by user, 2) Google/Facebook photo URL, 3) default icon
+     */
+    private void loadProfileAvatar() {
+        if (ivDashboardProfileImage == null) return;
+
+        // 1 — User-selected local photo (highest priority)
+        String savedPath = sharedPreferences.getString("avatar_path", null);
+        if (savedPath != null) {
+            File f = new File(savedPath);
+            if (f.exists()) {
+                Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
+                if (bmp != null) {
+                    ivDashboardProfileImage.setImageBitmap(bmp);
+                    ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    ivDashboardProfileImage.setBackground(
+                            ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle_white));
+                    ivDashboardProfileImage.setPadding(0, 0, 0, 0);
+                    ivDashboardProfileImage.setClipToOutline(true);
+                    return;
+                }
+            }
+        }
+
+        // 2 — Google / Facebook social photo URL
+        String socialPhotoUrl = sharedPreferences.getString("social_photo_url", null);
+        if (socialPhotoUrl == null || socialPhotoUrl.isEmpty()) {
+            // Also check FirebaseAuth directly in case prefs were lost
+            com.google.firebase.auth.FirebaseUser fbUser =
+                    com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (fbUser != null && fbUser.getPhotoUrl() != null) {
+                socialPhotoUrl = fbUser.getPhotoUrl().toString();
+            }
+        }
+
+        if (socialPhotoUrl != null && !socialPhotoUrl.isEmpty()) {
+            ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ivDashboardProfileImage.setBackground(
+                    ContextCompat.getDrawable(this, R.drawable.bg_avatar_circle_white));
+            ivDashboardProfileImage.setPadding(0, 0, 0, 0);
+            ivDashboardProfileImage.setClipToOutline(true);
+            com.bumptech.glide.Glide.with(this)
+                    .load(socialPhotoUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
+                    .into(ivDashboardProfileImage);
+            return;
+        }
+
+        // 3 — Default icon fallback
+        ivDashboardProfileImage.setImageResource(R.drawable.ic_profile);
+        ivDashboardProfileImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        int pad = Math.round(9 * getResources().getDisplayMetrics().density);
+        ivDashboardProfileImage.setPadding(pad, pad, pad, pad);
     }
 
     /**
@@ -105,66 +172,28 @@ public class DashboardActivity extends AppCompatActivity {
             greeting = getString(R.string.greeting_evening);
         }
 
-        tvGreeting.setText(greeting + ", " + userName + " 👋");
-    }
-
-    /**
-     * Animate stat cards with staggered fade-in effect.
-     */
-    private void animateCards() {
-        Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
-
-        findViewById(R.id.cardActiveGoals).startAnimation(scaleUp);
-
-        findViewById(R.id.cardAchievedGoals).postDelayed(() -> {
-            Animation scaleUp2 = AnimationUtils.loadAnimation(this, R.anim.scale_up);
-            findViewById(R.id.cardAchievedGoals).startAnimation(scaleUp2);
-        }, 100);
-
-        findViewById(R.id.cardTotalReflections).postDelayed(() -> {
-            Animation scaleUp3 = AnimationUtils.loadAnimation(this, R.anim.scale_up);
-            findViewById(R.id.cardTotalReflections).startAnimation(scaleUp3);
-        }, 200);
+        tvGreeting.setText(getString(R.string.greeting_format, greeting, userName));
     }
 
     private void setupClickListeners() {
 
         findViewById(R.id.btnViewGoals).setOnClickListener(v -> {
-            // TODO: Navigate to Goals screen
-            Toast.makeText(this, "Goals screen coming soon! 📋", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, GoalsActivity.class));
+            overridePendingTransition(0, 0);
         });
 
         findViewById(R.id.btnViewAchieved).setOnClickListener(v -> {
-            // TODO: Navigate to Achieved screen
-            Toast.makeText(this, "Achieved screen coming soon! 🏆", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, AchievedActivity.class));
+            overridePendingTransition(0, 0);
         });
 
-        // Bottom Navigation
-        bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+        // Shared bottom nav – BaseActivity handles all nav item wiring
+        setupBottomNav(R.id.navDashboard);
 
-            if (itemId == R.id.nav_dashboard) {
-                return true; // Already on dashboard
-            } else if (itemId == R.id.nav_goals) {
-                Toast.makeText(this, "Goals screen coming soon! 📋", Toast.LENGTH_SHORT).show();
-                return false;
-            } else if (itemId == R.id.nav_add) {
-                Toast.makeText(this, "Add Goal feature coming soon! 🎯", Toast.LENGTH_SHORT).show();
-                return false;
-            } else if (itemId == R.id.nav_achieved) {
-                Toast.makeText(this, "Achieved screen coming soon! 🏆", Toast.LENGTH_SHORT).show();
-                return false;
-            } else if (itemId == R.id.nav_profile) {
-                Toast.makeText(this, "Profile screen coming soon! 👤", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            return false;
-        });
-
-        // Profile icon click
+        // Profile icon in header
         findViewById(R.id.ivProfileIcon).setOnClickListener(v -> {
-            Toast.makeText(this, "Profile screen coming soon! 👤", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, ProfileActivity.class));
+            overridePendingTransition(0, 0);
         });
     }
 
@@ -244,6 +273,7 @@ public class DashboardActivity extends AppCompatActivity {
         super.onResume();
         // Refresh data when returning to dashboard
         loadDashboardData();
+        loadProfileAvatar();
     }
 
     @Override
@@ -265,9 +295,10 @@ public class DashboardActivity extends AppCompatActivity {
      * Log out user and clear session data.
      */
     private void logout() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+        // Sign out from Firebase (covers Google + Facebook sessions)
+        FirebaseAuth.getInstance().signOut();
+
+        sharedPreferences.edit().clear().apply();
 
         Toast.makeText(this, "Logged out successfully 👋", Toast.LENGTH_SHORT).show();
 
@@ -277,4 +308,3 @@ public class DashboardActivity extends AppCompatActivity {
         finish();
     }
 }
-

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- White plus cross for the 3D FAB button -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="30dp"
+    android:height="30dp"
+    android:viewportWidth="30"
+    android:viewportHeight="30">
+
+    <!-- Horizontal bar with slight 3D depth shadow -->
+    <path
+        android:pathData="M7,16.5 L23,16.5"
+        android:strokeColor="#00000033"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+    <!-- Vertical bar shadow -->
+    <path
+        android:pathData="M16.5,7 L16.5,23"
+        android:strokeColor="#00000033"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+
+    <!-- Horizontal bar white -->
+    <path
+        android:pathData="M7,15.5 L23,15.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+    <!-- Vertical bar white -->
+    <path
+        android:pathData="M15.5,7 L15.5,23"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"/>
+
+    <!-- Top-left shine on the cross -->
+    <path
+        android:pathData="M13,8 L13,10"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.45"/>
+</vector>
+

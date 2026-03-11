@@ -187,6 +187,13 @@ public class DashboardActivity extends BaseActivity {
             overridePendingTransition(0, 0);
         });
 
+        // Total Reflections card → open ReflectionsActivity
+        findViewById(R.id.cardTotalReflections).setOnClickListener(v -> openReflections());
+
+        // "See All" text next to Recent Reflections
+        View seeAll = findViewById(R.id.tvSeeAllReflections);
+        if (seeAll != null) seeAll.setOnClickListener(v -> openReflections());
+
         // Shared bottom nav – BaseActivity handles all nav item wiring
         setupBottomNav(R.id.navDashboard);
 
@@ -195,6 +202,14 @@ public class DashboardActivity extends BaseActivity {
             startActivity(new Intent(this, ProfileActivity.class));
             overridePendingTransition(0, 0);
         });
+    }
+
+    /**
+     * Navigate to the Reflections screen.
+     */
+    private void openReflections() {
+        startActivity(new Intent(this, ReflectionsActivity.class));
+        overridePendingTransition(0, 0);
     }
 
     /**

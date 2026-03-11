@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/card_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+        <!-- Top row: date + delete -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <!-- Accent dot -->
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/bg_reflection_accent"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:id="@+id/tvReflectionDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Today at 2:30 PM"
+                android:textColor="@color/primary_green"
+                android:textSize="11sp"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.04"/>
+
+            <!-- Delete button -->
+            <FrameLayout
+                android:id="@+id/btnDeleteReflection"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_logout_icon"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="✕"
+                    android:textSize="12sp"
+                    android:textColor="#FF4757"
+                    android:clickable="false"
+                    android:focusable="false"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Content -->
+        <TextView
+            android:id="@+id/tvReflectionContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reflection content goes here..."
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
+            android:fontFamily="sans-serif"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+

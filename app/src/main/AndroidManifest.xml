@@ -120,6 +120,11 @@
             android:name=".AboutAppActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ReflectionsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- FileProvider for camera capture URI -->
         <provider
             android:name="androidx.core.content.FileProvider"

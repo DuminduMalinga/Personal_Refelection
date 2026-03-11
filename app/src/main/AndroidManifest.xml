@@ -92,6 +92,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".AddGoalActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".AchievedActivity"
             android:exported="false" />
 

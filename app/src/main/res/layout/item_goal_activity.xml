@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
+    android:layout_marginBottom="14dp"
     app:cardCornerRadius="20dp"
-    app:cardElevation="0dp"
+    app:cardElevation="2dp"
     app:cardBackgroundColor="@color/card_background">
 
     <LinearLayout
@@ -15,73 +15,182 @@
         android:orientation="vertical"
         android:padding="18dp">
 
-        <!-- Goal Title -->
-        <TextView
-            android:id="@+id/tvGoalTitle"
+        <!-- Top row: Icon + Title + Status badge -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Goal Title"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginBottom="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <!-- Goal Description -->
-        <TextView
-            android:id="@+id/tvGoalDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Goal Description"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            android:lineSpacingExtra="2dp" />
+            <!-- Goal icon -->
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_goal_icon">
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_flag"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Goal" />
+            </FrameLayout>
 
-        <!-- Left accent bar -->
+            <!-- Title + description -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:id="@+id/tvGoalTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Goal Title"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tvGoalDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Goal description goes here"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="3dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="1dp" />
+            </LinearLayout>
+
+            <!-- Status badge -->
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/stat_blue"
+                android:fontFamily="sans-serif-medium"
+                android:background="@drawable/bg_goal_status_active"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
+        </LinearLayout>
+
+        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="14dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="12dp"
             android:background="@color/divider" />
 
-        <!-- Buttons Row -->
+        <!-- Bottom row: Action buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end">
 
-            <ImageButton
+            <!-- Edit button -->
+            <LinearLayout
                 android:id="@+id/btnEdit"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:background="@drawable/bg_stat_card_blue"
-                android:contentDescription="Edit"
-                android:src="@drawable/ic_edit_blue"
-                android:scaleType="center"
-                android:layout_marginStart="8dp" />
-
-            <ImageButton
-                android:id="@+id/btnDelete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_logout_icon"
-                android:contentDescription="Delete"
-                android:src="@android:drawable/ic_delete"
-                android:scaleType="center"
-                android:layout_marginStart="8dp" />
-
-            <ImageButton
-                android:id="@+id/btnMarkAchieved"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_stat_card_green"
-                android:contentDescription="Mark Achieved"
-                android:src="@drawable/ic_check_circle"
-                android:scaleType="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
                 android:layout_marginStart="8dp"
-                app:tint="@color/stat_green" />
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_edit_blue"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Edit" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/stat_blue"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginStart="5dp" />
+            </LinearLayout>
+
+            <!-- Delete button -->
+            <LinearLayout
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_logout_icon"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@android:drawable/ic_delete"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Delete" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/profile_logout_red"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginStart="5dp" />
+            </LinearLayout>
+
+            <!-- Mark Achieved button -->
+            <LinearLayout
+                android:id="@+id/btnMarkAchieved"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_stat_card_green"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_check_circle"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Mark Achieved" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/stat_green"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginStart="5dp" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

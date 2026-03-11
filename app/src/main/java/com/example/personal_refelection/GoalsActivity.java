@@ -151,11 +151,13 @@ public class GoalsActivity extends BaseActivity {
 
     private void styleChip(TextView chip, boolean selected) {
         if (selected) {
-            chip.setBackgroundResource(R.drawable.bg_chip_selected);
-            chip.setTextColor(COLOR_CHIP_SELECTED_TEXT);
+            chip.setBackgroundResource(R.drawable.bg_chip_active_pill);
+            chip.setTextColor(0xFFFFFFFF);
+            chip.setAlpha(1.0f);
         } else {
-            chip.setBackgroundResource(R.drawable.bg_chip_unselected);
-            chip.setTextColor(COLOR_CHIP_UNSELECTED_TEXT);
+            chip.setBackgroundResource(R.drawable.bg_avatar_circle_white);
+            chip.setTextColor(0xFFFFFFFF);
+            chip.setAlpha(0.70f);
         }
     }
 

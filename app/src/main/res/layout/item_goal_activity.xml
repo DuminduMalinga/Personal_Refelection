@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="14dp"
-    app:cardCornerRadius="20dp"
+    app:cardCornerRadius="22dp"
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/card_background">
 
@@ -15,17 +15,17 @@
         android:orientation="vertical"
         android:padding="18dp">
 
-        <!-- Top row: Icon + Title + Status badge -->
+        <!-- Top row: Icon + Title/Desc + Status badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- Goal icon -->
+            <!-- Accent icon box -->
             <FrameLayout
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
                 android:background="@drawable/bg_goal_icon">
                 <ImageView
                     android:layout_width="22dp"
@@ -33,16 +33,16 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_flag"
                     android:scaleType="fitCenter"
-                    android:contentDescription="Goal" />
+                    android:contentDescription="@string/content_desc_target_icon" />
             </FrameLayout>
 
-            <!-- Title + description -->
+            <!-- Title + Description -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="13dp"
                 android:layout_marginEnd="8dp">
 
                 <TextView
@@ -61,33 +61,33 @@
                     android:id="@+id/tvGoalDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Goal description goes here"
+                    android:text="Goal description"
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
                     android:layout_marginTop="3dp"
                     android:maxLines="2"
                     android:ellipsize="end"
-                    android:lineSpacingExtra="1dp" />
+                    android:lineSpacingExtra="2dp" />
             </LinearLayout>
 
-            <!-- Status badge -->
+            <!-- Status pill -->
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Active"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
-                android:textColor="@color/stat_blue"
+                android:textColor="@color/primary_green"
                 android:fontFamily="sans-serif-medium"
                 android:background="@drawable/bg_goal_status_active"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp" />
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
         </LinearLayout>
 
-        <!-- Divider -->
+        <!-- Thin divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -95,18 +95,18 @@
             android:layout_marginBottom="12dp"
             android:background="@color/divider" />
 
-        <!-- Bottom row: Action buttons -->
+        <!-- Action buttons row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end">
 
-            <!-- Edit button -->
+            <!-- Edit -->
             <LinearLayout
                 android:id="@+id/btnEdit"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_stat_card_blue"
@@ -116,11 +116,11 @@
                 android:clickable="true"
                 android:focusable="true">
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:src="@drawable/ic_edit_blue"
                     android:scaleType="fitCenter"
-                    android:contentDescription="Edit" />
+                    android:contentDescription="@string/lbl_edit_profile" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -132,11 +132,11 @@
                     android:layout_marginStart="5dp" />
             </LinearLayout>
 
-            <!-- Delete button -->
+            <!-- Delete -->
             <LinearLayout
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_logout_icon"
@@ -146,11 +146,11 @@
                 android:clickable="true"
                 android:focusable="true">
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:src="@android:drawable/ic_delete"
                     android:scaleType="fitCenter"
-                    android:contentDescription="Delete" />
+                    android:contentDescription="@string/action_logout" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -162,11 +162,11 @@
                     android:layout_marginStart="5dp" />
             </LinearLayout>
 
-            <!-- Mark Achieved button -->
+            <!-- Mark Done -->
             <LinearLayout
                 android:id="@+id/btnMarkAchieved"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="34dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_stat_card_green"
@@ -176,11 +176,11 @@
                 android:clickable="true"
                 android:focusable="true">
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:src="@drawable/ic_check_circle"
                     android:scaleType="fitCenter"
-                    android:contentDescription="Mark Achieved" />
+                    android:contentDescription="@string/content_desc_check_icon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -191,6 +191,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginStart="5dp" />
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

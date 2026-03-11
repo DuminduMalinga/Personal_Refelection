@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -78,16 +77,14 @@ public class ReflectionsActivity extends BaseActivity {
 
         bindViews();
         setupTopNav("MY REFLECTIONS");
-        setupBack();
+        setupBottomNav(-1);
         loadAllReflections();
 
         // All three entry points open the same bottom sheet
         View fabAdd    = findViewById(R.id.fabAddReflection);
-        View headerAdd = findViewById(R.id.btnAddReflectionHeader);
         View emptyAdd  = findViewById(R.id.btnAddReflectionEmpty);
 
         fabAdd.setOnClickListener(v -> openAddReflectionSheet());
-        headerAdd.setOnClickListener(v -> openAddReflectionSheet());
         if (emptyAdd != null) emptyAdd.setOnClickListener(v -> openAddReflectionSheet());
     }
 
@@ -279,13 +276,6 @@ public class ReflectionsActivity extends BaseActivity {
         return new SimpleDateFormat("MMM d, yyyy  •  h:mm a", Locale.getDefault()).format(date);
     }
 
-    // ── Back ───────────────────────────────────────────────────────────
-    private void setupBack() {
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override public void handleOnBackPressed() { finish(); }
-        });
-    }
 
     @Override
     protected void onResume() {

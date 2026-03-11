@@ -13,6 +13,24 @@
 
     <style name="Theme.Personal_Refelection" parent="Base.Theme.Personal_Refelection" />
 
+    <!-- Bottom Sheet Dialog Theme — rounded top corners, white background -->
+    <style name="BottomSheetDialogTheme" parent="Theme.Material3.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Widget.Material3.BottomSheet">
+        <item name="shapeAppearance">@style/BottomSheetShapeAppearance</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomSheetShapeAppearance" parent="ShapeAppearance.Material3.Corner.Medium">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">24dp</item>
+        <item name="cornerSizeTopRight">24dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
     <!-- Splash screen theme – green background so no white flash on launch -->
     <style name="Theme.Personal_Refelection.Splash" parent="Theme.Personal_Refelection">
         <item name="android:windowBackground">@drawable/bg_splash</item>

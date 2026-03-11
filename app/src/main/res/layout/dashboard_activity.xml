@@ -352,6 +352,31 @@
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium" />
 
+                <!-- + Add Reflection quick button -->
+                <LinearLayout
+                    android:id="@+id/btnDashAddReflection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_chip_active_pill"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+ Add"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:clickable="false"
+                        android:focusable="false"/>
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/tvSeeAllReflections"
                     android:layout_width="wrap_content"

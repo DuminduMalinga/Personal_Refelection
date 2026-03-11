@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import com.example.personal_refelection.database.Goal;
 import com.example.personal_refelection.database.GoalDao;
 import com.example.personal_refelection.database.Reflection;
 import com.example.personal_refelection.database.ReflectionDao;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -41,10 +41,6 @@ import java.util.concurrent.Executors;
 public class ReflectionsActivity extends BaseActivity {
 
     // ── Views ──────────────────────────────────────────────────────────
-    private TextInputLayout    tilReflectionContent;
-    private TextInputEditText  etReflectionContent;
-    private Spinner            spinnerGoal;
-    private Button             btnSaveReflection;
     private LinearLayout       reflectionsContainer;
     private LinearLayout       layoutEmpty;
     private TextView           tvTotalCount;
@@ -54,6 +50,9 @@ public class ReflectionsActivity extends BaseActivity {
     private GoalDao            goalDao;
     private int                userId = -1;
     private List<Goal>         userGoals = new ArrayList<>();
+
+    // ── Mood selection ─────────────────────────────────────────────────
+    private String             selectedMood = "";
 
     private final ExecutorService executor    = Executors.newSingleThreadExecutor();
     private final Handler         mainHandler = new Handler(Looper.getMainLooper());
@@ -80,36 +79,59 @@ public class ReflectionsActivity extends BaseActivity {
         bindViews();
         setupTopNav("MY REFLECTIONS");
         setupBack();
-        loadGoalsForSpinner();
         loadAllReflections();
 
-        btnSaveReflection.setOnClickListener(v -> saveReflection());
+        // All three entry points open the same bottom sheet
+        View fabAdd    = findViewById(R.id.fabAddReflection);
+        View headerAdd = findViewById(R.id.btnAddReflectionHeader);
+        View emptyAdd  = findViewById(R.id.btnAddReflectionEmpty);
+
+        fabAdd.setOnClickListener(v -> openAddReflectionSheet());
+        headerAdd.setOnClickListener(v -> openAddReflectionSheet());
+        if (emptyAdd != null) emptyAdd.setOnClickListener(v -> openAddReflectionSheet());
     }
 
     // ── Bind ───────────────────────────────────────────────────────────
     private void bindViews() {
-        tilReflectionContent = findViewById(R.id.tilReflectionContent);
-        etReflectionContent  = findViewById(R.id.etReflectionContent);
-        spinnerGoal          = findViewById(R.id.spinnerGoal);
-        btnSaveReflection    = findViewById(R.id.btnSaveReflection);
         reflectionsContainer = findViewById(R.id.reflectionsContainer);
         layoutEmpty          = findViewById(R.id.layoutEmpty);
         tvTotalCount         = findViewById(R.id.tvTotalCount);
     }
 
-    // ── Load goals into Spinner ────────────────────────────────────────
-    private void loadGoalsForSpinner() {
+    // ── Bottom Sheet ───────────────────────────────────────────────────
+    private void openAddReflectionSheet() {
+        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View sheetView = LayoutInflater.from(this)
+                .inflate(R.layout.bottom_sheet_add_reflection, null);
+        sheet.setContentView(sheetView);
+
+        // Views inside sheet
+        TextInputLayout   tilContent    = sheetView.findViewById(R.id.tilSheetReflectionContent);
+        TextInputEditText etContent     = sheetView.findViewById(R.id.etSheetReflectionContent);
+        Spinner           spinnerGoal   = sheetView.findViewById(R.id.sheetSpinnerGoal);
+        View              btnSave       = sheetView.findViewById(R.id.btnSheetSaveReflection);
+        View              btnClose      = sheetView.findViewById(R.id.btnCloseSheet);
+
+        // Mood buttons
+        TextView moodHappy     = sheetView.findViewById(R.id.moodHappy);
+        TextView moodNeutral   = sheetView.findViewById(R.id.moodNeutral);
+        TextView moodSad       = sheetView.findViewById(R.id.moodSad);
+        TextView moodMotivated = sheetView.findViewById(R.id.moodMotivated);
+
+        selectedMood = "";
+        setupMoodButtons(moodHappy, moodNeutral, moodSad, moodMotivated);
+
+        // Load goals into spinner
         executor.execute(() -> {
-            List<Goal> goals = goalDao.getActiveGoals(userId);
+            List<Goal> goals    = goalDao.getActiveGoals(userId);
             List<Goal> achieved = goalDao.getAchievedGoals(userId);
-            List<Goal> all = new ArrayList<>();
-            all.addAll(goals);
-            all.addAll(achieved);
-            userGoals = all;
+            userGoals = new ArrayList<>();
+            userGoals.addAll(goals);
+            userGoals.addAll(achieved);
 
             List<String> titles = new ArrayList<>();
             titles.add("— No goal linked —");
-            for (Goal g : all) titles.add(g.title);
+            for (Goal g : userGoals) titles.add(g.title);
 
             mainHandler.post(() -> {
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -118,49 +140,70 @@ public class ReflectionsActivity extends BaseActivity {
                 spinnerGoal.setAdapter(adapter);
             });
         });
-    }
 
-    // ── Save Reflection ────────────────────────────────────────────────
-    private void saveReflection() {
-        String content = etReflectionContent.getText() != null
-                ? etReflectionContent.getText().toString().trim() : "";
+        // Close button
+        btnClose.setOnClickListener(v -> sheet.dismiss());
 
-        if (TextUtils.isEmpty(content)) {
-            tilReflectionContent.setError("Please write something to reflect on");
-            etReflectionContent.requestFocus();
-            return;
-        }
-        tilReflectionContent.setError(null);
+        // Save button
+        btnSave.setOnClickListener(v -> {
+            String content = etContent.getText() != null
+                    ? etContent.getText().toString().trim() : "";
 
-        // Determine linked goal
-        int selectedPos = spinnerGoal.getSelectedItemPosition();
-        final int goalId;
-
-        if (selectedPos > 0 && selectedPos - 1 < userGoals.size()) {
-            goalId = userGoals.get(selectedPos - 1).id;
-        } else {
-            // No goal selected — need at least one goal in the DB to link
-            if (userGoals.isEmpty()) {
-                Toast.makeText(this,
-                        "Please create a goal first before adding a reflection.",
-                        Toast.LENGTH_LONG).show();
+            if (TextUtils.isEmpty(content)) {
+                tilContent.setError("Please write something to reflect on");
+                etContent.requestFocus();
                 return;
             }
-            // Link to first available goal as default
-            goalId = userGoals.get(0).id;
-        }
+            tilContent.setError(null);
 
-        Reflection reflection = new Reflection(goalId, content);
+            int selectedPos = spinnerGoal.getSelectedItemPosition();
+            final int goalId;
+            if (selectedPos > 0 && selectedPos - 1 < userGoals.size()) {
+                goalId = userGoals.get(selectedPos - 1).id;
+            } else {
+                if (userGoals.isEmpty()) {
+                    Toast.makeText(this, "Please create a goal first!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                goalId = userGoals.get(0).id;
+            }
 
-        executor.execute(() -> {
-            reflectionDao.insertReflection(reflection);
-            mainHandler.post(() -> {
-                Toast.makeText(this, "Reflection saved! 💡", Toast.LENGTH_SHORT).show();
-                etReflectionContent.setText("");
-                spinnerGoal.setSelection(0);
-                loadAllReflections(); // refresh list
+            String moodTag = selectedMood.isEmpty() ? "" : " " + selectedMood;
+            Reflection reflection = new Reflection(goalId, content + moodTag);
+
+            executor.execute(() -> {
+                reflectionDao.insertReflection(reflection);
+                mainHandler.post(() -> {
+                    Toast.makeText(this, "Reflection saved! 💡", Toast.LENGTH_SHORT).show();
+                    sheet.dismiss();
+                    loadAllReflections();
+                });
             });
         });
+
+        sheet.show();
+    }
+
+    // ── Mood selection helpers ─────────────────────────────────────────
+    private void setupMoodButtons(TextView happy, TextView neutral, TextView sad, TextView motivated) {
+        View.OnClickListener listener = v -> {
+            // Reset all
+            resetMoodBg(happy, neutral, sad, motivated);
+            TextView clicked = (TextView) v;
+            clicked.setBackgroundResource(R.drawable.bg_chip_active_pill);
+            if (v.getId() == R.id.moodHappy)          selectedMood = "😊";
+            else if (v.getId() == R.id.moodNeutral)    selectedMood = "😐";
+            else if (v.getId() == R.id.moodSad)        selectedMood = "😔";
+            else if (v.getId() == R.id.moodMotivated)  selectedMood = "🔥";
+        };
+        happy.setOnClickListener(listener);
+        neutral.setOnClickListener(listener);
+        sad.setOnClickListener(listener);
+        motivated.setOnClickListener(listener);
+    }
+
+    private void resetMoodBg(TextView... views) {
+        for (TextView tv : views) tv.setBackgroundResource(R.drawable.bg_chip_inactive_pill);
     }
 
     // ── Load & Display All Reflections ────────────────────────────────
@@ -195,7 +238,6 @@ public class ReflectionsActivity extends BaseActivity {
 
             tvDate.setText(formatDate(r.createdAt));
             tvContent.setText(r.content);
-
             btnDelete.setOnClickListener(v -> confirmDelete(r));
 
             reflectionsContainer.addView(item);
@@ -207,15 +249,13 @@ public class ReflectionsActivity extends BaseActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Reflection")
                 .setMessage("Are you sure you want to delete this reflection?")
-                .setPositiveButton("Delete", (d, w) -> {
-                    executor.execute(() -> {
-                        reflectionDao.deleteReflection(reflection);
-                        mainHandler.post(() -> {
-                            Toast.makeText(this, "Reflection deleted", Toast.LENGTH_SHORT).show();
-                            loadAllReflections();
-                        });
+                .setPositiveButton("Delete", (d, w) -> executor.execute(() -> {
+                    reflectionDao.deleteReflection(reflection);
+                    mainHandler.post(() -> {
+                        Toast.makeText(this, "Reflection deleted", Toast.LENGTH_SHORT).show();
+                        loadAllReflections();
                     });
-                })
+                }))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -248,9 +288,15 @@ public class ReflectionsActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setupTopNav("MY REFLECTIONS");
+        loadAllReflections();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         executor.shutdownNow();
     }
 }
-

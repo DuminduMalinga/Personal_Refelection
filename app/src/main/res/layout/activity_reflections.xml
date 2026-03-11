@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <!-- ══ FIXED HEADER — top nav + reflections sub-header, no seam ══ -->
+    <!-- ══ FIXED HEADER ══ -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Reflections sub-header — transparent, inherits AppBarLayout background -->
+        <!-- Sub-header: back + title + count + Add button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,6 +34,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="16dp">
 
+            <!-- Back -->
             <FrameLayout
                 android:id="@+id/btnBack"
                 android:layout_width="36dp"
@@ -54,6 +55,7 @@
                     android:focusable="false"/>
             </FrameLayout>
 
+            <!-- Title -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -79,12 +81,14 @@
                     android:layout_marginTop="1dp"/>
             </LinearLayout>
 
+            <!-- Count badge -->
             <LinearLayout
                 android:layout_width="52dp"
                 android:layout_height="52dp"
                 android:background="@drawable/bg_chip_inactive_pill"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginEnd="10dp">
                 <TextView
                     android:id="@+id/tvTotalCount"
                     android:layout_width="wrap_content"
@@ -101,8 +105,32 @@
                     android:textSize="9sp"
                     android:textColor="#6C63FF"/>
             </LinearLayout>
-        </LinearLayout>
 
+            <!-- ++ Add Reflection button in header -->
+            <LinearLayout
+                android:id="@+id/btnAddReflectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_chip_active_pill"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:clickable="true"
+                android:focusable="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ Add"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:clickable="false"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- ══ SCROLLABLE CONTENT ══ -->
@@ -118,121 +146,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp"
-            android:paddingBottom="100dp">
+            android:paddingTop="12dp"
+            android:paddingBottom="120dp">
 
-            <!-- ── ADD REFLECTION CARD ── -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
-
-                        <FrameLayout
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:background="@drawable/bg_stat_card_blue">
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_edit_blue"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@string/lbl_edit_profile"/>
-                        </FrameLayout>
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Write a Reflection"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_marginStart="10dp"/>
-                    </LinearLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilReflectionContent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        app:boxCornerRadiusTopStart="14dp"
-                        app:boxCornerRadiusTopEnd="14dp"
-                        app:boxCornerRadiusBottomStart="14dp"
-                        app:boxCornerRadiusBottomEnd="14dp"
-                        app:boxStrokeColor="@color/primary_green"
-                        app:hintTextColor="@color/primary_green"
-                        android:hint="What did you reflect on today?">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etReflectionContent"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
-                            android:textSize="14sp"
-                            android:inputType="textCapSentences|textMultiLine"
-                            android:minLines="3"
-                            android:maxLines="6"
-                            android:gravity="top"
-                            android:fontFamily="sans-serif"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Link to Goal (optional)"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_secondary"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <Spinner
-                        android:id="@+id/spinnerGoal"
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:background="@drawable/bg_input_rounded"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"/>
-
-                    <Button
-                        android:id="@+id/btnSaveReflection"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="14dp"
-                        android:text="💡  Save Reflection"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-medium"
-                        android:background="@drawable/bg_save_goal_btn"
-                        android:stateListAnimator="@null"
-                        android:elevation="0dp"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- ── PAST REFLECTIONS HEADER ── -->
+            <!-- ── PAST REFLECTIONS SECTION LABEL ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -240,8 +157,8 @@
                 android:gravity="center_vertical"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp">
+                android:paddingTop="4dp"
+                android:paddingBottom="10dp">
 
                 <View
                     android:layout_width="4dp"
@@ -282,30 +199,91 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="🌿"
-                    android:textSize="48sp"/>
+                    android:textSize="52sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No Reflections Yet"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:fontFamily="sans-serif-medium"
-                    android:layout_marginTop="12dp"/>
+                    android:layout_marginTop="14dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Write your first reflection above and start tracking your growth journey."
+                    android:text="Tap the button below to write your first reflection and start tracking your growth journey."
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
                     android:gravity="center"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="3dp"/>
+
+                <!-- Empty state CTA button -->
+                <LinearLayout
+                    android:id="@+id/btnAddReflectionEmpty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_chip_active_pill"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:layout_marginTop="20dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✏️  Write First Reflection"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium"
+                        android:clickable="false"
+                        android:focusable="false"/>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <!-- ══ FLOATING ADD REFLECTION BUTTON ══ -->
+    <LinearLayout
+        android:id="@+id/fabAddReflection"
+        android:layout_width="wrap_content"
+        android:layout_height="54dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_fab_goals"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✏️"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:includeFontPadding="false"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  Add Reflection"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:fontFamily="sans-serif-medium"/>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

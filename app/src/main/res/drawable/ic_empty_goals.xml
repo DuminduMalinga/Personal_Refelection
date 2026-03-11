@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ic_empty_goals.xml — empty state illustration -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Outer circle background -->
+    <path
+        android:fillColor="#EEF2FF"
+        android:pathData="M60,10 C32.4,10 10,32.4 10,60 C10,87.6 32.4,110 60,110 C87.6,110 110,87.6 110,60 C110,32.4 87.6,10 60,10Z" />
+    <!-- Target rings -->
+    <path
+        android:strokeColor="#6C63FF"
+        android:strokeWidth="3"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M60,30 C43.4,30 30,43.4 30,60 C30,76.6 43.4,90 60,90 C76.6,90 90,76.6 90,60 C90,43.4 76.6,30 60,30Z" />
+    <path
+        android:strokeColor="#8B5CF6"
+        android:strokeWidth="3"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M60,42 C49.0,42 40,51.0 40,62 C40,73.0 49.0,82 60,82 C71.0,82 80,73.0 80,62 C80,51.0 71.0,42 60,42Z" />
+    <!-- Center dot -->
+    <path
+        android:fillColor="#6C63FF"
+        android:pathData="M60,54 C55.6,54 52,57.6 52,62 C52,66.4 55.6,70 60,70 C64.4,70 68,66.4 68,62 C68,57.6 64.4,54 60,54Z" />
+    <!-- Decorative sparkles -->
+    <path
+        android:fillColor="#FFB347"
+        android:pathData="M92,28 L94,24 L96,28 L100,30 L96,32 L94,36 L92,32 L88,30Z" />
+    <path
+        android:fillColor="#06D6A0"
+        android:pathData="M26,74 L27.5,71 L29,74 L32,75.5 L29,77 L27.5,80 L26,77 L23,75.5Z" />
+</vector>
+

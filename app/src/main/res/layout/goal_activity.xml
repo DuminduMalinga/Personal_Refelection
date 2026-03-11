@@ -228,6 +228,17 @@
                 android:paddingBottom="12dp">
 
                 <TextView
+                    android:id="@+id/tvSectionLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="All Goals"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
                     android:id="@+id/tvGoalCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -237,6 +248,14 @@
             </LinearLayout>
 
             <!-- ── Goals RecyclerView ── -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerGoals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false" />
 
             <!-- ── Empty State ── -->
             <LinearLayout

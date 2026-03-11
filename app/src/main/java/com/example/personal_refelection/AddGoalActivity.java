@@ -206,12 +206,8 @@ public class AddGoalActivity extends AppCompatActivity {
 
     // ── Date & Time Picker ─────────────────────────────────────────────
     private void setupDatePicker() {
-        btnPickDate.setOnClickListener(v -> showDatePicker());
-        // Force parent not to intercept touch so the Button always gets the click
-        btnPickDate.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false; // let normal click handling proceed
-        });
+        // Post to ensure button is fully laid out before attaching listener
+        btnPickDate.post(() -> btnPickDate.setOnClickListener(v -> showDatePicker()));
     }
 
     private void showDatePicker() {

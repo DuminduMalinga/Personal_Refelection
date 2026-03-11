@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.personal_refelection.database.AppDatabase;
 import com.example.personal_refelection.database.Goal;
 import com.example.personal_refelection.database.GoalDao;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +120,7 @@ public class GoalsActivity extends BaseActivity {
 
     private void setupRecycler() {
         adapter = new GoalAdapter(this, new GoalAdapter.GoalActionListener() {
-            @Override public void onEdit(Goal goal)         { showAddEditDialog(goal); }
+            @Override public void onEdit(Goal goal)         { openEditGoalScreen(goal); }
             @Override public void onDelete(Goal goal)       { confirmDelete(goal); }
             @Override public void onMarkAchieved(Goal goal) { markAchieved(goal); }
         });
@@ -144,6 +141,16 @@ public class GoalsActivity extends BaseActivity {
 
     private void openAddGoalScreen() {
         Intent intent = new Intent(this, AddGoalActivity.class);
+        addGoalLauncher.launch(intent);
+        overridePendingTransition(android.R.anim.fade_in, 0);
+    }
+
+    private void openEditGoalScreen(Goal goal) {
+        Intent intent = new Intent(this, AddGoalActivity.class);
+        intent.putExtra(AddGoalActivity.EXTRA_GOAL_ID,    goal.id);
+        intent.putExtra(AddGoalActivity.EXTRA_GOAL_TITLE, goal.title);
+        intent.putExtra(AddGoalActivity.EXTRA_GOAL_DESC,  goal.description);
+        intent.putExtra(AddGoalActivity.EXTRA_GOAL_DATE,  goal.targetDate);
         addGoalLauncher.launch(intent);
         overridePendingTransition(android.R.anim.fade_in, 0);
     }
@@ -207,55 +214,6 @@ public class GoalsActivity extends BaseActivity {
         });
     }
 
-    // ── Add / Edit dialog ─────────────────────────────────────────────────
-
-    private void showAddEditDialog(Goal existingGoal) {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_edit_goal, null);
-        TextInputEditText etTitle = dialogView.findViewById(R.id.etGoalTitle);
-        TextInputEditText etDesc  = dialogView.findViewById(R.id.etGoalDescription);
-
-        boolean isEdit = (existingGoal != null);
-        if (isEdit) {
-            etTitle.setText(existingGoal.title);
-            etDesc.setText(existingGoal.description);
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle(isEdit ? "Edit Goal" : "Add New Goal")
-                .setView(dialogView)
-                .setPositiveButton(isEdit ? "Save" : "Add", (d, w) -> {
-                    String title = etTitle.getText() != null ? etTitle.getText().toString().trim() : "";
-                    String desc  = etDesc.getText()  != null ? etDesc.getText().toString().trim()  : "";
-
-                    if (TextUtils.isEmpty(title)) {
-                        Toast.makeText(this, "Please enter a goal title", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (isEdit) {
-                        existingGoal.title = title;
-                        existingGoal.description = desc;
-                        executor.execute(() -> {
-                            goalDao.updateGoal(existingGoal);
-                            mainHandler.post(() -> {
-                                Toast.makeText(this, "Goal updated ✅", Toast.LENGTH_SHORT).show();
-                                loadGoals();
-                            });
-                        });
-                    } else {
-                        Goal newGoal = new Goal(userId, title, desc, null);
-                        executor.execute(() -> {
-                            goalDao.insertGoal(newGoal);
-                            mainHandler.post(() -> {
-                                Toast.makeText(this, "Goal added 🎯", Toast.LENGTH_SHORT).show();
-                                loadGoals();
-                            });
-                        });
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
 
     // ── Delete ────────────────────────────────────────────────────────────
 

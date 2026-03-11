@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.personal_refelection.database.AppDatabase;
 import com.example.personal_refelection.database.Goal;
 import com.example.personal_refelection.database.GoalDao;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -28,10 +29,6 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Full-screen Add / Edit Goal activity.
- * Pass EXTRA_GOAL_ID to open in edit mode.
- */
 public class AddGoalActivity extends AppCompatActivity {
 
     public static final String EXTRA_GOAL_ID    = "goal_id";
@@ -40,30 +37,39 @@ public class AddGoalActivity extends AppCompatActivity {
     public static final String EXTRA_GOAL_DATE  = "goal_date";
 
     // ── Views ──────────────────────────────────────────────────────────
-    private TextInputLayout tilGoalTitle;
-    private TextInputEditText etGoalTitle, etGoalDescription;
-    private TextView tvTargetDate, tvHeaderSubtitle, tvHeaderLabel, tvHeaderTitle;
-    private TextView chipLow, chipMedium, chipHigh;
-    private LinearLayout btnPickDate;
-    private Button btnSaveGoal;
+    private TextInputLayout    tilGoalTitle;
+    private TextInputEditText  etGoalTitle, etGoalDescription;
+    private TextView           tvHeaderLabel, tvHeaderTitle, tvHeaderSubtitle;
+    private TextView           tvProgressValue;
+    private Button             chipLow, chipMedium, chipHigh;
+    private Button             chipCatHealth, chipCatStudy, chipCatCareer,
+                               chipCatPersonal, chipCatFinance, chipCatOther;
+    private Button             btnPickDate, btnSaveGoal;
+    private SeekBar            seekBarProgress;
+    private SwitchMaterial     switchReminder;
 
     // ── State ──────────────────────────────────────────────────────────
-    private String selectedDate = null;
-    private String selectedPriority = "Medium";
-    private boolean isEditMode = false;
-    private int editGoalId = -1;
+    private String  selectedDate     = null;
+    private String  selectedPriority = "Medium";
+    private String  selectedCategory = "";
+    private int     progressTarget   = 50;
+    private boolean reminderEnabled  = false;
+    private boolean isEditMode       = false;
+    private int     editGoalId       = -1;
 
     // ── DB ─────────────────────────────────────────────────────────────
-    private GoalDao goalDao;
-    private int userId = -1;
+    private GoalDao       goalDao;
+    private int           userId = -1;
+    private final ExecutorService executor    = Executors.newSingleThreadExecutor();
+    private final Handler         mainHandler = new Handler(Looper.getMainLooper());
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
-
-    // ── Priority colours ───────────────────────────────────────────────
-    private static final int COLOR_GREEN_TXT  = 0xFF06D6A0;
-    private static final int COLOR_ORANGE_TXT = 0xFFFFB347;
-    private static final int COLOR_RED_TXT    = 0xFFFF4757;
+    // ── Colours ────────────────────────────────────────────────────────
+    private static final int COLOR_GREEN  = 0xFF06D6A0;
+    private static final int COLOR_ORANGE = 0xFFFFB347;
+    private static final int COLOR_RED    = 0xFFFF4757;
+    private static final int COLOR_PURPLE = 0xFF6C63FF;
+    private static final int COLOR_GREY   = 0xFF6B7280;
+    private static final int COLOR_WHITE  = 0xFFFFFFFF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +86,6 @@ public class AddGoalActivity extends AppCompatActivity {
         userId  = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE).getInt("user_id", -1);
         goalDao = AppDatabase.getInstance(this).goalDao();
 
-        // Check if edit mode
         if (getIntent().hasExtra(EXTRA_GOAL_ID)) {
             isEditMode = true;
             editGoalId = getIntent().getIntExtra(EXTRA_GOAL_ID, -1);
@@ -88,83 +93,79 @@ public class AddGoalActivity extends AppCompatActivity {
 
         bindViews();
         setupHeaderMode();
+        setupCategoryChips();
         setupPriorityChips();
+        setupProgressSeekBar();
         setupDatePicker();
+        setupReminder();
         setupSave();
         setupBack();
 
-        // Pre-fill if editing
-        if (isEditMode) {
-            prefillFields();
-        }
+        if (isEditMode) prefillFields();
     }
 
     // ── Bind ───────────────────────────────────────────────────────────
-
     private void bindViews() {
         tilGoalTitle      = findViewById(R.id.tilGoalTitle);
         etGoalTitle       = findViewById(R.id.etGoalTitle);
         etGoalDescription = findViewById(R.id.etGoalDescription);
-        tvTargetDate      = findViewById(R.id.tvTargetDate);
-        btnPickDate       = findViewById(R.id.btnPickDate);
-        chipLow           = findViewById(R.id.chipLow);
-        chipMedium        = findViewById(R.id.chipMedium);
-        chipHigh          = findViewById(R.id.chipHigh);
-        btnSaveGoal       = findViewById(R.id.btnSaveGoal);
         tvHeaderLabel     = findViewById(R.id.tvHeaderLabel);
         tvHeaderTitle     = findViewById(R.id.tvHeaderTitle);
         tvHeaderSubtitle  = findViewById(R.id.tvHeaderSubtitle);
+        tvProgressValue   = findViewById(R.id.tvProgressValue);
+        seekBarProgress   = findViewById(R.id.seekBarProgress);
+        switchReminder    = findViewById(R.id.switchReminder);
+        btnPickDate       = findViewById(R.id.btnPickDate);
+        btnSaveGoal       = findViewById(R.id.btnSaveGoal);
+        chipLow           = findViewById(R.id.chipLow);
+        chipMedium        = findViewById(R.id.chipMedium);
+        chipHigh          = findViewById(R.id.chipHigh);
+        chipCatHealth     = findViewById(R.id.chipCatHealth);
+        chipCatStudy      = findViewById(R.id.chipCatStudy);
+        chipCatCareer     = findViewById(R.id.chipCatCareer);
+        chipCatPersonal   = findViewById(R.id.chipCatPersonal);
+        chipCatFinance    = findViewById(R.id.chipCatFinance);
+        chipCatOther      = findViewById(R.id.chipCatOther);
     }
 
-    // ── Header mode ────────────────────────────────────────────────────
-
+    // ── Header ─────────────────────────────────────────────────────────
     private void setupHeaderMode() {
         if (isEditMode) {
-            if (tvHeaderLabel    != null) tvHeaderLabel.setText("EDIT GOAL");
-            if (tvHeaderTitle    != null) tvHeaderTitle.setText("Edit Goal");
-            if (tvHeaderSubtitle != null) tvHeaderSubtitle.setText("Update your goal details ✏️");
-            if (btnSaveGoal      != null) btnSaveGoal.setText("Update Goal ✅");
+            if (tvHeaderLabel   != null) tvHeaderLabel.setText("EDIT GOAL");
+            if (tvHeaderTitle   != null) tvHeaderTitle.setText("Edit Goal");
+            if (tvHeaderSubtitle!= null) tvHeaderSubtitle.setText("Update your goal details ✏️");
+            if (btnSaveGoal     != null) btnSaveGoal.setText("Update Goal ✅");
         }
     }
 
-    // ── Pre-fill for edit ──────────────────────────────────────────────
-
-    private void prefillFields() {
-        String title = getIntent().getStringExtra(EXTRA_GOAL_TITLE);
-        String desc  = getIntent().getStringExtra(EXTRA_GOAL_DESC);
-        String date  = getIntent().getStringExtra(EXTRA_GOAL_DATE);
-
-        if (title != null) etGoalTitle.setText(title);
-
-        // Strip "Priority: X" suffix from description for display
-        if (desc != null) {
-            String displayDesc = desc;
-            int priorityIdx = desc.lastIndexOf("\nPriority: ");
-            if (priorityIdx >= 0) {
-                String prio = desc.substring(priorityIdx + 11).trim();
-                displayDesc = desc.substring(0, priorityIdx).trim();
-                selectedPriority = prio;
-            }
-            etGoalDescription.setText(displayDesc);
+    // ── Category Chips ─────────────────────────────────────────────────
+    private void setupCategoryChips() {
+        Button[] cats = {chipCatHealth, chipCatStudy, chipCatCareer,
+                         chipCatPersonal, chipCatFinance, chipCatOther};
+        String[] labels = {"Health","Study","Career","Personal","Finance","Other"};
+        for (int i = 0; i < cats.length; i++) {
+            final String cat = labels[i];
+            cats[i].setOnClickListener(v -> selectCategory(cat));
         }
-
-        if (date != null && !date.isEmpty()) {
-            selectedDate = date;
-            // Display date nicely
-            try {
-                String[] parts = date.split("-");
-                tvTargetDate.setText(parts[2] + " / " + parts[1] + " / " + parts[0]);
-                tvTargetDate.setTextColor(0xFF1A1A2E);
-            } catch (Exception ignored) {}
-        }
-
-        selectPriority(selectedPriority);
     }
 
-    // ── Priority chips ─────────────────────────────────────────────────
+    private void selectCategory(String cat) {
+        selectedCategory = cat;
+        Button[] chips = {chipCatHealth, chipCatStudy, chipCatCareer,
+                          chipCatPersonal, chipCatFinance, chipCatOther};
+        String[] labels = {"Health","Study","Career","Personal","Finance","Other"};
+        for (int i = 0; i < chips.length; i++) {
+            boolean sel = labels[i].equals(cat);
+            chips[i].setBackgroundResource(sel
+                    ? R.drawable.bg_category_chip_selected
+                    : R.drawable.bg_category_chip_unselected);
+            chips[i].setTextColor(sel ? COLOR_WHITE : COLOR_GREY);
+        }
+    }
 
+    // ── Priority Chips ─────────────────────────────────────────────────
     private void setupPriorityChips() {
-        selectPriority(selectedPriority);
+        selectPriority("Medium");
         chipLow.setOnClickListener(v    -> selectPriority("Low"));
         chipMedium.setOnClickListener(v -> selectPriority("Medium"));
         chipHigh.setOnClickListener(v   -> selectPriority("High"));
@@ -172,38 +173,114 @@ public class AddGoalActivity extends AppCompatActivity {
 
     private void selectPriority(String priority) {
         selectedPriority = priority;
-        setChipState(chipLow,    priority.equals("Low"),    COLOR_GREEN_TXT);
-        setChipState(chipMedium, priority.equals("Medium"), COLOR_ORANGE_TXT);
-        setChipState(chipHigh,   priority.equals("High"),   COLOR_RED_TXT);
+
+        chipLow.setBackgroundResource(priority.equals("Low")
+                ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
+        chipLow.setTextColor(priority.equals("Low") ? COLOR_WHITE : COLOR_GREEN);
+
+        chipMedium.setBackgroundResource(priority.equals("Medium")
+                ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
+        chipMedium.setTextColor(priority.equals("Medium") ? COLOR_WHITE : COLOR_ORANGE);
+
+        chipHigh.setBackgroundResource(priority.equals("High")
+                ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
+        chipHigh.setTextColor(priority.equals("High") ? COLOR_WHITE : COLOR_RED);
     }
 
-    private void setChipState(TextView chip, boolean selected, int txtColor) {
-        chip.setAlpha(selected ? 1.0f : 0.40f);
-        chip.setTextColor(txtColor);
-        chip.setScaleX(selected ? 1.06f : 1.0f);
-        chip.setScaleY(selected ? 1.06f : 1.0f);
-    }
-
-    // ── Date Picker ────────────────────────────────────────────────────
-
-    private void setupDatePicker() {
-        btnPickDate.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            new DatePickerDialog(this,
-                    (view, year, month, day) -> {
-                        selectedDate = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
-                        tvTargetDate.setText(String.format(Locale.US, "%02d / %02d / %04d", day, month + 1, year));
-                        tvTargetDate.setTextColor(0xFF1A1A2E);
-                    },
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH))
-                    .show();
+    // ── Progress SeekBar ───────────────────────────────────────────────
+    private void setupProgressSeekBar() {
+        seekBarProgress.setProgress(50);
+        tvProgressValue.setText("50%");
+        seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar s, int p, boolean u) {
+                progressTarget = p;
+                tvProgressValue.setText(p + "%");
+            }
+            @Override public void onStartTrackingTouch(SeekBar s) {}
+            @Override public void onStopTrackingTouch(SeekBar s) {}
         });
     }
 
-    // ── Save / Update ──────────────────────────────────────────────────
+    // ── Date & Time Picker ─────────────────────────────────────────────
+    private void setupDatePicker() {
+        btnPickDate.setOnClickListener(v -> showDatePicker());
+    }
 
+    private void showDatePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dlg = new DatePickerDialog(this,
+                (view, year, month, day) -> showTimePicker(year, month, day),
+                now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+        dlg.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        dlg.show();
+    }
+
+    private void showTimePicker(int year, int month, int day) {
+        Calendar now = Calendar.getInstance();
+        new android.app.TimePickerDialog(this,
+                (view, hour, minute) -> {
+                    selectedDate = String.format(Locale.US,
+                            "%04d-%02d-%02d %02d:%02d", year, month + 1, day, hour, minute);
+                    updateDateButton(selectedDate);
+                },
+                now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), false).show();
+    }
+
+    private void updateDateButton(String dateStr) {
+        try {
+            String[] parts = dateStr.split(" ");
+            String[] d     = parts[0].split("-");
+            String[] t     = parts[1].split(":");
+            int hour = Integer.parseInt(t[0]);
+            int min  = Integer.parseInt(t[1]);
+            int dH   = (hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour));
+            btnPickDate.setText(String.format(Locale.US,
+                    "📅 %s/%s  %02d:%02d %s", d[2], d[1], dH, min, hour < 12 ? "AM" : "PM"));
+            btnPickDate.setTextColor(COLOR_PURPLE);
+        } catch (Exception e) {
+            btnPickDate.setText("📅 " + dateStr);
+            btnPickDate.setTextColor(COLOR_PURPLE);
+        }
+    }
+
+    // ── Reminder ───────────────────────────────────────────────────────
+    private void setupReminder() {
+        switchReminder.setOnCheckedChangeListener((btn, checked) -> reminderEnabled = checked);
+    }
+
+    // ── Pre-fill ───────────────────────────────────────────────────────
+    private void prefillFields() {
+        String title = getIntent().getStringExtra(EXTRA_GOAL_TITLE);
+        String desc  = getIntent().getStringExtra(EXTRA_GOAL_DESC);
+        String date  = getIntent().getStringExtra(EXTRA_GOAL_DATE);
+
+        if (title != null) etGoalTitle.setText(title);
+
+        if (desc != null) {
+            String displayDesc = desc;
+            int idx = desc.lastIndexOf("\nPriority: ");
+            if (idx >= 0) {
+                selectedPriority = desc.substring(idx + 11).trim();
+                displayDesc = desc.substring(0, idx);
+                // Extract category if present
+                int catIdx = displayDesc.lastIndexOf("\nCategory: ");
+                if (catIdx >= 0) {
+                    selectedCategory = displayDesc.substring(catIdx + 11).trim();
+                    displayDesc = displayDesc.substring(0, catIdx);
+                    selectCategory(selectedCategory);
+                }
+            }
+            etGoalDescription.setText(displayDesc.trim());
+            selectPriority(selectedPriority);
+        }
+
+        if (date != null && !date.isEmpty()) {
+            selectedDate = date;
+            updateDateButton(date);
+        }
+    }
+
+    // ── Save ───────────────────────────────────────────────────────────
     private void setupSave() {
         btnSaveGoal.setOnClickListener(v -> saveGoal());
     }
@@ -219,13 +296,19 @@ public class AddGoalActivity extends AppCompatActivity {
         }
         tilGoalTitle.setError(null);
 
-        // Append priority tag
-        String fullDesc = desc + (desc.isEmpty() ? "" : "\n") + "Priority: " + selectedPriority;
+        // Build enriched description
+        StringBuilder fullDesc = new StringBuilder(desc);
+        if (!selectedCategory.isEmpty())
+            fullDesc.append("\nCategory: ").append(selectedCategory);
+        fullDesc.append("\nPriority: ").append(selectedPriority);
+        fullDesc.append("\nTarget: ").append(progressTarget).append("%");
+        if (reminderEnabled) fullDesc.append("\nReminder: enabled");
+
+        String finalDesc = fullDesc.toString();
 
         if (isEditMode) {
-            // Update existing goal
             executor.execute(() -> {
-                Goal goal = new Goal(userId, title, fullDesc, selectedDate);
+                Goal goal = new Goal(userId, title, finalDesc, selectedDate);
                 goal.id = editGoalId;
                 goalDao.updateGoal(goal);
                 mainHandler.post(() -> {
@@ -235,8 +318,7 @@ public class AddGoalActivity extends AppCompatActivity {
                 });
             });
         } else {
-            // Insert new goal
-            Goal newGoal = new Goal(userId, title, fullDesc, selectedDate);
+            Goal newGoal = new Goal(userId, title, finalDesc, selectedDate);
             executor.execute(() -> {
                 goalDao.insertGoal(newGoal);
                 mainHandler.post(() -> {
@@ -249,7 +331,6 @@ public class AddGoalActivity extends AppCompatActivity {
     }
 
     // ── Back ───────────────────────────────────────────────────────────
-
     private void setupBack() {
         findViewById(R.id.btnBack).setOnClickListener(v -> finishWithAnimation());
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

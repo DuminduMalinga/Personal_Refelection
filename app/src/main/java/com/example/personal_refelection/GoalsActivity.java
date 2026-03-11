@@ -40,7 +40,6 @@ public class GoalsActivity extends BaseActivity {
     private RecyclerView recyclerGoals;
     private LinearLayout layoutEmptyState;
     private TextView tvHeaderActiveCount, tvHeaderAchievedCount;
-    private TextView tvSectionLabel, tvGoalCount;
     private TextView chipAll, chipActive, chipAchieved;
     private LinearLayout fabAddGoal;
 
@@ -103,8 +102,6 @@ public class GoalsActivity extends BaseActivity {
         layoutEmptyState     = findViewById(R.id.layoutEmptyState);
         tvHeaderActiveCount  = findViewById(R.id.tvHeaderActiveCount);
         tvHeaderAchievedCount= findViewById(R.id.tvHeaderAchievedCount);
-        tvSectionLabel       = findViewById(R.id.tvSectionLabel);
-        tvGoalCount          = findViewById(R.id.tvGoalCount);
         chipAll              = findViewById(R.id.chipAll);
         chipActive           = findViewById(R.id.chipActive);
         chipAchieved         = findViewById(R.id.chipAchieved);
@@ -150,18 +147,6 @@ public class GoalsActivity extends BaseActivity {
         styleChip(chipAll,      currentFilter == FILTER_ALL);
         styleChip(chipActive,   currentFilter == FILTER_ACTIVE);
         styleChip(chipAchieved, currentFilter == FILTER_ACHIEVED);
-
-        switch (currentFilter) {
-            case FILTER_ACTIVE:
-                tvSectionLabel.setText("Active Goals");
-                break;
-            case FILTER_ACHIEVED:
-                tvSectionLabel.setText("Achieved Goals");
-                break;
-            default:
-                tvSectionLabel.setText("All Goals");
-                break;
-        }
     }
 
     private void styleChip(TextView chip, boolean selected) {
@@ -183,7 +168,6 @@ public class GoalsActivity extends BaseActivity {
         }
         adapter.setGoals(toShow);
         int count = toShow.size();
-        tvGoalCount.setText(count + (count == 1 ? " goal" : " goals"));
 
         boolean empty = (count == 0);
         recyclerGoals.setVisibility(empty ? View.GONE : View.VISIBLE);

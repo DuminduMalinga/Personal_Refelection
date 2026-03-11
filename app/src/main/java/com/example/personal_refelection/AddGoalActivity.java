@@ -1,6 +1,7 @@
 package com.example.personal_refelection;
 
 import android.app.DatePickerDialog;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -151,15 +152,16 @@ public class AddGoalActivity extends AppCompatActivity {
 
     private void selectCategory(String cat) {
         selectedCategory = cat;
-        Button[] chips = {chipCatHealth, chipCatStudy, chipCatCareer,
-                          chipCatPersonal, chipCatFinance, chipCatOther};
+        Button[] chips  = {chipCatHealth, chipCatStudy, chipCatCareer,
+                           chipCatPersonal, chipCatFinance, chipCatOther};
         String[] labels = {"Health","Study","Career","Personal","Finance","Other"};
         for (int i = 0; i < chips.length; i++) {
             boolean sel = labels[i].equals(cat);
             chips[i].setBackgroundResource(sel
                     ? R.drawable.bg_category_chip_selected
                     : R.drawable.bg_category_chip_unselected);
-            chips[i].setTextColor(sel ? COLOR_WHITE : COLOR_GREY);
+            // Use ColorStateList.valueOf to force-override Material Button text color
+            chips[i].setTextColor(ColorStateList.valueOf(sel ? COLOR_WHITE : 0xFF1A1A2E));
         }
     }
 
@@ -174,17 +176,18 @@ public class AddGoalActivity extends AppCompatActivity {
     private void selectPriority(String priority) {
         selectedPriority = priority;
 
-        chipLow.setBackgroundResource(priority.equals("Low")
-                ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
-        chipLow.setTextColor(priority.equals("Low") ? COLOR_WHITE : COLOR_GREEN);
+        boolean low  = priority.equals("Low");
+        boolean med  = priority.equals("Medium");
+        boolean high = priority.equals("High");
 
-        chipMedium.setBackgroundResource(priority.equals("Medium")
-                ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
-        chipMedium.setTextColor(priority.equals("Medium") ? COLOR_WHITE : COLOR_ORANGE);
+        chipLow.setBackgroundResource(low  ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
+        chipLow.setTextColor(ColorStateList.valueOf(low  ? COLOR_WHITE : 0xFF06D6A0));
 
-        chipHigh.setBackgroundResource(priority.equals("High")
-                ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
-        chipHigh.setTextColor(priority.equals("High") ? COLOR_WHITE : COLOR_RED);
+        chipMedium.setBackgroundResource(med  ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
+        chipMedium.setTextColor(ColorStateList.valueOf(med  ? COLOR_WHITE : 0xFFFFB347));
+
+        chipHigh.setBackgroundResource(high ? R.drawable.bg_priority_selected : R.drawable.bg_priority_unselected);
+        chipHigh.setTextColor(ColorStateList.valueOf(high ? COLOR_WHITE : 0xFFFF4757));
     }
 
     // ── Progress SeekBar ───────────────────────────────────────────────
@@ -203,7 +206,8 @@ public class AddGoalActivity extends AppCompatActivity {
 
     // ── Date & Time Picker ─────────────────────────────────────────────
     private void setupDatePicker() {
-        btnPickDate.setOnClickListener(v -> showDatePicker());
+        // Post to ensure button is fully laid out before attaching listener
+        btnPickDate.post(() -> btnPickDate.setOnClickListener(v -> showDatePicker()));
     }
 
     private void showDatePicker() {
@@ -236,11 +240,10 @@ public class AddGoalActivity extends AppCompatActivity {
             int dH   = (hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour));
             btnPickDate.setText(String.format(Locale.US,
                     "📅 %s/%s  %02d:%02d %s", d[2], d[1], dH, min, hour < 12 ? "AM" : "PM"));
-            btnPickDate.setTextColor(COLOR_PURPLE);
         } catch (Exception e) {
             btnPickDate.setText("📅 " + dateStr);
-            btnPickDate.setTextColor(COLOR_PURPLE);
         }
+        btnPickDate.setTextColor(ColorStateList.valueOf(COLOR_PURPLE));
     }
 
     // ── Reminder ───────────────────────────────────────────────────────

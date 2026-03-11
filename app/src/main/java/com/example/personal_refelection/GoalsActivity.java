@@ -2,6 +2,7 @@ package com.example.personal_refelection;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;

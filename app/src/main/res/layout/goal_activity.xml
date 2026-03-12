@@ -24,77 +24,55 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Filter chips — transparent, inherits AppBarLayout background -->
+        <!-- Sub-header: MY GOALS label row -->
         <LinearLayout
             android:id="@+id/goalsHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="4dp"
             android:paddingBottom="16dp">
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:clipToPadding="false">
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_stat_icon_circle"
+                android:layout_marginEnd="12dp">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_target"
+                    android:scaleType="fitCenter"
+                    app:tint="#FFFFFF"
+                    android:contentDescription="@string/content_desc_target_icon" />
+            </FrameLayout>
 
-                <LinearLayout
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/chipAll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="34dp"
-                        android:text="✦  All"
-                        android:textSize="13sp"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-medium"
-                        android:background="@drawable/bg_chip_active_pill"
-                        android:paddingStart="18dp"
-                        android:paddingEnd="18dp"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginEnd="10dp" />
-
-                    <TextView
-                        android:id="@+id/chipActive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="34dp"
-                        android:text="🎯  Active"
-                        android:textSize="13sp"
-                        android:textColor="#FFFFFF"
-                        android:fontFamily="sans-serif-medium"
-                        android:background="@drawable/bg_chip_inactive_pill"
-                        android:paddingStart="18dp"
-                        android:paddingEnd="18dp"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginEnd="10dp" />
-
-                    <TextView
-                        android:id="@+id/chipAchieved"
-                        android:layout_width="wrap_content"
-                        android:layout_height="34dp"
-                        android:text="🏆  Achieved"
-                        android:textSize="13sp"
-                        android:textColor="#FFFFFF"
-                        android:fontFamily="sans-serif-medium"
-                        android:background="@drawable/bg_chip_inactive_pill"
-                        android:paddingStart="18dp"
-                        android:paddingEnd="18dp"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true" />
-                </LinearLayout>
-            </HorizontalScrollView>
+                    android:text="MY GOALS"
+                    android:textSize="11sp"
+                    android:textColor="#BBDDE0FF"
+                    android:letterSpacing="0.12"
+                    android:textAllCaps="true"
+                    android:fontFamily="sans-serif-medium" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reflect. Improve. Achieve."
+                    android:textSize="13sp"
+                    android:textColor="#CCFFFFFF"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

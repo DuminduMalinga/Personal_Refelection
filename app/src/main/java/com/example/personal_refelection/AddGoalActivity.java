@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -79,7 +80,11 @@ public class AddGoalActivity extends BaseActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.addGoalRoot), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            v.setPadding(bars.left, 0, bars.right, 0);
+            View topNav = v.findViewById(R.id.topNavInclude);
+            if (topNav != null) topNav.setPadding(
+                    topNav.getPaddingLeft(), bars.top + 8,
+                    topNav.getPaddingRight(), topNav.getPaddingBottom());
             return insets;
         });
 

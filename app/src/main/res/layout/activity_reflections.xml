@@ -15,6 +15,7 @@
         android:elevation="0dp"
         app:elevation="0dp"
         app:liftOnScroll="false"
+        app:backgroundTint="@android:color/transparent"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
 
         <include

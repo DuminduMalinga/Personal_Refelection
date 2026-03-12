@@ -77,8 +77,12 @@ public class DashboardActivity extends BaseActivity {
         setContentView(R.layout.dashboard_activity);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dashboardRoot), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, 0, bars.right, 0);
+            View topNav = v.findViewById(R.id.topNavInclude);
+            if (topNav != null) topNav.setPadding(
+                    topNav.getPaddingLeft(), bars.top + 8,
+                    topNav.getPaddingRight(), topNav.getPaddingBottom());
             return insets;
         });
 

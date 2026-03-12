@@ -66,7 +66,11 @@ public class GoalsActivity extends BaseActivity {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.goalsRoot), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(bars.left, bars.top, bars.right, 0);
+            v.setPadding(bars.left, 0, bars.right, 0);
+            View topNav = v.findViewById(R.id.topNavInclude);
+            if (topNav != null) topNav.setPadding(
+                    topNav.getPaddingLeft(), bars.top + 8,
+                    topNav.getPaddingRight(), topNav.getPaddingBottom());
             return insets;
         });
 

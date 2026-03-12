@@ -80,12 +80,26 @@ public class ReflectionsActivity extends BaseActivity {
         setupBottomNav(-1);
         loadAllReflections();
 
-        // All three entry points open the same bottom sheet
-        View fabAdd    = findViewById(R.id.fabAddReflection);
-        View emptyAdd  = findViewById(R.id.btnAddReflectionEmpty);
+        // All entry points open the same bottom sheet
+        View fabAdd   = findViewById(R.id.fabAddReflection);
+        View emptyAdd = findViewById(R.id.btnAddReflectionEmpty);
 
-        fabAdd.setOnClickListener(v -> openAddReflectionSheet());
+        if (fabAdd   != null) fabAdd.setOnClickListener(v -> openAddReflectionSheet());
         if (emptyAdd != null) emptyAdd.setOnClickListener(v -> openAddReflectionSheet());
+
+        // Override bottom nav FAB to also open reflection sheet on this screen
+        View nav = findViewById(R.id.bottomNavInclude);
+        if (nav != null) {
+            View bottomFab = nav.findViewById(R.id.fabAdd);
+            if (bottomFab != null) {
+                bottomFab.setOnClickListener(v -> {
+                    v.animate().scaleX(0.88f).scaleY(0.88f).setDuration(80).withEndAction(() ->
+                        v.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+                    ).start();
+                    openAddReflectionSheet();
+                });
+            }
+        }
     }
 
     // ── Bind ───────────────────────────────────────────────────────────
@@ -158,15 +172,11 @@ public class ReflectionsActivity extends BaseActivity {
             if (selectedPos > 0 && selectedPos - 1 < userGoals.size()) {
                 goalId = userGoals.get(selectedPos - 1).id;
             } else {
-                if (userGoals.isEmpty()) {
-                    Toast.makeText(this, "Please create a goal first!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                goalId = userGoals.get(0).id;
+                goalId = 0; // 0 = no goal linked, allowed
             }
 
             String moodTag = selectedMood.isEmpty() ? "" : " " + selectedMood;
-            Reflection reflection = new Reflection(goalId, content + moodTag);
+            Reflection reflection = new Reflection(userId, goalId, content + moodTag);
 
             executor.execute(() -> {
                 reflectionDao.insertReflection(reflection);

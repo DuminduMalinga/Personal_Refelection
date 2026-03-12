@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Deep modern gradient for profile hero header -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#3730A3"
+        android:centerColor="#6C63FF"
+        android:endColor="#7C3AED"
+        android:angle="150"
+        android:type="linear" />
+    <corners
+        android:bottomLeftRadius="40dp"
+        android:bottomRightRadius="40dp" />
+</shape>
+

@@ -206,6 +206,23 @@
     <string name="hint_goal_title">Goal Title</string>
     <string name="hint_goal_description">Goal Description (optional)</string>
 
+    <!-- Achieved screen -->
+    <string name="lbl_achieved_screen_label">COMPLETED</string>
+    <string name="lbl_achieved_goals_title">Achieved Goals</string>
+    <string name="lbl_achieved_count_zero">0</string>
+    <string name="lbl_achieved_count_unit">goals</string>
+    <string name="lbl_achieved_summary_title">🎉 Great job!</string>
+    <string name="lbl_achieved_summary_body">Keep achieving more goals\nand growing every day.</string>
+    <string name="lbl_achieved_summary_trophy">🏆</string>
+    <string name="lbl_tab_this_month">📅  This Month</string>
+    <string name="lbl_tab_all_time">🌟  All Time</string>
+    <string name="lbl_achieved_empty_title">No Achieved Goals Yet</string>
+    <string name="lbl_achieved_empty_subtitle">You haven\'t achieved any goals yet.\nStart working on your goals and\ncelebrate your wins here! 💪</string>
+    <string name="lbl_achieved_empty_icons">🎯  🌟  🚀</string>
+    <string name="lbl_achieved_empty_trophy">🏆</string>
+    <string name="btn_view_active_goals">🎯  View Active Goals</string>
+    <string name="lbl_achieved_sub_header_trophy">🏆</string>
+
     <!-- Notification permission dialog -->
     <string name="lbl_notif_permission_title">Enable Notifications</string>
     <string name="lbl_notif_permission_rationale">GoalReflect needs notification permission to send you goal reminders and reflection prompts. Please enable it in Settings.</string>

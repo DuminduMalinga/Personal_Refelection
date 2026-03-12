@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ── Dark Backgrounds ── -->
+    <color name="background">#12131A</color>
+    <color name="card_background">#1E1F2B</color>
+    <color name="surface_elevated">#252636</color>
+
+    <!-- ── Dark Text ── -->
+    <color name="text_primary">#F0F0FF</color>
+    <color name="text_secondary">#9A9FBB</color>
+    <color name="text_hint">#5A6080</color>
+
+    <!-- ── Dark Input Fields ── -->
+    <color name="input_background">#1C1D2A</color>
+    <color name="input_border">#2E2F45</color>
+    <color name="input_icon">#6C6F8C</color>
+
+    <!-- ── Dark Divider ── -->
+    <color name="divider">#2A2B3D</color>
+
+    <!-- ── Dark Stat Cards ── -->
+    <color name="card_green_light">#112A22</color>
+    <color name="card_blue_light">#1A1B2E</color>
+    <color name="card_orange_light">#251D0E</color>
+    <color name="card_purple_light">#1E1728</color>
+
+    <!-- ── Dark Primary ── -->
+    <color name="primary_green_light">#1A1B2E</color>
+
+    <!-- ── Dark Profile ── -->
+    <color name="profile_background">#12131A</color>
+    <color name="profile_accent_blue_light">#1A1B2E</color>
+    <color name="profile_accent_green_light">#112A22</color>
+    <color name="profile_accent_orange_light">#251D0E</color>
+    <color name="profile_avatar_bg">#1A1B2E</color>
+    <color name="profile_row_icon_bg">#1E1F2B</color>
+    <color name="profile_arrow_color">#44475A</color>
+    <color name="profile_logout_red_light">#2A1418</color>
+</resources>
+

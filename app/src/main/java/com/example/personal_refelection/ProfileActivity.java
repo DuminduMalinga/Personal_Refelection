@@ -30,6 +30,7 @@ public class ProfileActivity extends BaseActivity {
 
     private TextView tvFullName, tvEmail, tvUsername;
     private TextView tvStatActiveGoals, tvStatAchievedGoals, tvStatTotalReflections;
+    private TextView tvCurrentTheme;
     private ImageView ivProfileImage;
 
     private UserRepository userRepository;
@@ -107,6 +108,7 @@ public class ProfileActivity extends BaseActivity {
         tvStatAchievedGoals    = findViewById(R.id.tvStatAchievedGoals);
         tvStatTotalReflections = findViewById(R.id.tvStatTotalReflections);
         ivProfileImage         = findViewById(R.id.ivProfileImage);
+        tvCurrentTheme         = findViewById(R.id.tvCurrentTheme);
 
         // Apply circular clip in Java (safe for all API levels)
         if (ivProfileImage != null) {
@@ -172,6 +174,11 @@ public class ProfileActivity extends BaseActivity {
         if (rowNotif != null) rowNotif.setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationSettingsActivity.class)));
 
+        // ── App Theme ─────────────────────────────────────────────
+        View rowTheme = findViewById(R.id.rowAppTheme);
+        if (rowTheme != null) rowTheme.setOnClickListener(v -> showThemeDialog());
+        updateThemeSubtitle();
+
         View rowPrivacy = findViewById(R.id.rowPrivacyPolicy);
         if (rowPrivacy != null) rowPrivacy.setOnClickListener(v ->
                 startActivity(new Intent(this, PrivacyPolicyActivity.class)));
@@ -182,6 +189,42 @@ public class ProfileActivity extends BaseActivity {
 
         View rowLogout = findViewById(R.id.rowLogout);
         if (rowLogout != null) rowLogout.setOnClickListener(v -> showLogoutDialog());
+    }
+
+    /** Shows a single-choice dialog for Light / Dark / Follow System. */
+    private void showThemeDialog() {
+        String[] options = {"☀️ Light", "🌙 Dark", "📱 Follow System"};
+        int current = ThemeManager.getSavedTheme(this);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Choose App Theme")
+                .setSingleChoiceItems(options, current, null)
+                .setPositiveButton("Apply", (dialog, which) -> {
+                    android.widget.ListView lv =
+                            ((AlertDialog) dialog).getListView();
+                    int chosen = lv.getCheckedItemPosition();
+                    if (chosen == android.widget.AdapterView.INVALID_POSITION)
+                        chosen = current;
+                    ThemeManager.saveAndApplyTheme(this, chosen);
+                    updateThemeSubtitle();
+                    // Recreate so colours/drawables refresh
+                    recreate();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    /** Refreshes the subtitle under "App Theme" to reflect the current selection. */
+    private void updateThemeSubtitle() {
+        if (tvCurrentTheme == null) return;
+        int saved = ThemeManager.getSavedTheme(this);
+        String label;
+        switch (saved) {
+            case ThemeManager.THEME_LIGHT:  label = "Light";        break;
+            case ThemeManager.THEME_DARK:   label = "Dark";         break;
+            default:                        label = "Follow System"; break;
+        }
+        tvCurrentTheme.setText(label);
     }
 
     // ── Logout ────────────────────────────────────────────────────

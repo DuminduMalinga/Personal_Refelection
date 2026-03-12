@@ -192,7 +192,7 @@ public class ReflectionsActivity extends BaseActivity {
                         .apply();
 
                 mainHandler.post(() -> {
-                    Toast.makeText(this, "Reflection saved! 💡", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Reflection saved!", Toast.LENGTH_SHORT).show();
                     sheet.dismiss();
                     loadAllReflections();
                 });

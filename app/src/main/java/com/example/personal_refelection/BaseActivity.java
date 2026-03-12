@@ -49,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (tvGreeting != null) {
             int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
             String g = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
-            tvGreeting.setText(g + ", " + userName + " 👋");
+            tvGreeting.setText(g + ", " + userName);
         }
 
         // ── Tagline ───────────────────────────────────────────────────

@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onSuccess(User user) {
                 btnGoogleSignup.setAlpha(1f);
                 Toast.makeText(RegisterActivity.this,
-                        "Welcome, " + user.fullName + "! 🌱", Toast.LENGTH_SHORT).show();
+                        "Welcome, " + user.fullName + "!", Toast.LENGTH_SHORT).show();
                 navigateToDashboard();
             }
             @Override
@@ -175,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity {
         userRepository.register(newUser, result -> {
             btnRegister.setEnabled(true);
             if (result > 0) {
-                Toast.makeText(this, "Welcome to GoalReflect, " + fullName + "! 🌱", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Welcome to GoalReflect, " + fullName + "!", Toast.LENGTH_SHORT).show();
                 userRepository.getUserByEmail(email, user -> {
                     if (user != null) {
                         sharedPreferences.edit()

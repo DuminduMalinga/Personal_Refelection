@@ -332,7 +332,7 @@ public class DashboardActivity extends BaseActivity {
             executor.execute(() -> {
                 reflectionDao.insertReflection(reflection);
                 mainHandler.post(() -> {
-                    Toast.makeText(this, "Reflection saved! 💡", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Reflection saved! ", Toast.LENGTH_SHORT).show();
                     sheet.dismiss();
                     loadDashboardData(); // refresh counts + recent list
                 });
@@ -485,7 +485,7 @@ public class DashboardActivity extends BaseActivity {
 
         sharedPreferences.edit().clear().apply();
 
-        Toast.makeText(this, "Logged out successfully 👋", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

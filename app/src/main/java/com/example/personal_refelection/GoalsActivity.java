@@ -188,7 +188,7 @@ public class GoalsActivity extends BaseActivity {
 
     private void markAchieved(Goal goal) {
         new AlertDialog.Builder(this)
-                .setTitle("Mark as Achieved? 🏆")
+                .setTitle("Mark as Achieved?")
                 .setMessage("Great work! Mark \"" + goal.title + "\" as achieved?")
                 .setPositiveButton("Yes!", (d, w) -> executor.execute(() -> {
                     goalDao.markGoalCompleted(goal.id);
@@ -213,7 +213,7 @@ public class GoalsActivity extends BaseActivity {
                     }
 
                     mainHandler.post(() -> {
-                        Toast.makeText(this, "Goal achieved! 🏆", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Goal achieved!", Toast.LENGTH_SHORT).show();
                         loadGoals();
                     });
                 }))

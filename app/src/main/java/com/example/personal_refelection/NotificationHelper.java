@@ -93,25 +93,25 @@ public class NotificationHelper {
 
     public static void postGoalReminder(Context ctx, String userName) {
         post(ctx, CHANNEL_GOAL_REMINDERS, NOTIF_ID_GOAL_REMINDER,
-                "⏰ Goal Check-In",
+                "Goal Check-In",
                 "Hey " + userName + "! Don't forget to review your active goals today.");
     }
 
     public static void postReflectionPrompt(Context ctx, String userName) {
         post(ctx, CHANNEL_REFLECTION_PROMPTS, NOTIF_ID_REFLECTION_PROMPT,
-                "📝 Time to Reflect",
+                "Time to Reflect",
                 "Hey " + userName + "! Take a moment to journal your thoughts for today.");
     }
 
     public static void postAchievementAlert(Context ctx, String goalTitle) {
         post(ctx, CHANNEL_ACHIEVEMENTS, NOTIF_ID_ACHIEVEMENT,
-                "🏆 Goal Achieved!",
+                "Goal Achieved!",
                 "You completed: \"" + goalTitle + "\". Amazing work!");
     }
 
     public static void postGoalDeadline(Context ctx, String goalTitle) {
         post(ctx, CHANNEL_GOAL_REMINDERS, NOTIF_ID_GOAL_REMINDER + Math.abs(goalTitle.hashCode()) % 10000,
-                "⏰ Goal Deadline Reached!",
+                "Goal Deadline Reached!",
                 "\"" + goalTitle + "\" has reached its target date! Time to review your progress.");
     }
 
@@ -119,14 +119,14 @@ public class NotificationHelper {
         // Use HIGH importance channel so the heads-up / alert pops up on screen
         int notifId = 50000 + Math.abs(goalTitle.hashCode()) % 10000;
         postWithPriority(ctx, CHANNEL_DEADLINE_WARNINGS, notifId,
-                "⚠️ Goal Deadline in 5 Minutes!",
-                "\"" + goalTitle + "\" deadline is almost here! Only 5 minutes left. Stay focused! 🎯",
+                "Goal Deadline in 5 Minutes!",
+                "\"" + goalTitle + "\" deadline is almost here! Only 5 minutes left. Stay focused!",
                 NotificationCompat.PRIORITY_HIGH);
     }
 
     public static void postWeeklySummary(Context ctx, int active, int achieved, int reflections) {
         String body = "This week: " + achieved + " goals achieved, " + active + " active, "
-                + reflections + " reflections written. Keep going! 🌿";
+                + reflections + " reflections written. Keep going!";
 
         Intent tap = new Intent(ctx, WeeklyReportActivity.class);
         tap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -135,7 +135,7 @@ public class NotificationHelper {
 
         NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CHANNEL_WEEKLY_SUMMARY)
                 .setSmallIcon(R.drawable.ic_logo_journal)
-                .setContentTitle("📊 Your Weekly Summary")
+                .setContentTitle("Your Weekly Summary")
                 .setContentText(body)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

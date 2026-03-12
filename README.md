@@ -1,4 +1,4 @@
-# 🌿 GoalReflect — Personal Goal Reflection App
+#   GoalReflect — Personal Goal Reflection App
 
 > **Module:** ICT3214 — Mobile Application Development
 > **Project Idea #8:** Personal Goal Reflection App

@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(User user) {
                 btnGoogleLogin.setAlpha(1f);
                 Toast.makeText(LoginActivity.this,
-                        "Welcome, " + user.fullName + "! 🎉", Toast.LENGTH_SHORT).show();
+                        "Welcome, " + user.fullName + "!", Toast.LENGTH_SHORT).show();
                 navigateToDashboard();
             }
             @Override
@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                         .putString("user_email", user.email)
                         .putBoolean("isLoggedIn", true)
                         .apply();
-                Toast.makeText(this, "Welcome back, " + user.fullName + "! 🌿", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Welcome back, " + user.fullName + "!", Toast.LENGTH_SHORT).show();
                 navigateToDashboard();
             } else {
                 etPassword.setError("Incorrect email or password");

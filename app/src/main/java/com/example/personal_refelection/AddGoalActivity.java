@@ -139,7 +139,7 @@ public class AddGoalActivity extends BaseActivity {
             if (tvHeaderLabel   != null) tvHeaderLabel.setText("EDIT GOAL");
             if (tvHeaderTitle   != null) tvHeaderTitle.setText("Edit Goal");
             if (tvHeaderSubtitle!= null) tvHeaderSubtitle.setText("Update your goal details ✏️");
-            if (btnSaveGoal     != null) btnSaveGoal.setText("Update Goal ✅");
+            if (btnSaveGoal     != null) btnSaveGoal.setText("Update Goal ");
         }
     }
 
@@ -327,7 +327,7 @@ public class AddGoalActivity extends BaseActivity {
                 }
 
                 mainHandler.post(() -> {
-                    Toast.makeText(this, "Goal updated ✅", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Goal updated ", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finishWithAnimation();
                 });
@@ -344,7 +344,7 @@ public class AddGoalActivity extends BaseActivity {
                 }
 
                 mainHandler.post(() -> {
-                    Toast.makeText(this, "Goal saved! Keep going 🎯", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Goal saved! Keep going ", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finishWithAnimation();
                 });

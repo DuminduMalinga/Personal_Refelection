@@ -106,7 +106,7 @@ public class AchievedActivity extends BaseActivity {
 
     private void setupAdapter() {
         adapter = new AchievedGoalAdapter(this, goal ->
-                Toast.makeText(this, "🏆 " + goal.title, Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, goal.title, Toast.LENGTH_SHORT).show());
         if (recyclerAchieved != null) {
             recyclerAchieved.setLayoutManager(new LinearLayoutManager(this));
             recyclerAchieved.setAdapter(adapter);

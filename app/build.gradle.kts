@@ -45,8 +45,6 @@ dependencies {
     annotationProcessor(libs.room.compiler)
     // Google Sign-In (proven, works on all devices with Play Services)
     implementation(libs.play.services.auth)
-    // Facebook Login SDK
-    implementation(libs.facebook.android.sdk)
     // Firebase - Import the Firebase BoM (version 34.10.0)
     implementation(platform(libs.firebase.bom))
     // Firebase Auth — for Google + Facebook sign-in

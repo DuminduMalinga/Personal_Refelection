@@ -20,13 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.personal_refelection.database.User;
 import com.example.personal_refelection.database.UserRepository;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 
-import java.util.Arrays;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -34,12 +28,11 @@ public class RegisterActivity extends AppCompatActivity {
     private LinearLayout inputFullName, inputEmail, inputUsername, inputPassword, inputConfirmPassword;
     private Button btnRegister;
     private TextView tvLogin;
-    private LinearLayout btnGoogleSignup, btnFacebookSignup;
+    private LinearLayout btnGoogleSignup;
 
     private UserRepository userRepository;
     private SharedPreferences sharedPreferences;
     private SocialAuthManager socialAuthManager;
-    private CallbackManager facebookCallbackManager;
 
     private SocialAuthManager.SocialAuthCallback pendingGoogleCallback;
 
@@ -58,12 +51,10 @@ public class RegisterActivity extends AppCompatActivity {
         userRepository          = new UserRepository(this);
         sharedPreferences       = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
         socialAuthManager       = new SocialAuthManager(this);
-        facebookCallbackManager = CallbackManager.Factory.create();
 
         bindViews();
         setupFocusListeners();
         setupClickListeners();
-        setupFacebookCallback();
     }
 
     private void bindViews() {
@@ -80,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister          = findViewById(R.id.btnRegister);
         tvLogin              = findViewById(R.id.tvLogin);
         btnGoogleSignup      = findViewById(R.id.btnGoogleSignup);
-        btnFacebookSignup    = findViewById(R.id.btnFacebookSignup);
     }
 
     private void setupFocusListeners() {
@@ -105,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         });
         btnGoogleSignup.setOnClickListener(v -> handleGoogleSignup());
-        btnFacebookSignup.setOnClickListener(v -> handleFacebookSignup());
     }
 
     // ── Google Sign-Up ────────────────────────────────────────────
@@ -140,58 +129,11 @@ public class RegisterActivity extends AppCompatActivity {
                 SocialAuthManager.RC_GOOGLE_SIGN_IN);
     }
 
-    // ── Facebook Sign-Up ──────────────────────────────────────────
-
-    private void handleFacebookSignup() {
-        LoginManager.getInstance().logInWithReadPermissions(
-                this, facebookCallbackManager,
-                Arrays.asList("public_profile", "email"));
-    }
-
-    private void setupFacebookCallback() {
-        LoginManager.getInstance().registerCallback(facebookCallbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // Pass access token directly to Firebase
-                        socialAuthManager.handleFacebookAccessToken(
-                                loginResult.getAccessToken(),
-                                new SocialAuthManager.SocialAuthCallback() {
-                                    @Override
-                                    public void onSuccess(User user) {
-                                        Toast.makeText(RegisterActivity.this,
-                                                "Welcome, " + user.fullName + "! 🌱",
-                                                Toast.LENGTH_SHORT).show();
-                                        navigateToDashboard();
-                                    }
-                                    @Override
-                                    public void onCancelled() { }
-                                    @Override
-                                    public void onError(String message) {
-                                        Toast.makeText(RegisterActivity.this,
-                                                getString(R.string.lbl_social_login_failed) + "\n" + message,
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                    }
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(RegisterActivity.this,
-                                getString(R.string.lbl_social_login_cancelled), Toast.LENGTH_SHORT).show();
-                    }
-                    @Override
-                    public void onError(FacebookException error) {
-                        Toast.makeText(RegisterActivity.this,
-                                getString(R.string.lbl_social_login_failed), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
     // ── Activity Result ───────────────────────────────────────────
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == SocialAuthManager.RC_GOOGLE_SIGN_IN) {
             btnGoogleSignup.setAlpha(1f);

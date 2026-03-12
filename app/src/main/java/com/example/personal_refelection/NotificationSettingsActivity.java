@@ -68,13 +68,11 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_notification_settings);
 
+        View toolbar = findViewById(R.id.notificationToolbar);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.notificationRoot), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(bars.left, 0, bars.right, 0);
-            View toolbar = v.findViewById(R.id.notificationToolbar);
-            if (toolbar != null) toolbar.setPadding(
-                    toolbar.getPaddingLeft(), bars.top,
-                    toolbar.getPaddingRight(), toolbar.getPaddingBottom());
+            if (toolbar != null) toolbar.setPadding(4, bars.top, 16, 0);
             return insets;
         });
 

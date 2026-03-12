@@ -20,13 +20,11 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_privacy_policy);
 
+        View toolbar = findViewById(R.id.privacyToolbar);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.privacyRoot), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(bars.left, 0, bars.right, 0);
-            View toolbar = v.findViewById(R.id.privacyToolbar);
-            if (toolbar != null) toolbar.setPadding(
-                    toolbar.getPaddingLeft(), bars.top,
-                    toolbar.getPaddingRight(), toolbar.getPaddingBottom());
+            if (toolbar != null) toolbar.setPadding(4, bars.top, 16, 0);
             return insets;
         });
 

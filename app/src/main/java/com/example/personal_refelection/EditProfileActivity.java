@@ -108,13 +108,11 @@ public class EditProfileActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_profile);
 
+        View toolbar = findViewById(R.id.editProfileToolbar);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.editProfileRoot), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(bars.left, 0, bars.right, 0);
-            View toolbar = v.findViewById(R.id.editProfileToolbar);
-            if (toolbar != null) toolbar.setPadding(
-                    toolbar.getPaddingLeft(), bars.top,
-                    toolbar.getPaddingRight(), toolbar.getPaddingBottom());
+            if (toolbar != null) toolbar.setPadding(4, bars.top, 8, 0);
             return insets;
         });
 

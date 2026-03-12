@@ -117,6 +117,31 @@ public class DashboardActivity extends BaseActivity {
         setupGreeting();
         setupClickListeners();
         loadDashboardData();
+        initNotifications();
+    }
+
+    /**
+     * Ensure notification channels exist and schedule alarms that have never been set up yet.
+     * This is safe to call every time — channels are idempotent, and alarms with the same
+     * PendingIntent simply update the existing one.
+     */
+    private void initNotifications() {
+        NotificationHelper.createChannels(this);
+
+        // Schedule Goal Reminders if the pref is enabled (default true = first-run case)
+        if (sharedPreferences.getBoolean("notif_goal_reminders", true)) {
+            NotificationHelper.scheduleGoalReminder(this);
+        }
+
+        // Schedule Reflection Prompts if the pref is enabled (default true = first-run case)
+        if (sharedPreferences.getBoolean("notif_reflection_prompts", true)) {
+            NotificationHelper.scheduleReflectionPrompt(this);
+        }
+
+        // Weekly Summary is off by default — only schedule if user explicitly enabled it
+        if (sharedPreferences.getBoolean("notif_weekly_summary", false)) {
+            NotificationHelper.scheduleWeeklySummary(this);
+        }
     }
 
     private void bindViews() {
@@ -353,6 +378,13 @@ public class DashboardActivity extends BaseActivity {
             tvActiveGoalsCount.setText(String.valueOf(activeGoals));
             tvAchievedGoalsCount.setText(String.valueOf(achievedGoals));
             tvTotalReflectionsCount.setText(String.valueOf(totalReflections));
+
+            // Persist latest stats so Weekly Summary notification can read them
+            sharedPreferences.edit()
+                    .putInt("stat_active_goals", activeGoals)
+                    .putInt("stat_achieved_goals", achievedGoals)
+                    .putInt("stat_total_reflections", totalReflections)
+                    .apply();
         });
 
         // Load recent reflections

@@ -183,19 +183,11 @@ public class NotificationHelper {
         cal.set(Calendar.HOUR_OF_DAY, 10);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-        if (cal.getTimeInMillis() < System.currentTimeMillis()) {
+        cal.set(Calendar.MILLISECOND, 0);
+        if (cal.getTimeInMillis() <= System.currentTimeMillis()) {
             cal.add(Calendar.WEEK_OF_YEAR, 1);
         }
-        PendingIntent pi = buildPendingIntent(ctx, ACTION_WEEKLY_SUMMARY, REQUEST_WEEKLY_SUMMARY);
-        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        if (am != null) {
-            try {
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                        AlarmManager.INTERVAL_DAY * 7, pi);
-            } catch (SecurityException e) {
-                am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
-            }
-        }
+        scheduleExactAlarm(ctx, ACTION_WEEKLY_SUMMARY, REQUEST_WEEKLY_SUMMARY, cal.getTimeInMillis());
     }
 
     public static void cancelWeeklySummary(Context ctx) {
@@ -349,18 +341,32 @@ public class NotificationHelper {
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-        if (cal.getTimeInMillis() < System.currentTimeMillis()) {
+        cal.set(Calendar.MILLISECOND, 0);
+        if (cal.getTimeInMillis() <= System.currentTimeMillis()) {
             cal.add(Calendar.DAY_OF_YEAR, 1);
         }
+        scheduleExactAlarm(ctx, action, requestCode, cal.getTimeInMillis());
+    }
+
+    /**
+     * Schedule a single exact alarm. The receiver is responsible for rescheduling
+     * the next occurrence after firing (self-rescheduling pattern).
+     */
+    static void scheduleExactAlarm(Context ctx, String action, int requestCode, long triggerAtMillis) {
         PendingIntent pi = buildPendingIntent(ctx, action, requestCode);
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        if (am != null) {
-            try {
-                am.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                        AlarmManager.INTERVAL_DAY, pi);
-            } catch (SecurityException e) {
-                am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
+        if (am == null) return;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && am.canScheduleExactAlarms()) {
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
+            } else {
+                am.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
             }
+        } catch (SecurityException e) {
+            // Fall back to inexact if exact alarms are denied
+            am.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pi);
         }
     }
 

@@ -41,7 +41,7 @@ public class BootReceiver extends BroadcastReceiver {
             NotificationHelper.scheduleWeeklySummary(context);
 
         // Re-schedule per-goal deadline and 5-minute warning alarms for all active goals
-        int userId = prefs.getInt("userId", -1);
+        int userId = prefs.getInt("user_id", -1);
         if (userId != -1) {
             new Thread(() -> {
                 try {

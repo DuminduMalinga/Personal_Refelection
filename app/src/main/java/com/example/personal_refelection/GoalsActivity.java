@@ -145,6 +145,13 @@ public class GoalsActivity extends BaseActivity {
             achievedGoals = goalDao.getAchievedGoals(userId);
             int activeCount   = activeGoals.size();
             int achievedCount = achievedGoals.size();
+
+            // Persist stats so Weekly Summary notification can read up-to-date numbers
+            getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE).edit()
+                    .putInt("stat_active_goals", activeCount)
+                    .putInt("stat_achieved_goals", achievedCount)
+                    .apply();
+
             mainHandler.post(() -> {
                 if (tvHeaderActiveCount   != null) tvHeaderActiveCount.setText(String.valueOf(activeCount));
                 if (tvHeaderAchievedCount != null) tvHeaderAchievedCount.setText(String.valueOf(achievedCount));
@@ -185,6 +192,26 @@ public class GoalsActivity extends BaseActivity {
                 .setMessage("Great work! Mark \"" + goal.title + "\" as achieved?")
                 .setPositiveButton("Yes!", (d, w) -> executor.execute(() -> {
                     goalDao.markGoalCompleted(goal.id);
+
+                    // Cancel any pending deadline / warning alarms for this goal
+                    NotificationHelper.cancelGoalDeadline(this, goal.id);
+                    NotificationHelper.cancelGoalDeadlineWarning(this, goal.id);
+
+                    // Read fresh counts and persist them for Weekly Summary notification
+                    int newActive   = goalDao.countActiveGoals(userId);
+                    int newAchieved = goalDao.countAchievedGoals(userId);
+                    android.content.SharedPreferences prefs =
+                            getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
+                    prefs.edit()
+                            .putInt("stat_active_goals",   newActive)
+                            .putInt("stat_achieved_goals", newAchieved)
+                            .apply();
+
+                    // Fire Achievement Alert notification if the toggle is enabled
+                    if (prefs.getBoolean("notif_achievements", true)) {
+                        NotificationHelper.postAchievementAlert(this, goal.title);
+                    }
+
                     mainHandler.post(() -> {
                         Toast.makeText(this, "Goal achieved! 🏆", Toast.LENGTH_SHORT).show();
                         loadGoals();

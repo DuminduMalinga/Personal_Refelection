@@ -98,7 +98,7 @@ public class AddGoalActivity extends BaseActivity {
 
         bindViews();
         setupTopNav("MY GOALS");
-        setupBottomNav(R.id.navGoals);
+        setupBottomNav(-1);
         setupHeaderMode();
         setupCategoryChips();
         setupPriorityChips();
@@ -317,6 +317,15 @@ public class AddGoalActivity extends BaseActivity {
                 Goal goal = new Goal(userId, title, finalDesc, selectedDate);
                 goal.id = editGoalId;
                 goalDao.updateGoal(goal);
+
+                // Cancel old deadline alarms and reschedule if a date is set
+                NotificationHelper.cancelGoalDeadline(this, editGoalId);
+                NotificationHelper.cancelGoalDeadlineWarning(this, editGoalId);
+                if (selectedDate != null && !selectedDate.isEmpty()) {
+                    NotificationHelper.scheduleGoalDeadline(this, editGoalId, title, selectedDate);
+                    NotificationHelper.scheduleGoalDeadlineWarning(this, editGoalId, title, selectedDate);
+                }
+
                 mainHandler.post(() -> {
                     Toast.makeText(this, "Goal updated ✅", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
@@ -326,7 +335,14 @@ public class AddGoalActivity extends BaseActivity {
         } else {
             Goal newGoal = new Goal(userId, title, finalDesc, selectedDate);
             executor.execute(() -> {
-                goalDao.insertGoal(newGoal);
+                long insertedId = goalDao.insertGoal(newGoal);
+
+                // Schedule deadline notification and 5-min warning if a target date is set
+                if (selectedDate != null && !selectedDate.isEmpty() && insertedId > 0) {
+                    NotificationHelper.scheduleGoalDeadline(this, (int) insertedId, title, selectedDate);
+                    NotificationHelper.scheduleGoalDeadlineWarning(this, (int) insertedId, title, selectedDate);
+                }
+
                 mainHandler.post(() -> {
                     Toast.makeText(this, "Goal saved! Keep going 🎯", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);

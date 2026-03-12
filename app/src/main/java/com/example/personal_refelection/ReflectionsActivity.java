@@ -184,6 +184,13 @@ public class ReflectionsActivity extends BaseActivity {
 
             executor.execute(() -> {
                 reflectionDao.insertReflection(reflection);
+                int totalReflections = reflectionDao.countTotalReflections(userId);
+
+                // Persist so Weekly Summary notification can read up-to-date count
+                getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE).edit()
+                        .putInt("stat_total_reflections", totalReflections)
+                        .apply();
+
                 mainHandler.post(() -> {
                     Toast.makeText(this, "Reflection saved! 💡", Toast.LENGTH_SHORT).show();
                     sheet.dismiss();

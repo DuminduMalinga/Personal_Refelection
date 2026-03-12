@@ -18,17 +18,21 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         SharedPreferences prefs =
                 context.getSharedPreferences("GoalReflectPrefs", Context.MODE_PRIVATE);
-        String userName = prefs.getString("userName", "there");
+        String userName = prefs.getString("user_name", "there");
 
         switch (intent.getAction()) {
             case NotificationHelper.ACTION_GOAL_REMINDER:
                 if (prefs.getBoolean(PREF_GOAL_REMINDERS, true))
                     NotificationHelper.postGoalReminder(context, userName);
+                // Reschedule for next day (self-rescheduling pattern)
+                NotificationHelper.scheduleGoalReminder(context);
                 break;
 
             case NotificationHelper.ACTION_REFLECTION_PROMPT:
                 if (prefs.getBoolean(PREF_REFLECTION_PROMPTS, true))
                     NotificationHelper.postReflectionPrompt(context, userName);
+                // Reschedule for next day
+                NotificationHelper.scheduleReflectionPrompt(context);
                 break;
 
             case NotificationHelper.ACTION_ACHIEVEMENT_ALERT:
@@ -46,6 +50,32 @@ public class NotificationReceiver extends BroadcastReceiver {
                     int reflections = prefs.getInt("stat_total_reflections", 0);
                     NotificationHelper.postWeeklySummary(context, active, achieved, reflections);
                 }
+                // Reschedule for next week
+                NotificationHelper.scheduleWeeklySummary(context);
+                break;
+
+            case NotificationHelper.ACTION_GOAL_DEADLINE:
+                // Always fire deadline alerts (they were explicitly set per goal)
+                String deadlineGoalTitle = intent.getStringExtra(NotificationHelper.EXTRA_GOAL_TITLE);
+                NotificationHelper.postGoalDeadline(context,
+                        deadlineGoalTitle != null ? deadlineGoalTitle : "Your goal");
+                break;
+
+            case NotificationHelper.ACTION_GOAL_DEADLINE_WARNING:
+                // 5-minute warning before the goal deadline — always fire this alert
+                String warningGoalTitle = intent.getStringExtra(NotificationHelper.EXTRA_GOAL_TITLE);
+                NotificationHelper.postGoalDeadlineWarning(context,
+                        warningGoalTitle != null ? warningGoalTitle : "Your goal");
+                break;
+
+            case Intent.ACTION_BOOT_COMPLETED:
+                // Device rebooted — reschedule all active alarms
+                if (prefs.getBoolean(PREF_GOAL_REMINDERS, true))
+                    NotificationHelper.scheduleGoalReminder(context);
+                if (prefs.getBoolean(PREF_REFLECTION_PROMPTS, true))
+                    NotificationHelper.scheduleReflectionPrompt(context);
+                if (prefs.getBoolean(PREF_WEEKLY_SUMMARY, false))
+                    NotificationHelper.scheduleWeeklySummary(context);
                 break;
         }
     }

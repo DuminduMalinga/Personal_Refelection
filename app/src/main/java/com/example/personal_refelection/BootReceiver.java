@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.example.personal_refelection.database.AppDatabase;
+import com.example.personal_refelection.database.Goal;
+import com.example.personal_refelection.database.GoalDao;
+
+import java.util.List;
+
 public class BootReceiver extends BroadcastReceiver {
 
     private static final String PREF_GOAL_REMINDERS     = "notif_goal_reminders";
@@ -33,6 +39,24 @@ public class BootReceiver extends BroadcastReceiver {
 
         if (prefs.getBoolean(PREF_WEEKLY_SUMMARY, false))
             NotificationHelper.scheduleWeeklySummary(context);
+
+        // Re-schedule per-goal deadline and 5-minute warning alarms for all active goals
+        int userId = prefs.getInt("user_id", -1);
+        if (userId != -1) {
+            new Thread(() -> {
+                try {
+                    GoalDao goalDao = AppDatabase.getInstance(context).goalDao();
+                    List<Goal> activeGoals = goalDao.getActiveGoals(userId);
+                    for (Goal goal : activeGoals) {
+                        if (goal.targetDate != null && !goal.targetDate.isEmpty()) {
+                            NotificationHelper.scheduleGoalDeadline(context, goal.id, goal.title, goal.targetDate);
+                            NotificationHelper.scheduleGoalDeadlineWarning(context, goal.id, goal.title, goal.targetDate);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Database not available yet — skip
+                }
+            }).start();
+        }
     }
 }
-

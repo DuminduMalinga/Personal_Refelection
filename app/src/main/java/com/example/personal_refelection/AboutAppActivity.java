@@ -20,13 +20,11 @@ public class AboutAppActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_about_app);
 
+        View toolbar = findViewById(R.id.aboutToolbar);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.aboutRoot), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(bars.left, 0, bars.right, 0);
-            View toolbar = v.findViewById(R.id.aboutToolbar);
-            if (toolbar != null) toolbar.setPadding(
-                    toolbar.getPaddingLeft(), bars.top,
-                    toolbar.getPaddingRight(), toolbar.getPaddingBottom());
+            if (toolbar != null) toolbar.setPadding(4, bars.top, 16, 0);
             return insets;
         });
 

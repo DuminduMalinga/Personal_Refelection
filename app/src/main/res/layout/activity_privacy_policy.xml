@@ -23,11 +23,12 @@
             android:minHeight="56dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="@color/card_background"
+            android:background="@drawable/bg_toolbar_header"
             android:paddingStart="4dp"
             android:paddingEnd="16dp"
             android:paddingTop="0dp"
-            android:elevation="4dp">
+            android:paddingBottom="0dp"
+            android:elevation="0dp">
 
             <ImageView
                 android:id="@+id/btnBack"
@@ -39,7 +40,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/lbl_back_to_login" />
+                android:contentDescription="@string/lbl_back_to_login"
+                app:tint="@android:color/white" />
 
             <TextView
                 android:layout_width="0dp"
@@ -49,7 +51,7 @@
                 android:text="@string/lbl_privacy_screen_title"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
+                android:textColor="@android:color/white"
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
@@ -59,8 +61,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@drawable/bg_dashboard_header"
-            android:paddingTop="40dp"
+            android:background="@drawable/bg_toolbar_header"
+            android:paddingTop="8dp"
             android:paddingBottom="36dp">
 
             <FrameLayout

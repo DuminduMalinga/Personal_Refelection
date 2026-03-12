@@ -147,6 +147,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         // 3D FAB — bounce animation then go to Add Goal
         nav.findViewById(R.id.fabAdd).setOnClickListener(v -> {
+            // Already on AddGoalActivity — do nothing to avoid stacking
+            if (this instanceof AddGoalActivity) return;
             v.animate().scaleX(0.88f).scaleY(0.88f).setDuration(80).withEndAction(() ->
                 v.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
             ).start();

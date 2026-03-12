@@ -47,6 +47,20 @@ public class NotificationReceiver extends BroadcastReceiver {
                     NotificationHelper.postWeeklySummary(context, active, achieved, reflections);
                 }
                 break;
+
+            case NotificationHelper.ACTION_GOAL_DEADLINE:
+                // Always fire deadline alerts (they were explicitly set per goal)
+                String deadlineGoalTitle = intent.getStringExtra(NotificationHelper.EXTRA_GOAL_TITLE);
+                NotificationHelper.postGoalDeadline(context,
+                        deadlineGoalTitle != null ? deadlineGoalTitle : "Your goal");
+                break;
+
+            case NotificationHelper.ACTION_GOAL_DEADLINE_WARNING:
+                // 5-minute warning before the goal deadline — always fire this alert
+                String warningGoalTitle = intent.getStringExtra(NotificationHelper.EXTRA_GOAL_TITLE);
+                NotificationHelper.postGoalDeadlineWarning(context,
+                        warningGoalTitle != null ? warningGoalTitle : "Your goal");
+                break;
         }
     }
 }

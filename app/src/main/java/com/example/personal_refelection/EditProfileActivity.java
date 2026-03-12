@@ -18,11 +18,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -101,7 +105,18 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_profile);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.editProfileRoot), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, 0, bars.right, 0);
+            View toolbar = v.findViewById(R.id.editProfileToolbar);
+            if (toolbar != null) toolbar.setPadding(
+                    toolbar.getPaddingLeft(), bars.top,
+                    toolbar.getPaddingRight(), toolbar.getPaddingBottom());
+            return insets;
+        });
 
         userRepository    = new UserRepository(this);
         sharedPreferences = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);

@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/privacyRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
@@ -16,13 +17,16 @@
 
         <!-- ══════════ TOOLBAR ══════════ -->
         <LinearLayout
+            android:id="@+id/privacyToolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@color/card_background"
             android:paddingStart="4dp"
             android:paddingEnd="16dp"
+            android:paddingTop="0dp"
             android:elevation="4dp">
 
             <ImageView

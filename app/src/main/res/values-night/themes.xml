@@ -1,9 +1,10 @@
 <resources>
-    <!-- Force light theme to preserve the calm, minimal design -->
-    <style name="Base.Theme.Personal_Refelection" parent="Theme.Material3.Light.NoActionBar">
+    <!-- Dark theme — applied when user picks Dark or system is dark -->
+    <style name="Base.Theme.Personal_Refelection" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/primary_green</item>
         <item name="colorPrimaryVariant">@color/primary_green_dark</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent_teal</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/background</item>

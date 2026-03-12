@@ -20,79 +20,168 @@
             android:paddingBottom="96dp">
 
             <!-- ══════════════════ HERO HEADER ══════════════════ -->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:paddingTop="48dp"
-                android:paddingBottom="36dp"
+                android:background="@drawable/bg_profile_hero"
+                android:paddingTop="52dp"
+                android:paddingBottom="32dp"
                 android:paddingStart="24dp"
-                android:paddingEnd="24dp"
-                android:background="@drawable/bg_dashboard_header">
+                android:paddingEnd="24dp">
 
-                <!-- Avatar + Edit Badge -->
-                <FrameLayout
-                    android:layout_width="104dp"
-                    android:layout_height="104dp">
+                <!-- ── Top bar: label pill + settings icon ── -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="24dp">
 
-                    <!-- Circular avatar -->
-                    <ImageView
-                        android:id="@+id/ivProfileImage"
-                        android:layout_width="104dp"
-                        android:layout_height="104dp"
-                        android:background="@drawable/bg_avatar_circle_white"
-                        android:src="@drawable/ic_person"
-                        android:scaleType="center"
-                        android:padding="24dp"
-                        android:contentDescription="@string/content_desc_profile_icon" />
+                    <!-- Glassy label pill -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:orientation="horizontal"
+                        android:background="@drawable/bg_label_pill"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✦"
+                            android:textColor="#CCFFFFFF"
+                            android:textSize="9sp"
+                            android:includeFontPadding="false"
+                            android:layout_marginEnd="5dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MY PROFILE"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.16"
+                            android:textAllCaps="true"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
 
-                    <!-- Edit badge — bottom-right -->
+                    <!-- Pulse dots -->
+                    <View android:layout_width="6dp" android:layout_height="6dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/bg_status_dot"/>
+                    <View android:layout_width="4dp" android:layout_height="4dp"
+                        android:layout_marginStart="5dp" android:alpha="0.5"
+                        android:background="@drawable/bg_status_dot"/>
+
+                    <View android:layout_width="0dp" android:layout_height="1dp"
+                        android:layout_weight="1"/>
+
+                    <!-- Edit profile icon top-right -->
                     <FrameLayout
                         android:id="@+id/btnEditAvatar"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="bottom|end"
-                        android:background="@drawable/bg_edit_badge"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_edit_badge_modern"
                         android:clickable="true"
                         android:focusable="true"
                         android:elevation="4dp">
-
                         <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_edit"
                             android:contentDescription="@string/content_desc_edit_profile"
                             android:scaleType="fitCenter" />
                     </FrameLayout>
+                </LinearLayout>
+
+                <!-- ── Avatar centred with glow ring ── -->
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <!-- Glow ring -->
+                    <View
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:background="@drawable/bg_profile_avatar_ring"/>
+
+                    <!-- Photo -->
+                    <ImageView
+                        android:id="@+id/ivProfileImage"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_avatar_circle_white"
+                        android:src="@drawable/ic_person"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@string/content_desc_profile_icon" />
+
+                    <!-- Green status dot -->
+                    <View
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:background="@drawable/bg_status_dot"
+                        android:elevation="6dp"/>
                 </FrameLayout>
 
-                <!-- Full Name -->
+                <!-- ── Name ── -->
                 <TextView
                     android:id="@+id/tvFullName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
                     android:text="@string/hint_full_name"
-                    android:textSize="22sp"
+                    android:textSize="24sp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium"
-                    android:layout_marginTop="16dp" />
+                    android:shadowColor="#44000000"
+                    android:shadowDx="0"
+                    android:shadowDy="1"
+                    android:shadowRadius="4"/>
 
-                <!-- Email -->
+                <!-- ── Email in glassy pill ── -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_label_pill"
+                    android:gravity="center_vertical"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp">
+                    <TextView
+                        android:id="@+id/tvEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hint_email"
+                        android:textColor="#EEE0DFFF"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif"/>
+                </LinearLayout>
 
-                <!-- Hidden username (used in code) -->
-                <TextView
-                    android:id="@+id/tvEmail"
+                <!-- ── Decorative teal accent line ── -->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="sans-serif"
-                    android:text="@string/hint_email"
-                    android:textColor="#CCE0DFFF"
-                    android:textSize="14sp" />
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+                    <View android:layout_width="40dp" android:layout_height="3dp"
+                        android:background="@drawable/bg_status_dot" android:alpha="0.5"/>
+                    <View android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/bg_status_dot"
+                        android:layout_marginStart="6dp" android:layout_marginEnd="6dp"/>
+                    <View android:layout_width="40dp" android:layout_height="3dp"
+                        android:background="@drawable/bg_status_dot" android:alpha="0.5"/>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvUsername"

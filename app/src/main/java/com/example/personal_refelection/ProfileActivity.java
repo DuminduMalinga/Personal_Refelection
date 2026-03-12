@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Outline;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,9 @@ public class ProfileActivity extends BaseActivity {
 
     private String userEmail;
     private int userId;
+
+    // track whether bindViews() was called successfully
+    private boolean viewsBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,7 @@ public class ProfileActivity extends BaseActivity {
         }
 
         bindViews();
+        viewsBound = true;
         loadUserData();
         loadStats();
         setupSettingsRows();
@@ -101,18 +108,40 @@ public class ProfileActivity extends BaseActivity {
         tvStatTotalReflections = findViewById(R.id.tvStatTotalReflections);
         ivProfileImage         = findViewById(R.id.ivProfileImage);
 
-        findViewById(R.id.btnEditAvatar).setOnClickListener(v ->
-                startActivity(new Intent(this, EditProfileActivity.class)));
+        // Apply circular clip in Java (safe for all API levels)
+        if (ivProfileImage != null) {
+            ivProfileImage.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setOval(0, 0, view.getWidth(), view.getHeight());
+                }
+            });
+            ivProfileImage.setClipToOutline(true);
+        }
+
+        View editBtn = findViewById(R.id.btnEditAvatar);
+        if (editBtn != null) {
+            editBtn.setOnClickListener(v ->
+                    startActivity(new Intent(this, EditProfileActivity.class)));
+        }
     }
 
     // ── Load User Header ──────────────────────────────────────────
 
     private void loadUserData() {
+        if (userEmail == null || userEmail.isEmpty()) return;
         userRepository.getUserByEmail(userEmail, user -> {
             if (user != null) {
-                tvFullName.setText(user.fullName);
-                tvEmail.setText(user.email);
-                tvUsername.setText(getString(R.string.format_username, user.username));
+                runOnUiThread(() -> {
+                    if (tvFullName != null)
+                        tvFullName.setText(user.fullName != null ? user.fullName : "");
+                    if (tvEmail != null)
+                        tvEmail.setText(user.email != null ? user.email : "");
+                    if (tvUsername != null) {
+                        String uname = user.username != null ? user.username : "";
+                        tvUsername.setText(getString(R.string.format_username, uname));
+                    }
+                });
             }
         });
     }
@@ -120,30 +149,39 @@ public class ProfileActivity extends BaseActivity {
     // ── Load Stats ────────────────────────────────────────────────
 
     private void loadStats() {
-        dashboardRepository.getDashboardStats(userId, (activeGoals, achievedGoals, totalReflections) -> {
-            tvStatActiveGoals.setText(String.valueOf(activeGoals));
-            tvStatAchievedGoals.setText(String.valueOf(achievedGoals));
-            tvStatTotalReflections.setText(String.valueOf(totalReflections));
-        });
+        if (userId == -1) return;
+        dashboardRepository.getDashboardStats(userId,
+                (activeGoals, achievedGoals, totalReflections) -> runOnUiThread(() -> {
+                    if (tvStatActiveGoals      != null)
+                        tvStatActiveGoals.setText(String.valueOf(activeGoals));
+                    if (tvStatAchievedGoals    != null)
+                        tvStatAchievedGoals.setText(String.valueOf(achievedGoals));
+                    if (tvStatTotalReflections != null)
+                        tvStatTotalReflections.setText(String.valueOf(totalReflections));
+                }));
     }
 
     // ── Settings Rows ─────────────────────────────────────────────
 
     private void setupSettingsRows() {
-        findViewById(R.id.rowEditProfile).setOnClickListener(v ->
+        View rowEdit = findViewById(R.id.rowEditProfile);
+        if (rowEdit != null) rowEdit.setOnClickListener(v ->
                 startActivity(new Intent(this, EditProfileActivity.class)));
 
-        findViewById(R.id.rowNotificationSettings).setOnClickListener(v ->
+        View rowNotif = findViewById(R.id.rowNotificationSettings);
+        if (rowNotif != null) rowNotif.setOnClickListener(v ->
                 startActivity(new Intent(this, NotificationSettingsActivity.class)));
 
-        findViewById(R.id.rowPrivacyPolicy).setOnClickListener(v ->
+        View rowPrivacy = findViewById(R.id.rowPrivacyPolicy);
+        if (rowPrivacy != null) rowPrivacy.setOnClickListener(v ->
                 startActivity(new Intent(this, PrivacyPolicyActivity.class)));
 
-        findViewById(R.id.rowAboutApp).setOnClickListener(v ->
+        View rowAbout = findViewById(R.id.rowAboutApp);
+        if (rowAbout != null) rowAbout.setOnClickListener(v ->
                 startActivity(new Intent(this, AboutAppActivity.class)));
 
-        // Row tap triggers logout dialog
-        findViewById(R.id.rowLogout).setOnClickListener(v -> showLogoutDialog());
+        View rowLogout = findViewById(R.id.rowLogout);
+        if (rowLogout != null) rowLogout.setOnClickListener(v -> showLogoutDialog());
     }
 
     // ── Logout ────────────────────────────────────────────────────
@@ -177,6 +215,8 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Only call data/avatar methods if views were successfully bound
+        if (!viewsBound) return;
         loadUserData();
         loadStats();
         restoreSavedAvatar();
@@ -186,6 +226,8 @@ public class ProfileActivity extends BaseActivity {
     // Priority: 1) local file, 2) social photo URL from Google/Facebook, 3) default
 
     private void restoreSavedAvatar() {
+        if (ivProfileImage == null) return;
+
         // 1 — User-selected local photo
         String savedPath = sharedPreferences.getString("avatar_path", null);
         if (savedPath != null) {

@@ -30,8 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Goals screen — lists active & achieved goals with filter chips,
- * stats header, FAB to add, edit, delete and mark-achieved.
+ * Goals screen — lists active goals with stats header, FAB to add,
+ * edit, delete and mark-achieved. Filter chips removed.
  */
 public class GoalsActivity extends BaseActivity {
 
@@ -39,7 +39,6 @@ public class GoalsActivity extends BaseActivity {
     private RecyclerView recyclerGoals;
     private LinearLayout layoutEmptyState;
     private TextView tvHeaderActiveCount, tvHeaderAchievedCount;
-    private TextView chipAll, chipActive, chipAchieved;
     private LinearLayout fabAddGoal;
 
     // ── Data ──────────────────────────────────────────────────────────────
@@ -47,26 +46,17 @@ public class GoalsActivity extends BaseActivity {
     private GoalDao goalDao;
     private int userId = -1;
 
-    private List<Goal> allGoals    = new ArrayList<>();
-    private List<Goal> activeGoals = new ArrayList<>();
+    private List<Goal> activeGoals   = new ArrayList<>();
     private List<Goal> achievedGoals = new ArrayList<>();
 
-    private static final int FILTER_ALL      = 0;
-    private static final int FILTER_ACTIVE   = 1;
-    private static final int FILTER_ACHIEVED = 2;
-    private int currentFilter = FILTER_ALL;
-
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final ExecutorService executor   = Executors.newSingleThreadExecutor();
+    private final Handler         mainHandler = new Handler(Looper.getMainLooper());
 
     // ── Launcher ──────────────────────────────────────────────────────────
     private final ActivityResultLauncher<Intent> addGoalLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    loadGoals(); // refresh after goal added
-                }
+                if (result.getResultCode() == RESULT_OK) loadGoals();
             });
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +71,12 @@ public class GoalsActivity extends BaseActivity {
         });
 
         SharedPreferences prefs = getSharedPreferences("GoalReflectPrefs", MODE_PRIVATE);
-        userId = prefs.getInt("user_id", -1);
-
+        userId  = prefs.getInt("user_id", -1);
         goalDao = AppDatabase.getInstance(this).goalDao();
 
         bindViews();
         setupTopNav("MY GOALS");
         setupRecycler();
-        setupChips();
         setupFab();
         loadGoals();
         setupBottomNav(R.id.navGoals);
@@ -104,20 +92,14 @@ public class GoalsActivity extends BaseActivity {
     // ── Bind ──────────────────────────────────────────────────────────────
 
     private void bindViews() {
-        recyclerGoals        = findViewById(R.id.recyclerGoals);
-        layoutEmptyState     = findViewById(R.id.layoutEmptyState);
-        tvHeaderActiveCount  = findViewById(R.id.tvHeaderActiveCount);
-        tvHeaderAchievedCount= findViewById(R.id.tvHeaderAchievedCount);
-        chipAll              = findViewById(R.id.chipAll);
-        chipActive           = findViewById(R.id.chipActive);
-        chipAchieved         = findViewById(R.id.chipAchieved);
-        fabAddGoal           = findViewById(R.id.fabAddGoal);
+        recyclerGoals         = findViewById(R.id.recyclerGoals);
+        layoutEmptyState      = findViewById(R.id.layoutEmptyState);
+        tvHeaderActiveCount   = findViewById(R.id.tvHeaderActiveCount);
+        tvHeaderAchievedCount = findViewById(R.id.tvHeaderAchievedCount);
+        fabAddGoal            = findViewById(R.id.fabAddGoal);
 
-        // Empty state button
         View btnAddEmpty = findViewById(R.id.btnAddGoalEmpty);
-        if (btnAddEmpty != null) {
-            btnAddEmpty.setOnClickListener(v -> openAddGoalScreen());
-        }
+        if (btnAddEmpty != null) btnAddEmpty.setOnClickListener(v -> openAddGoalScreen());
     }
 
     private void setupRecycler() {
@@ -130,15 +112,8 @@ public class GoalsActivity extends BaseActivity {
         recyclerGoals.setAdapter(adapter);
     }
 
-    private void setupChips() {
-        chipAll.setOnClickListener(v -> setFilter(FILTER_ALL));
-        chipActive.setOnClickListener(v -> setFilter(FILTER_ACTIVE));
-        chipAchieved.setOnClickListener(v -> setFilter(FILTER_ACHIEVED));
-        updateChipUI();
-    }
-
     private void setupFab() {
-        fabAddGoal.setOnClickListener(v -> openAddGoalScreen());
+        if (fabAddGoal != null) fabAddGoal.setOnClickListener(v -> openAddGoalScreen());
     }
 
     private void openAddGoalScreen() {
@@ -157,72 +132,36 @@ public class GoalsActivity extends BaseActivity {
         overridePendingTransition(android.R.anim.fade_in, 0);
     }
 
-    // ── Filter ────────────────────────────────────────────────────────────
-
-    private void setFilter(int filter) {
-        currentFilter = filter;
-        updateChipUI();
-        applyFilter();
-    }
-
-    private void updateChipUI() {
-        styleChip(chipAll,      currentFilter == FILTER_ALL);
-        styleChip(chipActive,   currentFilter == FILTER_ACTIVE);
-        styleChip(chipAchieved, currentFilter == FILTER_ACHIEVED);
-    }
-
-    private void styleChip(TextView chip, boolean selected) {
-        if (selected) {
-            chip.setBackgroundResource(R.drawable.bg_chip_active_pill);
-            chip.setTextColor(0xFFFFFFFF);
-            chip.setAlpha(1.0f);
-        } else {
-            chip.setBackgroundResource(R.drawable.bg_avatar_circle_white);
-            chip.setTextColor(0xFFFFFFFF);
-            chip.setAlpha(0.70f);
-        }
-    }
-
-    private void applyFilter() {
-        List<Goal> toShow;
-        switch (currentFilter) {
-            case FILTER_ACTIVE:   toShow = activeGoals;   break;
-            case FILTER_ACHIEVED: toShow = achievedGoals; break;
-            default:              toShow = allGoals;       break;
-        }
-        adapter.setGoals(toShow);
-        int count = toShow.size();
-
-        boolean empty = (count == 0);
-        recyclerGoals.setVisibility(empty ? View.GONE : View.VISIBLE);
-        layoutEmptyState.setVisibility(empty ? View.VISIBLE : View.GONE);
-    }
-
     // ── Load ──────────────────────────────────────────────────────────────
 
     private void loadGoals() {
         if (userId == -1) return;
         executor.execute(() -> {
-            allGoals      = goalDao.getAllGoals(userId);
             activeGoals   = goalDao.getActiveGoals(userId);
             achievedGoals = goalDao.getAchievedGoals(userId);
             int activeCount   = activeGoals.size();
             int achievedCount = achievedGoals.size();
             mainHandler.post(() -> {
-                tvHeaderActiveCount.setText(String.valueOf(activeCount));
-                tvHeaderAchievedCount.setText(String.valueOf(achievedCount));
-                applyFilter();
+                if (tvHeaderActiveCount   != null) tvHeaderActiveCount.setText(String.valueOf(activeCount));
+                if (tvHeaderAchievedCount != null) tvHeaderAchievedCount.setText(String.valueOf(achievedCount));
+                displayGoals(activeGoals);
             });
         });
     }
 
+    private void displayGoals(List<Goal> goals) {
+        adapter.setGoals(goals);
+        boolean empty = goals.isEmpty();
+        if (recyclerGoals    != null) recyclerGoals.setVisibility(empty ? View.GONE : View.VISIBLE);
+        if (layoutEmptyState != null) layoutEmptyState.setVisibility(empty ? View.VISIBLE : View.GONE);
+    }
 
     // ── Delete ────────────────────────────────────────────────────────────
 
     private void confirmDelete(Goal goal) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Goal")
-                .setMessage("Are you sure you want to delete \"" + goal.title + "\"? This cannot be undone.")
+                .setMessage("Are you sure you want to delete \"" + goal.title + "\"?")
                 .setPositiveButton("Delete", (d, w) -> executor.execute(() -> {
                     goalDao.deleteGoal(goal);
                     mainHandler.post(() -> {

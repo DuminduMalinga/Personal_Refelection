@@ -125,10 +125,28 @@ public class NotificationHelper {
     }
 
     public static void postWeeklySummary(Context ctx, int active, int achieved, int reflections) {
-        post(ctx, CHANNEL_WEEKLY_SUMMARY, NOTIF_ID_WEEKLY_SUMMARY,
-                "📊 Your Weekly Summary",
-                "This week: " + achieved + " goals achieved, " + active + " active, "
-                        + reflections + " reflections written. Keep going! 🌿");
+        String body = "This week: " + achieved + " goals achieved, " + active + " active, "
+                + reflections + " reflections written. Keep going! 🌿";
+
+        Intent tap = new Intent(ctx, WeeklyReportActivity.class);
+        tap.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pi = PendingIntent.getActivity(ctx, NOTIF_ID_WEEKLY_SUMMARY, tap,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder b = new NotificationCompat.Builder(ctx, CHANNEL_WEEKLY_SUMMARY)
+                .setSmallIcon(R.drawable.ic_logo_journal)
+                .setContentTitle("📊 Your Weekly Summary")
+                .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pi)
+                .setAutoCancel(true);
+
+        try {
+            NotificationManagerCompat.from(ctx).notify(NOTIF_ID_WEEKLY_SUMMARY, b.build());
+        } catch (SecurityException e) {
+            // POST_NOTIFICATIONS not granted — silent fail
+        }
     }
 
     private static void post(Context ctx, String channelId, int notifId,
@@ -179,8 +197,11 @@ public class NotificationHelper {
 
     public static void scheduleWeeklySummary(Context ctx) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        cal.set(Calendar.HOUR_OF_DAY, 10);
+        // Set to the coming Sunday (or today if today is Sunday but before 9 PM)
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        int daysUntilSunday = (Calendar.SUNDAY - dayOfWeek + 7) % 7;
+        cal.add(Calendar.DAY_OF_YEAR, daysUntilSunday);
+        cal.set(Calendar.HOUR_OF_DAY, 21); // 9 PM
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);

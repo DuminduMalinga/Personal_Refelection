@@ -40,5 +40,13 @@ public interface GoalDao {
 
     @Query("UPDATE goals SET is_completed = 1 WHERE id = :goalId")
     void markGoalCompleted(int goalId);
+
+    /** Goals completed this week (created_at between weekStart and weekEnd millis). */
+    @Query("SELECT * FROM goals WHERE user_id = :userId AND is_completed = 1 AND created_at >= :weekStart AND created_at <= :weekEnd ORDER BY created_at DESC")
+    List<Goal> getGoalsAchievedThisWeek(int userId, long weekStart, long weekEnd);
+
+    /** Goals created (started) this week. */
+    @Query("SELECT COUNT(*) FROM goals WHERE user_id = :userId AND created_at >= :weekStart AND created_at <= :weekEnd")
+    int countGoalsCreatedThisWeek(int userId, long weekStart, long weekEnd);
 }
 

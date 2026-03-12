@@ -126,6 +126,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".WeeklyReportActivity"
+            android:exported="false" />
+
         <!-- FileProvider for camera capture URI -->
         <provider
             android:name="androidx.core.content.FileProvider"

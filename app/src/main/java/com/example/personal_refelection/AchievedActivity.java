@@ -93,6 +93,15 @@ public class AchievedActivity extends BaseActivity {
                 overridePendingTransition(0, 0);
             });
         }
+
+        com.google.android.material.button.MaterialButton btnWeeklyReport =
+                findViewById(R.id.btnViewWeeklyReport);
+        if (btnWeeklyReport != null) {
+            btnWeeklyReport.setOnClickListener(v -> {
+                startActivity(new Intent(this, WeeklyReportActivity.class));
+                overridePendingTransition(0, 0);
+            });
+        }
     }
 
     private void setupAdapter() {

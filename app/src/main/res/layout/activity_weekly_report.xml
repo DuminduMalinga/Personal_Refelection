@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/weeklyReportRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <!-- ══ HEADER ══ -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_goals_header"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        app:liftOnScroll="false"
+        app:backgroundTint="@android:color/transparent"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <include
+            android:id="@+id/topNavInclude"
+            layout="@layout/layout_top_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Sub-header row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="20dp">
+
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_achieved_icon_circle"
+                android:layout_marginEnd="14dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="📊"
+                    android:textSize="22sp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weekly Report"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your weekly growth digest"
+                    android:textColor="#CCE0FF"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Week navigation: prev arrow, range, next arrow -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/btnPrevWeek"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_achieved_icon_circle"
+                    android:src="@android:drawable/ic_media_previous"
+                    android:contentDescription="Previous week"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:id="@+id/tvWeekRange"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="#CCE0FF"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/tvWeekLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This Week"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.08" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnNextWeek"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_achieved_icon_circle"
+                    android:src="@android:drawable/ic_media_next"
+                    android:contentDescription="Next week"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- ══ SCROLLABLE CONTENT ══ -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:paddingBottom="88dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp">
+
+            <!-- ── Motivational banner ── -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#6C63FF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/tvMotivation"
+                        android:text="Great work this week! Keep pushing towards your goals. 🌟"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚀"
+                        android:textSize="36sp"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── Stats row ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
+                android:baselineAligned="false">
+
+                <!-- Active goals stat -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#6C63FF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="18dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎯"
+                            android:textSize="28sp" />
+                        <TextView
+                            android:id="@+id/tvActiveCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active Goals"
+                            android:textColor="#CCE0FF"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Achieved this week stat -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#06D6A0">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="18dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🏆"
+                            android:textSize="28sp" />
+                        <TextView
+                            android:id="@+id/tvAchievedWeekCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Achieved"
+                            android:textColor="#CCFFF5"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- ── Second stats row ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:baselineAligned="false">
+
+                <!-- Reflections this week -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
+
+                        <FrameLayout
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_achieved_icon_circle"
+                            android:layout_marginEnd="12dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="📝"
+                                android:textSize="18sp" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvReflectionsWeekCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/primary_green"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Reflections"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- New goals started this week -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
+
+                        <FrameLayout
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_achieved_icon_circle"
+                            android:layout_marginEnd="12dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="✨"
+                                android:textSize="18sp" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tvNewGoalsWeekCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/accent_amber"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="New Goals"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- ── Goals achieved this week section ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🏅 Goals Achieved This Week"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Empty state for achieved goals -->
+            <LinearLayout
+                android:id="@+id/layoutNoAchievedThisWeek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💪"
+                    android:textSize="32sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No goals completed this week yet.\nKeep going!"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+
+            <!-- RecyclerView for achieved goals this week -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerWeekGoals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="20dp" />
+
+            <!-- ── Recent reflections section ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📝 Recent Reflections This Week"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Empty state for reflections -->
+            <LinearLayout
+                android:id="@+id/layoutNoReflectionsThisWeek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌱"
+                    android:textSize="32sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No reflections written this week.\nStart reflecting today!"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+
+            <!-- RecyclerView for reflections this week -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerWeekReflections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="20dp" />
+
+            <!-- ── View Goals CTA ── -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewGoals"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="View My Goals →"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="#6C63FF"
+                app:cornerRadius="26dp"
+                app:elevation="0dp"
+                android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Nav -->
+    <include
+        android:id="@+id/bottomNavInclude"
+        layout="@layout/layout_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

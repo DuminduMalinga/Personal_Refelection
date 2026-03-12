@@ -294,15 +294,11 @@ public class DashboardActivity extends BaseActivity {
             if (selectedPos > 0 && selectedPos - 1 < cachedGoals.size()) {
                 goalId = cachedGoals.get(selectedPos - 1).id;
             } else {
-                if (cachedGoals.isEmpty()) {
-                    Toast.makeText(this, "Please create a goal first!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                goalId = cachedGoals.get(0).id;
+                goalId = 0; // 0 = no goal linked, allowed
             }
 
             String moodTag = selectedMood.isEmpty() ? "" : " " + selectedMood;
-            Reflection reflection = new Reflection(goalId, content + moodTag);
+            Reflection reflection = new Reflection(userId, goalId, content + moodTag);
 
             executor.execute(() -> {
                 reflectionDao.insertReflection(reflection);

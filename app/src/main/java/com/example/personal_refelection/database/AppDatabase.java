@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase;
  * Singleton Room Database.
  * Increment version number whenever the schema changes.
  */
-@Database(entities = {User.class, Goal.class, Reflection.class}, version = 2, exportSchema = false)
+@Database(entities = {User.class, Goal.class, Reflection.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;

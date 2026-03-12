@@ -14,7 +14,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -23,7 +22,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
  * Firebase-backed social authentication.
  *
  * Google  → GoogleSignIn picks the account  → Firebase signInWithCredential
- * Facebook → Facebook SDK returns AccessToken → Firebase signInWithCredential
  *
  * After Firebase auth succeeds, the user is found-or-created in the local Room DB
  * so the rest of the app (goals, reflections, etc.) works completely offline too.
@@ -97,15 +95,6 @@ public class SocialAuthManager {
         }
     }
 
-    // ────────────────────────────────────────────────────────────
-    //  FACEBOOK — call this with the AccessToken from Facebook SDK
-    // ────────────────────────────────────────────────────────────
-
-    public void handleFacebookAccessToken(com.facebook.AccessToken token, SocialAuthCallback callback) {
-        Log.d(TAG, "Facebook token received, authenticating with Firebase...");
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        firebaseSignIn(credential, callback);
-    }
 
     // ────────────────────────────────────────────────────────────
     //  SHARED — Firebase sign-in → find/create local Room user

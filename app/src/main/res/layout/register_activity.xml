@@ -391,36 +391,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <Space android:layout_width="match_parent" android:layout_height="10dp" />
-
-                <!-- ── Sign up with Facebook ── -->
-                <LinearLayout
-                    android:id="@+id/btnFacebookSignup"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:background="@drawable/bg_btn_facebook"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_facebook"
-                        android:scaleType="fitCenter"
-                        android:contentDescription="@string/lbl_facebook" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:text="@string/lbl_signup_facebook"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"
-                        android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold" />
-                </LinearLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

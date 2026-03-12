@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@drawable/bg_toolbar_header"
+            android:background="@drawable/bg_header_rounded_bottom"
             android:paddingTop="8dp"
             android:paddingBottom="36dp">
 
@@ -279,7 +279,7 @@
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
+                        android:layout_height="50dp"
                         android:layout_marginTop="8dp"
                         android:fontFamily="sans-serif"
                         android:lineSpacingMultiplier="1.6"

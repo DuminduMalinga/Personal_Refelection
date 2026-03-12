@@ -80,7 +80,7 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:paddingBottom="32dp"
-            android:background="@drawable/bg_toolbar_header">
+            android:background="@drawable/bg_header_rounded_bottom">
 
             <FrameLayout
                 android:id="@+id/avatarContainer"

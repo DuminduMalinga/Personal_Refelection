@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@drawable/bg_toolbar_header"
+            android:background="@drawable/bg_header_rounded_bottom"
             android:paddingTop="8dp"
             android:paddingBottom="32dp">
 

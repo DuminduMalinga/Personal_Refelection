@@ -145,12 +145,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             finish();
         });
 
-        // 3D FAB — bounce animation then go to Goals
+        // 3D FAB — bounce animation then go to Add Goal
         nav.findViewById(R.id.fabAdd).setOnClickListener(v -> {
             v.animate().scaleX(0.88f).scaleY(0.88f).setDuration(80).withEndAction(() ->
                 v.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
             ).start();
-            startActivity(new Intent(this, GoalsActivity.class));
+            startActivity(new Intent(this, AddGoalActivity.class));
             overridePendingTransition(0, 0);
         });
     }

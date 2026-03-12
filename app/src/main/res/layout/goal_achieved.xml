@@ -162,13 +162,16 @@
             </LinearLayout>
 
             <!-- ── Weekly Report Button ── -->
+
+            <!-- ── Filter Tabs ── -->
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnViewWeeklyReport"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
                 android:text="📊  View Weekly Report"
                 android:textColor="#FFFFFF"
@@ -176,13 +179,8 @@
                 android:textStyle="bold"
                 app:backgroundTint="#6C63FF"
                 app:cornerRadius="26dp"
-                app:elevation="0dp"
-                app:icon="@drawable/ic_logo_journal"
-                app:iconTint="#FFFFFF"
-                app:iconSize="18dp"
-                app:iconPadding="8dp" />
+                app:elevation="0dp" />
 
-            <!-- ── Filter Tabs ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

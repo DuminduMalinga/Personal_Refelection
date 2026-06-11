@@ -41,6 +41,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private View dot1, dot2;
     private TextView tvStep1Label, tvStep2Label;
 
+
     // ── Common ────────────────────────────────────────
     private TextView tvBackToLogin;
 

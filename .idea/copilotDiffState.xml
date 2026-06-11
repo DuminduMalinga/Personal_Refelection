@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app/src/main/res/drawable/bg_goals_header.xml">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app/src/main/res/drawable/bg_goals_header.xml" />
+              <option name="originalContent" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#10;&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;&#10;    &lt;item&gt;&#10;        &lt;shape android:shape=&quot;rectangle&quot;&gt;&#10;            &lt;gradient&#10;                android:startColor=&quot;#4F46E5&quot;&#10;                android:centerColor=&quot;#6C63FF&quot;&#10;                android:endColor=&quot;#8B5CF6&quot;&#10;                android:angle=&quot;135&quot;&#10;                android:type=&quot;linear&quot; /&gt;&#10;            &lt;corners&#10;                android:bottomLeftRadius=&quot;36dp&quot;&#10;                android:bottomRightRadius=&quot;36dp&quot; /&gt;&#10;        &lt;/shape&gt;&#10;    &lt;/item&gt;&#10;&lt;/layer-list&gt;&#10;&#10;" />
+              <option name="updatedContent" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#10;&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;&#10;    &lt;!-- Base colorful gradient --&gt;&#10;    &lt;item&gt;&#10;        &lt;shape android:shape=&quot;rectangle&quot;&gt;&#10;            &lt;gradient&#10;                android:startColor=&quot;#4F46E5&quot;&#10;                android:centerColor=&quot;#6C63FF&quot;&#10;                android:endColor=&quot;#8B5CF6&quot;&#10;                android:angle=&quot;135&quot;&#10;                android:type=&quot;linear&quot; /&gt;&#10;            &lt;corners&#10;                android:bottomLeftRadius=&quot;36dp&quot;&#10;                android:bottomRightRadius=&quot;36dp&quot; /&gt;&#10;        &lt;/shape&gt;&#10;    &lt;/item&gt;&#10;&#10;    &lt;!-- Subtle darkening overlay at the bottom to increase avatar contrast --&gt;&#10;    &lt;item&gt;&#10;        &lt;shape android:shape=&quot;rectangle&quot;&gt;&#10;            &lt;!-- top transparent → bottom semi-transparent black --&gt;&#10;            &lt;gradient&#10;                android:startColor=&quot;#00000000&quot;&#10;                android:centerColor=&quot;#00000000&quot;&#10;                android:endColor=&quot;#33000000&quot;&#10;                android:angle=&quot;90&quot;&#10;                android:type=&quot;linear&quot; /&gt;&#10;            &lt;corners&#10;                android:bottomLeftRadius=&quot;36dp&quot;&#10;                android:bottomRightRadius=&quot;36dp&quot; /&gt;&#10;        &lt;/shape&gt;&#10;    &lt;/item&gt;&#10;&lt;/layer-list&gt;&#10;&#13;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -91,6 +91,8 @@ public class ProfileActivity extends BaseActivity {
 
         bindViews();
         viewsBound = true;
+        // Initialize shared top nav to match other screens
+        setupTopNav("MY PROFILE");
         loadUserData();
         loadStats();
         setupSettingsRows();

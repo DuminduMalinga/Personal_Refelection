@@ -13,13 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import com.example.personal_refelection.database.User;
+import com.example.personal_refelection.database.UserRepository;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.personal_refelection.database.User;
-import com.example.personal_refelection.database.UserRepository;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -155,29 +155,31 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password)) {
             etPassword.setError("Please enter your password"); etPassword.requestFocus(); return;
         }
-        if (password.length() < 6) {
+        if (password.length()<6) {
             etPassword.setError("Password must be at least 6 characters"); etPassword.requestFocus(); return;
         }
-
         dismissKeyboard();
         btnLogin.setEnabled(false);
 
-        userRepository.login(email, password, user -> {
-            btnLogin.setEnabled(true);
-            if (user != null) {
-                sharedPreferences.edit()
-                        .putInt("user_id", user.id)
-                        .putString("user_name", user.fullName)
-                        .putString("user_email", user.email)
-                        .putBoolean("isLoggedIn", true)
-                        .apply();
-                Toast.makeText(this, "Welcome back, " + user.fullName + "!", Toast.LENGTH_SHORT).show();
-                navigateToDashboard();
-            } else {
-                etPassword.setError("Incorrect email or password");
-                inputEmail.setBackgroundResource(R.drawable.bg_input_field_focused);
-                inputPassword.setBackgroundResource(R.drawable.bg_input_field_focused);
-                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+        userRepository.login(email, password, new UserRepository.Callback<User>() {
+            @Override
+            public void onResult(User user) {
+                btnLogin.setEnabled(true);
+                if (user != null) {
+                    sharedPreferences.edit()
+                            .putInt("user_id", user.id)
+                            .putString("user_name", user.fullName)
+                            .putString("user_email", user.email)
+                            .putBoolean("isLoggedIn", true)
+                            .apply();
+                    Toast.makeText(LoginActivity.this, "Welcome back, " + user.fullName + "!", Toast.LENGTH_SHORT).show();
+                    navigateToDashboard();
+                } else {
+                    etPassword.setError("Incorrect email or password");
+                    inputEmail.setBackgroundResource(R.drawable.bg_input_field_focused);
+                    inputPassword.setBackgroundResource(R.drawable.bg_input_field_focused);
+                    Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

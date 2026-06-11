@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base colorful gradient -->
     <item>
         <shape android:shape="rectangle">
             <gradient
@@ -7,6 +8,22 @@
                 android:centerColor="#6C63FF"
                 android:endColor="#8B5CF6"
                 android:angle="135"
+                android:type="linear" />
+            <corners
+                android:bottomLeftRadius="36dp"
+                android:bottomRightRadius="36dp" />
+        </shape>
+    </item>
+
+    <!-- Subtle darkening overlay at the bottom to increase avatar contrast -->
+    <item>
+        <shape android:shape="rectangle">
+            <!-- top transparent → bottom semi-transparent black -->
+            <gradient
+                android:startColor="#00000000"
+                android:centerColor="#00000000"
+                android:endColor="#33000000"
+                android:angle="90"
                 android:type="linear" />
             <corners
                 android:bottomLeftRadius="36dp"

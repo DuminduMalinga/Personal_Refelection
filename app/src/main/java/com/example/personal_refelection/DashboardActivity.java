@@ -120,11 +120,7 @@ public class DashboardActivity extends BaseActivity {
         initNotifications();
     }
 
-    /**
-     * Ensure notification channels exist and schedule alarms that have never been set up yet.
-     * This is safe to call every time — channels are idempotent, and alarms with the same
-     * PendingIntent simply update the existing one.
-     */
+
     private void initNotifications() {
         NotificationHelper.createChannels(this);
 
@@ -145,13 +141,15 @@ public class DashboardActivity extends BaseActivity {
     }
 
     private void bindViews() {
-        tvGreeting = findViewById(R.id.tvGreeting);
+        // Top nav was refactored into a shared include (layout_top_nav.xml)
+        // use the IDs from that include so the views resolve correctly.
+        tvGreeting = findViewById(R.id.topNavGreeting);
         tvActiveGoalsCount = findViewById(R.id.tvActiveGoalsCount);
         tvAchievedGoalsCount = findViewById(R.id.tvAchievedGoalsCount);
         tvTotalReflectionsCount = findViewById(R.id.tvTotalReflectionsCount);
         tvNoReflections = findViewById(R.id.tvNoReflections);
         recentReflectionsContainer = findViewById(R.id.recentReflectionsContainer);
-        ivDashboardProfileImage = findViewById(R.id.ivDashboardProfileImage);
+        ivDashboardProfileImage = findViewById(R.id.topNavProfileImage);
     }
 
     /**
@@ -256,7 +254,9 @@ public class DashboardActivity extends BaseActivity {
         setupBottomNav(R.id.navDashboard);
 
         // Profile icon in header
-        findViewById(R.id.ivProfileIcon).setOnClickListener(v -> {
+        // The profile icon is now inside the shared top nav include (id: topNavProfileIcon)
+        View topProfileIcon = findViewById(R.id.topNavProfileIcon);
+        if (topProfileIcon != null) topProfileIcon.setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
             overridePendingTransition(0, 0);
         });
@@ -268,7 +268,7 @@ public class DashboardActivity extends BaseActivity {
     private void openAddReflectionSheet() {
         BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         View sheetView = LayoutInflater.from(this)
-                .inflate(R.layout.bottom_sheet_add_reflection, null);
+                .inflate(R.layout.bottom_sheet_add_reflection, findViewById(android.R.id.content), false);
         sheet.setContentView(sheetView);
 
         TextInputLayout   tilContent    = sheetView.findViewById(R.id.tilSheetReflectionContent);
@@ -294,7 +294,7 @@ public class DashboardActivity extends BaseActivity {
             cachedGoals.addAll(achieved);
 
             List<String> titles = new ArrayList<>();
-            titles.add("— No goal linked —");
+            titles.add("— Select a Goal —");
             for (Goal g : cachedGoals) titles.add(g.title);
 
             mainHandler.post(() -> {
@@ -322,7 +322,8 @@ public class DashboardActivity extends BaseActivity {
             final int goalId;
             if (selectedPos > 0 && selectedPos - 1 < cachedGoals.size()) {
                 goalId = cachedGoals.get(selectedPos - 1).id;
-            } else {
+            }
+            else {
                 goalId = 0; // 0 = no goal linked, allowed
             }
 
@@ -343,13 +344,18 @@ public class DashboardActivity extends BaseActivity {
     }
 
     private void setupMoodButtons(TextView happy, TextView neutral, TextView sad, TextView motivated) {
-        View.OnClickListener listener = v -> {
-            resetMoodBg(happy, neutral, sad, motivated);
-            ((TextView) v).setBackgroundResource(R.drawable.bg_chip_active_pill);
-            if      (v.getId() == R.id.moodHappy)     selectedMood = "😊";
-            else if (v.getId() == R.id.moodNeutral)   selectedMood = "😐";
-            else if (v.getId() == R.id.moodSad)       selectedMood = "😔";
-            else if (v.getId() == R.id.moodMotivated) selectedMood = "🔥";
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetMoodBg(happy, neutral, sad, motivated);
+                TextView tv = (TextView) v;
+                tv.setBackgroundResource(R.drawable.bg_chip_active_pill);
+                int id = v.getId();
+                if      (id == R.id.moodHappy)     selectedMood = "😊";
+                else if (id == R.id.moodNeutral)   selectedMood = "😐";
+                else if (id == R.id.moodSad)       selectedMood = "😔";
+                else if (id == R.id.moodMotivated) selectedMood = "🔥";
+            }
         };
         happy.setOnClickListener(listener);
         neutral.setOnClickListener(listener);

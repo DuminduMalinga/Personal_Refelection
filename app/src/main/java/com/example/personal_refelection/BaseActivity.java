@@ -28,11 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     // ── TOP NAV ────────────────────────────────────────────────────────
 
-    /**
-     * Populates the shared top nav bar (layout_top_nav.xml include).
-     *
-     * @param screenLabel  e.g. "MY GOALS"  shown above the greeting
-     */
     protected void setupTopNav(String screenLabel) {
         View topNav = findViewById(R.id.topNavInclude);
         if (topNav == null) return;
@@ -48,8 +43,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         TextView tvGreeting = topNav.findViewById(R.id.topNavGreeting);
         if (tvGreeting != null) {
             int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            String g = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
-            tvGreeting.setText(g + ", " + userName);
+            String g = hour < 12 ? getString(R.string.greeting_morning)
+                    : hour < 18 ? getString(R.string.greeting_afternoon)
+                    : getString(R.string.greeting_evening);
+            tvGreeting.setText(getString(R.string.greeting_format, g, userName));
         }
 
         // ── Tagline ───────────────────────────────────────────────────

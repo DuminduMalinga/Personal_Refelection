@@ -195,8 +195,8 @@ public class AddGoalActivity extends BaseActivity {
 
     // ── Progress SeekBar ───────────────────────────────────────────────
     private void setupProgressSeekBar() {
-        seekBarProgress.setProgress(50);
-        tvProgressValue.setText("50%");
+        seekBarProgress.setProgress(1);
+        tvProgressValue.setText("5%");
         seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar s, int p, boolean u) {
                 progressTarget = p;
@@ -301,6 +301,16 @@ public class AddGoalActivity extends BaseActivity {
             return;
         }
         tilGoalTitle.setError(null);
+
+
+        if (TextUtils.isEmpty(desc)) {
+            etGoalDescription.setError("Please enter a goal Description");
+            etGoalDescription.requestFocus();
+            return;
+        }
+        etGoalDescription.setError(null);
+
+
 
         // Build enriched description
         StringBuilder fullDesc = new StringBuilder(desc);
